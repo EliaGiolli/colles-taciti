@@ -27,7 +27,7 @@ Scripts are added during PR 0; until then some may not exist yet.
 |---|---|
 | `bun run dev` / `build` / `preview` | Astro dev server, static build, preview of the build |
 | `bun run typecheck` | `astro check && vue-tsc --noEmit` |
-| `bun run lint` | Biome + dependency-cruiser |
+| `bun run lint` | Biome + Prettier check (`.astro`/`.vue` only) + dependency-cruiser |
 | `bun run test` | Unit tests (Vitest), co-located with the code |
 | `bun run test:integration` | Integration tests in `tests/integration` |
 | `bun run test:e2e` | Playwright + axe in `tests/e2e` |
@@ -111,5 +111,13 @@ Use Playwright (MCP or e2e tests) on `bun run preview`: 375px and desktop, both 
 
 ## Tooling
 
-To be filled in once Elia approves skills, plugins and MCP servers (see PLAN §4).
-- Already available: Playwright MCP.
+MCP servers approved by Elia, registered in [.mcp.json](.mcp.json) (project scope, no secrets):
+- **astro-docs** (`https://mcp.docs.astro.build/mcp`): official Astro docs. Check it before writing
+  version-sensitive Astro code (Actions, Content Layer, Container API, Fonts API).
+- **context7** (`https://mcp.context7.com/mcp`): current docs for libraries (Vue, Tailwind v4,
+  Drizzle, Vitest, Biome, zod). Used without an API key for now.
+- **playwright** (`@playwright/mcp`, pinned): visual checks. Wrapped in `cmd /c` because `npx` needs
+  it on native Windows.
+- Database MCP: deferred to PR 9 (no database exists before then).
+
+Prefer these over memory when an API might have changed.

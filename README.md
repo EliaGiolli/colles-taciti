@@ -69,7 +69,7 @@ Planned for launch (track progress in [ROADMAP.md](ROADMAP.md)):
 | Styling | Tailwind v4 + cva + clsx + tailwind-merge, design-system tokens in `@theme` |
 | Feedback | Astro Action + Turso (libSQL) + Drizzle + Resend, honeypot protection |
 | Search | MiniSearch, index generated at build time |
-| Quality | `astro check`, `vue-tsc`, Biome, dependency-cruiser, brand-tone check |
+| Quality | `astro check`, `vue-tsc`, Biome, Prettier (`.astro`/`.vue` formatting), dependency-cruiser, brand-tone check |
 | Tests | Vitest (Container API, Testing Library, jsdom), Playwright + axe |
 
 ## <img src="https://api.iconify.design/lucide/network.svg?color=%23888888" width="22" align="top" alt="" /> Architecture
@@ -128,7 +128,7 @@ bun run dev
 | `bun run build` | Build the static site |
 | `bun run preview` | Preview the production build |
 | `bun run typecheck` | `astro check` + `vue-tsc --noEmit` |
-| `bun run lint` | Biome + dependency-cruiser |
+| `bun run lint` | Biome + Prettier check (`.astro`/`.vue`) + dependency-cruiser |
 | `bun run test` | Unit tests |
 | `bun run test:integration` | Integration tests |
 | `bun run test:e2e` | End-to-end tests (Playwright + axe) |

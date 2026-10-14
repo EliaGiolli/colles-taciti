@@ -33,14 +33,14 @@ Elia vuole anche imparare dal codice: architettura manutenibile, test fin da sub
 | Modulo feedback | **Astro Action** (`accept: "form"`, zod) + **Turso (libSQL) con Drizzle** + **Resend**. Funziona anche senza JavaScript; un controller evita il ricaricamento. Protezione: **solo honeypot** |
 | Analytics | **GA4 + Search Console**, banner dei cookie (Consent Mode v2, default negato), **eventi di lettura**, **UTM** su Instagram e Wattpad |
 | Monitoraggio errori | **Niente Sentry per ora** |
-| Font | **Fonts API di Astro** se stabile nella versione installata (self-hosting, preload, metriche di ripiego). Altrimenti Fontsource + fontaine. Solo caratteri latini, preload di Literata regular |
+| Font | **Fonts API di Astro** (stabile in Astro 7: chiave `fonts` in `astro.config`, `<Font preload>`, fallback ottimizzati automatici). Solo caratteri latini, preload di Literata regular |
 | CSS e componenti | **Tailwind v4 + cva + clsx + tailwind-merge**, token del design system in `@theme`. **Niente shadcn**: componenti `.astro` e `.vue` scritti a mano, con varianti cva in file `.ts` condivisi |
 | Immagini | `astro:assets` (`<Image>`/`<Picture>`, AVIF/WebP alla build) |
 | Animazioni | **CSS**: View Transitions native fra documenti (`@view-transition { navigation: auto; }`, niente ClientRouter), `@starting-style` per il banner, animazioni legate allo scroll in `@supports`. Nell'isola: **`<TransitionGroup>` di Vue** (fade dei risultati). **Niente Motion** (non serve più) |
 | Pagina /chi-sono | **Niente**. Le poche info su Elia stanno in homepage («Perché Colles Taciti»). Testata: Racconti · Libri |
 | Libri | Elia fornisce l'elenco a brief completato. Lo script `libri:sync` scarica i dati da Open Library (in alternativa Google Books) |
 | Package manager | **Bun** |
-| Qualità | `astro check` (`.ts` e `.astro`) **+ `vue-tsc --noEmit`** (`.vue`) + TypeScript strict + **Biome** (supporto `.astro` da verificare allo scaffold; se serve, prettier-plugin-astro solo per formattare) + dependency-cruiser + controllo sul tono del brand + testi UI centralizzati |
+| Qualità | `astro check` (`.ts` e `.astro`) **+ `vue-tsc --noEmit`** (`.vue`) + TypeScript strict + **Biome** per `.ts`/`.js`/`.css`/`.json` + **Prettier** (con prettier-plugin-astro) solo per formattare `.astro` e `.vue` + dependency-cruiser + controllo sul tono del brand + testi UI centralizzati |
 | Test | **Test-as-you-go**: unit (Vitest con `getViteConfig` di Astro; **Container API** per i `.astro`; **@testing-library/vue** per i `.vue`; jsdom per i controller) accanto al file; integration in `/tests/integration`; e2e (Playwright + axe) in `/tests/e2e`. Copertura riportata, **non bloccante** |
 | Date | `Intl` in `it-IT` con `timeZone: "Europe/Rome"` |
 | Workflow | branch → feature/fix + test → check → commit → push → PR → **merge fatto da Elia** → pulizia dei branch |
@@ -233,3 +233,10 @@ Ogni modifica a una decisione si annota qui, nella stessa PR che la introduce (d
 - 2026-10-14 · PR 0 · Il piano è copiato da `RULES-INIT.md`, che resta solo in locale (`docs/RULES-INIT.md`, in `.gitignore`). Da qui in poi la fonte è questo file.
 - 2026-10-14 · PR 0 · Repository GitHub `EliaGiolli/colles-taciti`, privato. Su main c'è un unico commit vuoto (`chore: initial commit`) come base per le PR: è l'unica eccezione alla regola «mai commit su main». Vercel si collega alla fine della PR 0, Turso nella PR 9.
 - 2026-10-14 · PR 0 · Aggiunto `README.md` in inglese (badge shields.io e icone skillicons.dev, niente emoji). Va aggiornato in ogni PR che cambia comandi, stack, variabili d'ambiente o funzionalità. Il controllo sul tono del brand non lo scansiona.
+- 2026-10-14 · PR 0 · Verifiche di versione (§5), fatte su npm e sulla documentazione ufficiale:
+  - **Astro 7.3.8** (Node ≥ 22.12).
+  - **Fonts API stabile**: si usa quella; Fontsource + fontaine escono dal piano.
+  - **Container API ancora sperimentale** (`experimental_AstroContainer` da `astro/container`; renderer Vue con `getContainerRenderer()`): si isola in un solo helper di test, così un cambio di nome tocca un file.
+  - **`astro/tsconfigs/strictest`** include già `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` e `verbatimModuleSyntax`; si aggiunge solo `noPropertyAccessFromIndexSignature`.
+  - **Biome 2.5**: il supporto a `.astro`/`.vue` è sperimentale (`html.experimentalFullSupportEnabled`, possibili falsi positivi). Decisione di Elia: Biome per `.ts`/`.js`/`.css`/`.json`, Prettier + prettier-plugin-astro solo per formattare `.astro`/`.vue`; su quei file Biome lavora con gli override consigliati dalla sua documentazione.
+- 2026-10-14 · PR 0 · Strumenti (§4) approvati da Elia, in `.mcp.json` (scope di progetto): Astro Docs MCP, Context7, Playwright MCP (versione fissata). L'MCP del database si valuta nella PR 9, quando Turso esisterà. `.gitattributes` con `eol=lf`, per avere gli stessi a capo su Windows e in CI.

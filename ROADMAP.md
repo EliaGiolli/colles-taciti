@@ -20,12 +20,13 @@ PR: – · Merged: – · Notes: –
 - [x] `CLAUDE.md`
 - [x] `ROADMAP.md`
 - [x] `README.md` (badges, stack icons, sections)
-- [ ] Skill / plugin / MCP search: proposal to Elia, install only what is approved, list in `CLAUDE.md` → Tooling
-- [ ] Version checks (Fonts API, Container API, Biome on `.astro`/`.vue`, `strictest` tsconfig), outcome in `docs/PLAN.md`
-- [ ] `create astro` (minimal template), Bun, TS strictest + extra flags, `@/core` `@/features` `@/shared` aliases
+- [x] Skill / plugin / MCP search: proposal to Elia, install only what is approved, list in `CLAUDE.md` → Tooling (`.mcp.json`: astro-docs, context7, playwright)
+- [x] Version checks (Fonts API, Container API, Biome on `.astro`/`.vue`, `strictest` tsconfig), outcome in `docs/PLAN.md`
+- [ ] `.gitattributes` (`* text=auto eol=lf`)
+- [ ] `create astro` (minimal template), Bun, TS strictest + `noPropertyAccessFromIndexSignature`, `@/core` `@/features` `@/shared` aliases
 - [ ] `@astrojs/vercel` adapter, `@astrojs/vue` integration, provisional `site`
 - [ ] `core/controllers/registry.ts` (lazy `import()` per `[data-controller]`) + tests
-- [ ] Biome (+ prettier-plugin-astro only if needed) and dependency-cruiser rules
+- [ ] Biome (`.ts`/`.js`/`.css`/`.json`) + Prettier with prettier-plugin-astro (format `.astro`/`.vue` only) and dependency-cruiser rules
 - [ ] lefthook pre-commit (`typecheck` + `lint` + unit)
 - [ ] Vitest (unit + integration, `getViteConfig`), v8 coverage reported
 - [ ] Playwright + axe, smoke e2e test
@@ -39,7 +40,7 @@ PR: – · Merged: – · Notes: –
 
 - [ ] `styles/app.css` from the artifact tokens (Notte and Nebbia on `[data-theme]`, `@theme inline`, dark custom variant)
 - [ ] Nebbia weights in `@layer base`; no radius, no shadows
-- [ ] Fonts (Fonts API or Fontsource + fontaine), Latin subset, preload Literata regular
+- [ ] Fonts via the Astro Fonts API, Latin subset, preload Literata regular
 - [ ] Shared cva variants in `shared/variants/*.ts`
 - [ ] `Button`, `Field`, `Label` (`.astro`) + minimal Vue equivalents, with tests
 - [ ] `shared/lib`: `cn()`, `formatDate` (Europe/Rome), plurals, text normalisation
@@ -115,6 +116,7 @@ PR: – · Merged: – · Notes: –
 PR: – · Merged: – · Notes: –
 
 - [ ] Turso database (with Elia's confirmation) + Drizzle `feedback` table + migrations
+- [ ] Evaluate a database MCP (e.g. read-only libSQL) and propose it to Elia
 - [ ] Astro Action (`accept: "form"`, zod), honeypot, Resend, `delivered` update
 - [ ] `FeedbackForm.astro` + controller (works without JS)
 - [ ] DB tests on libSQL `:memory:`; MSW for Resend
