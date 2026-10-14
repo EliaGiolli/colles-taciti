@@ -65,6 +65,14 @@ Hooks (lefthook): pre-commit runs typecheck + lint + unit; pre-push runs `check`
 - Every component's JSDoc names its design-system counterpart (e.g. `DS: Button / primary`).
 - Dates: `Intl` with `it-IT` and `timeZone: "Europe/Rome"`.
 - TypeScript strictest. No `any`, no `@ts-ignore` without a comment explaining why.
+- Styling: only DS tokens from `src/styles/app.css` (Tailwind defaults are reset: `text-xl`,
+  `p-10`, `rounded-lg`, `shadow-*` do not exist). Merge classes with `cn()` from
+  `@/shared/lib/cn`; when adding a token to app.css, add its name to `shared/lib/design-tokens.ts`
+  (a test enforces it). Variants live in `shared/variants/*.ts`, shared by `.astro` and `.vue`.
+- Vue components shared with the island are named `Base*` (`BaseButton.vue`), never one word.
+- Astro drops the line break between two `{expressions}` or between `<slot />` and an element:
+  write the space explicitly (`{" "}`, or `&nbsp;` inside the element).
+- Every new shared component also goes on `/design-system` (e2e runs axe there in both themes).
 - Dependencies use exact versions (`bunfig.toml`). TypeScript stays on 6.x until `@astrojs/check`
   supports 7.
 

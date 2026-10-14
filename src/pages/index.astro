@@ -1,12 +1,14 @@
 ---
 /**
- * Home page: temporary placeholder from PR 0 (`chore/bootstrap`).
+ * Home page: temporary placeholder from PR 0 (`chore/bootstrap`), now styled
+ * with the design tokens (PR 1).
  *
- * It exists to prove the toolchain end to end (build, preview, the controller
+ * It proves the toolchain end to end (build, preview, the controller
  * registry script, unit/integration/e2e tests, accessibility checks) before
  * any real feature is written. The base layout arrives in PR 2 and the real
  * homepage in PR 7; until then this file carries its own <head>.
  */
+import GlobalHead from "@/core/layout/GlobalHead.astro";
 import { homeCopy } from "@/features/home/copy";
 ---
 
@@ -17,12 +19,15 @@ import { homeCopy } from "@/features/home/copy";
     <meta name="generator" content={Astro.generator} />
     <title>{homeCopy.siteName}</title>
     <meta name="description" content={homeCopy.metaDescription} />
+    <GlobalHead />
   </head>
   <body>
-    <main>
-      <h1>{homeCopy.siteName}</h1>
-      <p>
-        {homeCopy.tagline} {homeCopy.underConstruction}
+    <main class="mx-auto flex max-w-pagina flex-col gap-4 px-4 py-8 md:px-6 md:py-9">
+      <h1 class="font-display text-display md:text-display-xl">{homeCopy.siteName}</h1>
+      <!-- One expression: Astro drops the line break between two expressions,
+           which would glue the sentences together («italiano.Il sito»). -->
+      <p class="font-display text-titolo-corsivo text-osso-muto italic">
+        {`${homeCopy.tagline} ${homeCopy.underConstruction}`}
       </p>
     </main>
 

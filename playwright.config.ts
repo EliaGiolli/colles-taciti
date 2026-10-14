@@ -23,6 +23,12 @@ export default defineConfig({
   // runners never pick up each other's tests.
   testMatch: "**/*.spec.ts",
   fullyParallel: true,
+  // Locally one browser at a time: the Windows dev machine runs close to its
+  // commit-memory limit, and with more workers (Playwright's default is half
+  // the CPU cores; even 2 was too many) the test workers crashed with
+  // 0xC0000409, a failed allocation. Slower (~15s), but reliable. CI keeps
+  // the default.
+  ...(isCI ? {} : { workers: 1 }),
   // A stray `test.only` must not silently skip the rest of the suite in CI.
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,

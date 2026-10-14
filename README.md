@@ -42,6 +42,8 @@ Planned for launch (track progress in [ROADMAP.md](ROADMAP.md)):
 - **Privacy-first analytics**: GA4 with Consent Mode v2, denied by default.
 - **Zero JavaScript by default**: story pages ship only a few tiny TypeScript controllers.
 - **Generated covers** and social images for every story.
+- **Self-hosted fonts** (Bodoni Moda, Literata, IBM Plex Mono) through Astro's Fonts API: no
+  request to third-party font services.
 
 ## <img src="https://api.iconify.design/lucide/layers.svg?color=%23888888" width="22" align="top" alt="" /> Tech stack
 
@@ -94,6 +96,15 @@ Dependency rules, enforced by dependency-cruiser:
 - `features/*` import from `core` and `shared`, and from another feature only through its `index.ts`.
 
 The full design rationale lives in [docs/PLAN.md](docs/PLAN.md) (Italian).
+
+### Design tokens
+
+All colours, type styles, spacing and radii come from the Colles Taciti design system and live in
+[`src/styles/app.css`](src/styles/app.css), exposed to Tailwind with `@theme inline`. Tailwind's
+default scales are reset, so only design-system values exist (`bg-terra`, `text-lettura`,
+`max-w-misura`, `p-5` = 24px), and there are no shadows or rounded utilities. Two themes, *Notte*
+and *Nebbia*, switch with `data-theme` on `<html>`. The shared components are shown at
+`/design-system` (append `?tema=nebbia` for the light theme).
 
 ## <img src="https://api.iconify.design/lucide/rocket.svg?color=%23888888" width="22" align="top" alt="" /> Getting started
 

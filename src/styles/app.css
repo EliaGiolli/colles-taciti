@@ -1,0 +1,334 @@
+/*
+ * Colles Taciti: global stylesheet and design tokens.
+ *
+ * Source of truth: the Colles Taciti design system (project/tokens.json and
+ * project/components/bundle.css in the DS artifact, see CLAUDE.md › Sources).
+ * Every value below comes from there; when the DS changes, change it here.
+ *
+ * Structure:
+ * 1. Tailwind import and the `dark:` variant.
+ * 2. Raw theme tokens: CSS custom properties whose values switch between
+ *    Notte (dark, default) and Nebbia (light) through `data-theme` on <html>.
+ * 3. `@theme inline`: exposes those tokens to Tailwind as utilities
+ *    (`bg-terra`, `text-osso`, `text-lettura`, `max-w-misura`…).
+ * 4. Base styles: page colours, body text, focus ring, reduced motion.
+ *
+ * Why the Tailwind defaults are reset (`--color-*: initial` and so on): the
+ * design system has its own palette, type scale, spacing, radii and no
+ * shadows. Removing Tailwind's defaults means classes like `bg-orange-500`,
+ * `text-xl`, `rounded-lg` or `shadow-md` simply do not exist, so the brand
+ * rules cannot be broken by accident, and `p-5` means the DS `space-5`.
+ */
+
+@import "tailwindcss";
+
+/*
+ * `dark:` targets Notte explicitly. Colours switch on their own through the
+ * tokens below, so this variant is rarely needed: it exists for the few
+ * cases where Notte and Nebbia differ in something other than a token.
+ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ─── 2. Raw theme tokens ───────────────────────────────────────────────── */
+
+@layer base {
+  /*
+   * Notte: the default theme (stories are read in the evening, on a phone).
+   * It also applies when <html> has no data-theme at all, so the page is
+   * never unstyled. How the attribute is set (saved choice, system
+   * preference) is the job of the theme script (PR 2).
+   */
+  :root,
+  [data-theme="dark"] {
+    color-scheme: dark;
+
+    --terra: #11100e;
+    --terra-alta: #1b1916;
+    --terra-fonda: #0a0908;
+    --linea: #36312b;
+    --linea-forte: #776e63;
+    --osso: #e6dfd2;
+    --osso-muto: #a59d8f;
+    --carne: #8a1f1a;
+    --su-carne: #f1e6dc;
+    --ferita: #e2685a;
+    --su-ferita: #11100e;
+    --ruggine: #7c4526;
+    --ruggine-testo: #d08a5c;
+    --crete: #8f8c83;
+    --neon: #cdd38f;
+    --focus: #e6dfd2;
+
+    /*
+     * Weights per typographic role. Dark text on a light background looks
+     * thinner than light text on dark, so Nebbia raises them (DS › Tipografia,
+     * «Nebbia ha pesi propri»). The type tokens below read these variables,
+     * so every `text-*` utility gets the right weight in both themes without
+     * a single theme-specific class.
+     */
+    --peso-titolo: 500; /* titolo-1, titolo-2 (Bodoni up to 36px) */
+    --peso-corsivo: 400; /* titolo-corsivo */
+    --peso-testo: 400; /* Literata: lettura, corpo, presentazione, piccolo */
+    --peso-mono: 400; /* Plex Mono: meta, log, buttons, field labels */
+  }
+
+  /* Nebbia: fog over the Sienese clay hills. Never pure white. */
+  [data-theme="light"] {
+    color-scheme: light;
+
+    --terra: #ece9e2;
+    --terra-alta: #f6f4ef;
+    --terra-fonda: #dfdbd1;
+    --linea: #bdb5a7;
+    --linea-forte: #7a7166;
+    --osso: #14110e;
+    --osso-muto: #463f37;
+    --carne: #6e1714;
+    --su-carne: #f1e6dc;
+    --ferita: #8a2117;
+    --su-ferita: #f4efe6;
+    --ruggine: #7c4526;
+    --ruggine-testo: #6e3716;
+    --crete: #8f8c83;
+    --neon: #3d4410;
+    --focus: #14110e;
+
+    --peso-titolo: 600;
+    --peso-corsivo: 500;
+    --peso-testo: 450;
+    --peso-mono: 500;
+  }
+}
+
+/* ─── 3. Tokens exposed to Tailwind ────────────────────────────────────── */
+
+/*
+ * `inline` makes each utility use the value as written (`var(--terra)`)
+ * instead of a copy defined on :root. That is what lets a utility follow the
+ * theme of the element it is used on.
+ */
+@theme inline {
+  /* Colours (DS › Colore). Usage rules live in CLAUDE.md › Brand rules:
+     `carne`, `ruggine` and `crete` are fills, never text colours. */
+  --color-*: initial;
+  --color-terra: var(--terra);
+  --color-terra-alta: var(--terra-alta);
+  --color-terra-fonda: var(--terra-fonda);
+  --color-linea: var(--linea);
+  --color-linea-forte: var(--linea-forte);
+  --color-osso: var(--osso);
+  --color-osso-muto: var(--osso-muto);
+  --color-carne: var(--carne);
+  --color-su-carne: var(--su-carne);
+  --color-ferita: var(--ferita);
+  --color-su-ferita: var(--su-ferita);
+  --color-ruggine: var(--ruggine);
+  --color-ruggine-testo: var(--ruggine-testo);
+  --color-crete: var(--crete);
+  --color-neon: var(--neon);
+  --color-focus: var(--focus);
+
+  /* Families. The --font-bodoni-moda… variables are created by Astro's Fonts
+     API (astro.config.ts) and already include the metric-adjusted fallbacks. */
+  --font-*: initial;
+  --font-display: var(--font-bodoni-moda);
+  --font-testo: var(--font-literata);
+  --font-mono: var(--font-ibm-plex-mono);
+  --default-font-family: var(--font-testo);
+  --default-mono-font-family: var(--font-mono);
+
+  /*
+   * Type scale (DS › Tipografia). Each `text-<name>` sets size, line height,
+   * letter spacing and weight together, exactly like a DS text style.
+   * Sizes are in rem (px ÷ 16) rather than px: identical at the browser
+   * default, but they grow when a reader sets a larger default font size.
+   */
+  --text-*: initial;
+
+  --text-display-xl: 4.5rem; /* 72px */
+  --text-display-xl--line-height: 0.95;
+  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-xl--font-weight: 500;
+
+  --text-display: 3rem; /* 48px */
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.015em;
+  --text-display--font-weight: 500;
+
+  --text-titolo-1: 2.25rem; /* 36px */
+  --text-titolo-1--line-height: 1.1;
+  --text-titolo-1--letter-spacing: -0.01em;
+  --text-titolo-1--font-weight: var(--peso-titolo);
+
+  --text-titolo-2: 1.75rem; /* 28px */
+  --text-titolo-2--line-height: 1.15;
+  --text-titolo-2--font-weight: var(--peso-titolo);
+
+  /* Use with `italic`: the DS style is italic, Tailwind tokens cannot carry font-style. */
+  --text-titolo-corsivo: 1.625rem; /* 26px */
+  --text-titolo-corsivo--line-height: 1.2;
+  --text-titolo-corsivo--font-weight: var(--peso-corsivo);
+
+  --text-lettura: 1.1875rem; /* 19px / 31px: the stories */
+  --text-lettura--line-height: 1.9375rem;
+  --text-lettura--font-weight: var(--peso-testo);
+
+  --text-corpo: 1.0625rem; /* 17px / 28px: page text */
+  --text-corpo--line-height: 1.75rem;
+  --text-corpo--font-weight: var(--peso-testo);
+
+  /* Use with `italic` (story loglines, fear definitions). */
+  --text-presentazione: 1.0625rem; /* 17px / 26px */
+  --text-presentazione--line-height: 1.625rem;
+  --text-presentazione--font-weight: var(--peso-testo);
+
+  --text-piccolo: 1rem; /* 16px / 25px: field help, footer */
+  --text-piccolo--line-height: 1.5625rem;
+  --text-piccolo--font-weight: var(--peso-testo);
+
+  /* Form controls (bundle.css › .ct-campo input): corpo size, tighter leading. */
+  --text-campo: 1.0625rem; /* 17px / 26px */
+  --text-campo--line-height: 1.625rem;
+  --text-campo--font-weight: var(--peso-testo);
+
+  /* Use with `uppercase`: the only place capitals appear (DS › Voce). */
+  --text-etichetta: 0.8125rem; /* 13px / 18px */
+  --text-etichetta--line-height: 1.125rem;
+  --text-etichetta--letter-spacing: 0.1em;
+  --text-etichetta--font-weight: 500;
+
+  --text-meta: 0.875rem; /* 14px / 22px */
+  --text-meta--line-height: 1.375rem;
+  --text-meta--font-weight: var(--peso-mono);
+
+  --text-log: 0.875rem; /* 14px / 22px */
+  --text-log--line-height: 1.375rem;
+  --text-log--font-weight: var(--peso-mono);
+
+  /* Buttons and text links (bundle.css › .ct-btn, .ct-link). */
+  --text-pulsante: 0.875rem; /* 14px / 20px */
+  --text-pulsante--line-height: 1.25rem;
+  --text-pulsante--letter-spacing: 0.02em;
+  --text-pulsante--font-weight: var(--peso-mono);
+
+  /*
+   * Spacing (DS › space-1…9). Only these steps exist, so `p-5` is 24px
+   * (the DS step), not Tailwind's 20px, and off-grid values such as `p-10`
+   * are not generated at all. Sizes outside the scale use an explicit
+   * arbitrary value (`w-[96px]`), which makes them stand out in review.
+   */
+  --spacing-*: initial;
+  --spacing-0: 0px;
+  --spacing-px: 1px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px; /* side margin on phones */
+  --spacing-5: 24px;
+  --spacing-6: 32px; /* side margin on desktop */
+  --spacing-7: 48px;
+  --spacing-8: 72px; /* between home sections, phone */
+  --spacing-9: 112px; /* between home sections, desktop */
+  --spacing-tocco: 48px; /* minimum touch target: min-h-tocco */
+
+  /* Layout widths: max-w-misura (reading column), max-w-pagina (page). */
+  --container-*: initial;
+  --container-misura: 34em;
+  --container-pagina: 72rem;
+
+  /* Corners are cuts (DS › Bordi): sharp everywhere. `rounded-sm` only for
+     form fields and warning chips, `rounded-circle` only for the live dot. */
+  --radius-*: initial;
+  --radius-sm: 2px;
+  --radius-circle: 50%;
+
+  /* No shadows of any kind: depth comes from terra-alta / terra-fonda. */
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+
+  /* Image formats (DS › Layout): aspect-hero, aspect-banda… */
+  --aspect-hero: 16 / 9;
+  --aspect-banda: 5 / 2;
+  --aspect-wattpad: 512 / 800;
+  --aspect-instagram: 4 / 5;
+  --aspect-anteprima: 1200 / 630;
+
+  /* Movement is almost absent (DS › Stati e movimento): colour transitions
+     of 200ms, no ready-made animations. */
+  --animate-*: initial;
+  --default-transition-duration: 200ms;
+}
+
+/* ─── 4. Base styles ───────────────────────────────────────────────────── */
+
+@layer base {
+  html {
+    background-color: var(--terra);
+    color: var(--osso);
+  }
+
+  body {
+    background-color: var(--terra);
+    color: var(--osso);
+    font-family: var(--font-testo);
+    font-size: var(--text-corpo);
+    line-height: var(--text-corpo--line-height);
+    font-weight: var(--peso-testo);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Antialiasing thins dark-on-light text further: Nebbia turns it off. */
+  [data-theme="light"] body {
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+  }
+
+  @media (prefers-contrast: more) {
+    body {
+      -webkit-font-smoothing: auto;
+    }
+  }
+
+  a {
+    color: inherit;
+  }
+
+  /*
+   * Keyboard focus ring (DS › Stati): 2px solid, 3px away from the element,
+   * so it always sits on `terra` and stays above 13:1 contrast. Never remove
+   * it; components may only move it, not hide it.
+   */
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  /*
+   * Readers who ask for less motion get none: colour transitions become
+   * instant and nothing animates. (The DS glitch effect checks this too.)
+   *
+   * `!important` is deliberate here, and the one place it is allowed. This
+   * rule sits in the `base` layer, below Tailwind's `utilities`, so a
+   * `transition-colors` utility would normally win. For important
+   * declarations the cascade reverses the layer order: an important rule in
+   * a lower layer beats everything in the layers above. That guarantees the
+   * reader's preference overrides any component.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      /* biome-ignore lint/complexity/noImportantStyles: see the comment above. */
+      animation-duration: 0.01ms !important;
+      /* biome-ignore lint/complexity/noImportantStyles: see the comment above. */
+      animation-iteration-count: 1 !important;
+      /* biome-ignore lint/complexity/noImportantStyles: see the comment above. */
+      transition-duration: 0.01ms !important;
+      /* biome-ignore lint/complexity/noImportantStyles: see the comment above. */
+      scroll-behavior: auto !important;
+    }
+  }
+}

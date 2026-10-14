@@ -13,7 +13,10 @@ Living checklist for Colles Taciti. Decisions live in [docs/PLAN.md](docs/PLAN.m
 
 ## PR 0 · `chore/bootstrap`
 
-PR: – · Merged: – · Notes: –
+PR: [#1](https://github.com/EliaGiolli/colles-taciti/pull/1) · Merged: 2026-10-14 · Notes: TypeScript
+kept on 6.x; Fonts API stable (Fontsource + fontaine dropped); Biome + Prettier split; vue-tsc on its
+own tsconfig; `.astro` tests in Node env. The two Vercel notes landed after the merge and were carried
+into PR 1. See `docs/PLAN.md` › change log.
 
 - [x] Git repository + private GitHub repo `colles-taciti`, empty initial commit on main
 - [x] `docs/PLAN.md` (copy of the brief + change log); brief kept locally and gitignored
@@ -32,26 +35,30 @@ PR: – · Merged: – · Notes: –
 - [x] Playwright + axe, smoke e2e test (desktop + 375px)
 - [x] `.env.example`, VS Code recommended extensions and settings
 - [x] GitHub Actions on every PR (typecheck, lint, unit, integration, build, e2e), coverage comment on the PR
-- [ ] Vercel linked for PR previews (with Elia's confirmation)
+- [x] Vercel linked for PR previews (with Elia's confirmation): project `colles-taciti`, Git integration on
 - [x] README updated
 
 ## PR 1 · `feat/design-tokens`
 
 PR: – · Merged: – · Notes: –
 
-- [ ] `styles/app.css` from the artifact tokens (Notte and Nebbia on `[data-theme]`, `@theme inline`, dark custom variant)
-- [ ] Nebbia weights in `@layer base`; no radius, no shadows
-- [ ] Fonts via the Astro Fonts API, Latin subset, preload Literata regular
-- [ ] Shared cva variants in `shared/variants/*.ts`
-- [ ] `Button`, `Field`, `Label` (`.astro`) + minimal Vue equivalents, with tests
-- [ ] `shared/lib`: `cn()`, `formatDate` (Europe/Rome), plurals, text normalisation
-- [ ] README updated
+- [x] `styles/app.css` from the artifact tokens (Notte and Nebbia on `[data-theme]`, `@theme inline`, dark custom variant); Tailwind default scales reset (no off-palette colours, no shadows, no radii, DS spacing only)
+- [x] Nebbia weights as theme tokens (`--peso-*`, read by every `text-*` style); no radius, no shadows
+- [x] Fonts via the Astro Fonts API (Google provider, self-hosted, `opsz` axis), Latin subset, preload Literata regular only
+- [x] Shared cva variants in `shared/variants/*.ts` (button, field, label)
+- [x] `Button`, `Field`, `Label` (`.astro`) + `BaseButton.vue`, `BaseInput.vue`, with tests (Container API / Vue Testing Library)
+- [x] `shared/lib`: `cn()` (tailwind-merge taught the DS scales), `formatDate` / `toIsoDate` (Europe/Rome), plurals, text normalisation
+- [x] Token-sync test (app.css ↔ design-tokens.ts) and «carne/ruggine/crete never as text» check
+- [x] `/design-system` page (noindex) + `styleguide-theme` controller (`?tema=nebbia`); e2e: axe in Notte and Nebbia, self-hosted fonts
+- [x] README updated
 
 ## PR 2 · `feat/layout-theme`
 
 PR: – · Merged: – · Notes: –
 
-- [ ] `BaseLayout`, `Header` (Racconti · Libri), `Footer`, `Brand`
+- [ ] `BaseLayout` (reuses `core/layout/GlobalHead.astro`), `Header` (Racconti · Libri), `Footer`, `Brand`
+- [ ] Favicon (today a 404 in the browser console)
+- [ ] Decide with Elia: the DS says the theme follows `prefers-color-scheme` until the reader chooses; the plan says Notte by default
 - [ ] Anti-flash theme script (`is:inline`) + `ThemeToggle` + `theme-toggle.controller.ts`
 - [ ] Native cross-document View Transitions; `prefers-reduced-motion` turns everything off
 - [ ] README updated
@@ -157,6 +164,8 @@ PR: – · Merged: – · Notes: –
 
 - [ ] Environment variables on Vercel (with Elia's confirmation)
 - [ ] Lighthouse mobile (home + one story): SEO, a11y, performance
+- [ ] CSP: hashes for Astro's inlined scripts, or `assetsInlineLimit: 0` (see PLAN change log)
+- [ ] Decide whether `/design-system` stays public (it is `noindex`)
 - [ ] Final touches
 - [ ] README updated
 
@@ -165,7 +174,7 @@ PR: – · Merged: – · Notes: –
 ## Open points
 
 - [x] GitHub repository name and visibility (`colles-taciti`, private)
-- [ ] Vercel link
+- [x] Vercel link (project `colles-taciti`, linked with the CLI, previews on every PR)
 - [ ] Turso account
 - [ ] Domain
 - [ ] Real texts, fear notes, warnings, dates and tags for each story

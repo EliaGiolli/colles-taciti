@@ -1,0 +1,74 @@
+---
+/**
+ * Button or link styled as a button. DS: Pulsante (primario, secondario,
+ * link, su carne). Classes come from `shared/variants/button.ts`, shared with
+ * the Vue `BaseButton`.
+ *
+ * The element follows the meaning, not the look (DS › Pulsante): with `href`
+ * it renders an `<a>` (it goes somewhere), without it a `<button>` (it does
+ * something, such as submitting a form). A `<button>` defaults to
+ * `type="button"`, so it never submits a form by accident; the submit button
+ * of a form passes `type="submit"` explicitly.
+ *
+ * The `link` variant appends the DS arrow «→», hidden from screen readers
+ * because it is decoration: the link text alone must make sense. The space
+ * before it is a non-breaking one, inside the span: Astro drops the line
+ * break between `<slot />` and the span (which glued «racconti→»), and a
+ * no-break space also keeps the arrow from wrapping onto a line of its own.
+ *
+ * @example <Button variant="primary" href="/racconti/il-limbo">Inizia a leggere</Button>
+ * @example <Button variant="primary" type="submit">Invia</Button>
+ */
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/shared/lib/cn";
+import { type ButtonVariant, buttonVariants } from "@/shared/variants/button";
+
+interface Common {
+  /** DS weight of the button. Default: `secondary`. */
+  variant?: ButtonVariant;
+  /** Extra classes, merged with `cn()` so they can override the defaults. */
+  class?: string;
+}
+
+/** With `href`: a link that looks like a button. */
+type LinkProps = Common & Omit<HTMLAttributes<"a">, "class"> & { href: string };
+
+/** Without `href`: a real button. */
+type ButtonProps = Common &
+  Omit<HTMLAttributes<"button">, "class" | "type"> & {
+    href?: never;
+    type?: "button" | "submit" | "reset";
+  };
+
+export type Props = LinkProps | ButtonProps;
+
+const { variant = "secondary", class: className, ...rest } = Astro.props;
+const classes = cn(buttonVariants({ variant }), className);
+
+// Each attribute must be written exactly once: with a duplicate (say an
+// explicit type="button" plus a type="submit" from the spread), browsers keep
+// the first one and the caller's value would be silently ignored.
+type Element =
+  | { tag: "a"; attributes: Omit<HTMLAttributes<"a">, "class"> }
+  | { tag: "button"; attributes: Omit<HTMLAttributes<"button">, "class"> };
+
+let element: Element;
+if (typeof rest.href === "string") {
+  element = { tag: "a", attributes: rest as Omit<LinkProps, keyof Common> };
+} else {
+  const { type = "button", ...others } = rest as Omit<ButtonProps, keyof Common>;
+  element = { tag: "button", attributes: { ...others, type } };
+}
+---
+
+{element.tag === "a" ? (
+  <a class={classes} {...element.attributes}>
+    <slot />
+    {variant === "link" && <span aria-hidden="true">&nbsp;→</span>}
+  </a>
+) : (
+  <button class={classes} {...element.attributes}>
+    <slot />
+    {variant === "link" && <span aria-hidden="true">&nbsp;→</span>}
+  </button>
+)}

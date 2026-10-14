@@ -1,0 +1,22 @@
+---
+/**
+ * Global <head> assets: the stylesheet with the design tokens and the fonts.
+ *
+ * Every page includes this once (until PR 2, pages include it directly;
+ * from PR 2 the BaseLayout does). Keeping it in one component means the
+ * font loading strategy is decided in a single place.
+ *
+ * Font strategy (DS › Tipografia, PLAN › Font):
+ * - all three families are self-hosted by the Fonts API (see astro.config.ts);
+ * - only Literata regular is preloaded: it is the body and story text, the
+ *   first thing a reader sees. Preloading more would compete with it for
+ *   bandwidth on a phone. Bodoni and Plex Mono load normally, with
+ *   metric-adjusted fallbacks so nothing shifts when they arrive.
+ */
+import { Font } from "astro:assets";
+import "../../styles/app.css";
+---
+
+<Font cssVariable="--font-literata" preload={[{ weight: "400", style: "normal" }]} />
+<Font cssVariable="--font-bodoni-moda" />
+<Font cssVariable="--font-ibm-plex-mono" />

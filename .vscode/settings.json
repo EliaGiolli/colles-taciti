@@ -7,8 +7,7 @@
   "[vue]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[markdown]": { "editor.defaultFormatter": null },
   "editor.codeActionsOnSave": {
-    "source.organizeImports.biome": "explicit",
-    "quickfix.biome": "explicit"
+    "source.fixAll.biome": "explicit"
   },
   // Use the workspace TypeScript (6.x, pinned) instead of the one bundled with VS Code.
   "typescript.tsdk": "node_modules/typescript/lib",
