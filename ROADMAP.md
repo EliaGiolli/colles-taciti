@@ -32,7 +32,7 @@ PR: – · Merged: – · Notes: –
 - [x] Playwright + axe, smoke e2e test (desktop + 375px)
 - [x] `.env.example`, VS Code recommended extensions and settings
 - [x] GitHub Actions on every PR (typecheck, lint, unit, integration, build, e2e), coverage comment on the PR
-- [ ] Vercel linked for PR previews (with Elia's confirmation)
+- [x] Vercel linked for PR previews (with Elia's confirmation): project `colles-taciti`, Git integration on
 - [x] README updated
 
 ## PR 1 · `feat/design-tokens`
@@ -165,7 +165,7 @@ PR: – · Merged: – · Notes: –
 ## Open points
 
 - [x] GitHub repository name and visibility (`colles-taciti`, private)
-- [ ] Vercel link
+- [x] Vercel link (project `colles-taciti`, linked with the CLI, previews on every PR)
 - [ ] Turso account
 - [ ] Domain
 - [ ] Real texts, fear notes, warnings, dates and tags for each story
