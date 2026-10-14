@@ -260,5 +260,5 @@ Ogni modifica a una decisione si annota qui, nella stessa PR che la introduce (d
   - **Componenti Vue con prefisso `Base`** (`BaseButton`, `BaseInput`), come chiede la guida di stile di Vue, per non confonderli con `<button>` e `<input>`.
   - **Spazi fra espressioni**: Astro elimina l'a capo fra due espressioni o fra `<slot />` e un elemento («Email(facoltativa)», «racconti→»). Si scrive lo spazio in modo esplicito; la freccia dei link usa uno spazio non separabile.
   - **Pagina `/design-system`** (noindex): tutti i componenti condivisi, con axe in Notte e Nebbia nei test e2e. Il tema si prova con `?tema=nebbia` (primo controller reale).
-  - **Macchina di sviluppo con poca memoria impegnabile**: in locale Vitest usa al massimo 4 processi e Playwright 2; in CI restano i valori predefiniti.
+  - **Macchina di sviluppo con poca memoria impegnabile**: in locale Vitest usa al massimo 4 processi e Playwright 1 (con 2 i worker andavano ancora in crash, `0xC0000409`); in CI restano i valori predefiniti. Il test del colore di sfondo usa `toHaveCSS` (che riprova) invece di una lettura puntuale di `getComputedStyle`, che una volta aveva letto il colore di Notte subito dopo il cambio di tema.
   - **Punto aperto per la PR 2**: il design system dice che il tema segue `prefers-color-scheme` finché chi legge non sceglie; questo piano dice Notte come predefinito.

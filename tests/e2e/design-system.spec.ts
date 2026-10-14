@@ -43,8 +43,10 @@ for (const theme of ["notte", "nebbia"] as const) {
     test("paints the page with that theme's terra", async ({ page }) => {
       await openInTheme(page, theme);
 
-      const background = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-      expect(background).toBe(TERRA[theme]);
+      // A web-first assertion: it retries until the style settles. A one-shot
+      // getComputedStyle() read could run before the theme change had been
+      // applied and see Notte's colour (it did, once, at 375px).
+      await expect(page.locator("body")).toHaveCSS("background-color", TERRA[theme]);
     });
   });
 }
