@@ -31,7 +31,7 @@ PR: – · Merged: – · Notes: –
 - [x] Vitest (unit + integration projects, `getViteConfig`, Container API helper), v8 coverage reported
 - [x] Playwright + axe, smoke e2e test (desktop + 375px)
 - [x] `.env.example`, VS Code recommended extensions and settings
-- [ ] GitHub Actions on every PR (typecheck, lint, unit, integration, build, e2e) — tick when green on the PR
+- [x] GitHub Actions on every PR (typecheck, lint, unit, integration, build, e2e), coverage comment on the PR
 - [ ] Vercel linked for PR previews (with Elia's confirmation)
 - [x] README updated
 
