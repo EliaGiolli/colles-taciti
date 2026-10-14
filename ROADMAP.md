@@ -22,17 +22,18 @@ PR: – · Merged: – · Notes: –
 - [x] `README.md` (badges, stack icons, sections)
 - [x] Skill / plugin / MCP search: proposal to Elia, install only what is approved, list in `CLAUDE.md` → Tooling (`.mcp.json`: astro-docs, context7, playwright)
 - [x] Version checks (Fonts API, Container API, Biome on `.astro`/`.vue`, `strictest` tsconfig), outcome in `docs/PLAN.md`
-- [ ] `.gitattributes` (`* text=auto eol=lf`)
-- [ ] `create astro` (minimal template), Bun, TS strictest + `noPropertyAccessFromIndexSignature`, `@/core` `@/features` `@/shared` aliases
-- [ ] `@astrojs/vercel` adapter, `@astrojs/vue` integration, provisional `site`
-- [ ] `core/controllers/registry.ts` (lazy `import()` per `[data-controller]`) + tests
-- [ ] Biome (`.ts`/`.js`/`.css`/`.json`) + Prettier with prettier-plugin-astro (format `.astro`/`.vue` only) and dependency-cruiser rules
-- [ ] lefthook pre-commit (`typecheck` + `lint` + unit)
-- [ ] Vitest (unit + integration, `getViteConfig`), v8 coverage reported
-- [ ] Playwright + axe, smoke e2e test
-- [ ] GitHub Actions on every PR (typecheck, lint, unit, integration, build, e2e)
+- [x] `.gitattributes` (`* text=auto eol=lf`)
+- [x] Astro 7 minimal setup, Bun (exact versions via `bunfig.toml`), TS strictest + `noPropertyAccessFromIndexSignature`, `@/core` `@/features` `@/shared` `@tests` aliases
+- [x] `@astrojs/vercel` adapter, `@astrojs/vue` integration, provisional `site`, `trailingSlash: "never"`
+- [x] `core/controllers/registry.ts` (lazy `import()` per `[data-controller]`, discovered via `import.meta.glob`) + 25 unit tests
+- [x] Biome (`.ts`/`.js`/`.css`/`.json`) + Prettier with prettier-plugin-astro (format `.astro`/`.vue` only) and dependency-cruiser rules (verified with deliberate violations)
+- [x] lefthook pre-commit (`typecheck` + `lint` + unit) and pre-push (`check` + e2e)
+- [x] Vitest (unit + integration projects, `getViteConfig`, Container API helper), v8 coverage reported
+- [x] Playwright + axe, smoke e2e test (desktop + 375px)
+- [x] `.env.example`, VS Code recommended extensions and settings
+- [ ] GitHub Actions on every PR (typecheck, lint, unit, integration, build, e2e) — tick when green on the PR
 - [ ] Vercel linked for PR previews (with Elia's confirmation)
-- [ ] README updated
+- [x] README updated
 
 ## PR 1 · `feat/design-tokens`
 

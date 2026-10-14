@@ -69,7 +69,7 @@ Planned for launch (track progress in [ROADMAP.md](ROADMAP.md)):
 | Styling | Tailwind v4 + cva + clsx + tailwind-merge, design-system tokens in `@theme` |
 | Feedback | Astro Action + Turso (libSQL) + Drizzle + Resend, honeypot protection |
 | Search | MiniSearch, index generated at build time |
-| Quality | `astro check`, `vue-tsc`, Biome, Prettier (`.astro`/`.vue` formatting), dependency-cruiser, brand-tone check |
+| Quality | `astro check`, `vue-tsc`, Biome, Prettier (`.astro`/`.vue` formatting), dependency-cruiser, lefthook, brand-tone check |
 | Tests | Vitest (Container API, Testing Library, jsdom), Playwright + axe |
 
 ## <img src="https://api.iconify.design/lucide/network.svg?color=%23888888" width="22" align="top" alt="" /> Architecture
@@ -97,17 +97,20 @@ The full design rationale lives in [docs/PLAN.md](docs/PLAN.md) (Italian).
 
 ## <img src="https://api.iconify.design/lucide/rocket.svg?color=%23888888" width="22" align="top" alt="" /> Getting started
 
-> The project is being bootstrapped (PR 0). The commands below become available as the scaffold lands.
-
-**Prerequisites**: [Bun](https://bun.sh) 1.4+, Git, and optionally the [GitHub CLI](https://cli.github.com).
+**Prerequisites**: [Bun](https://bun.sh) 1.4+, [Node.js](https://nodejs.org) 22.12+ (Astro's CLI
+runs on Node), Git, and optionally the [GitHub CLI](https://cli.github.com).
 
 ```bash
 git clone https://github.com/EliaGiolli/colles-taciti.git
 cd colles-taciti
-bun install
-cp .env.example .env   # fill in the values below
-bun run dev
+bun install                       # also installs the git hooks (lefthook)
+bunx playwright install chromium  # browser for the end-to-end tests
+cp .env.example .env              # no value is required yet
+bun run dev                       # http://localhost:4321
 ```
+
+Recommended VS Code extensions are listed in `.vscode/extensions.json`; the workspace settings
+format on save with the right tool for each file type.
 
 **Environment variables**
 
@@ -127,16 +130,20 @@ bun run dev
 | `bun run dev` | Start the dev server |
 | `bun run build` | Build the static site |
 | `bun run preview` | Preview the production build |
-| `bun run typecheck` | `astro check` + `vue-tsc --noEmit` |
+| `bun run typecheck` | `astro check` (`.ts`, `.astro`) + `vue-tsc` (`.vue`) |
 | `bun run lint` | Biome + Prettier check (`.astro`/`.vue`) + dependency-cruiser |
-| `bun run test` | Unit tests |
+| `bun run format` | Apply Biome and Prettier fixes |
+| `bun run test` | Unit tests (`test:watch` for watch mode) |
 | `bun run test:integration` | Integration tests |
-| `bun run test:e2e` | End-to-end tests (Playwright + axe) |
+| `bun run test:coverage` | Unit + integration tests with v8 coverage |
+| `bun run test:e2e` | Build, then end-to-end tests (Playwright + axe) |
 | `bun run check` | Everything except e2e |
-| `bun run db:generate` | Generate Drizzle migrations |
-| `bun run db:migrate` | Apply migrations |
-| `bun run libri:sync` | Fetch book data from Open Library |
-| `bun run copertine` | Render cover PNGs |
+
+Coming with later features: `db:generate` / `db:migrate` (Drizzle migrations), `libri:sync`
+(book data from Open Library), `copertine` (cover PNGs).
+
+**Git hooks** (lefthook): every commit runs typecheck, lint and unit tests; every push runs
+`check` and the end-to-end tests.
 
 ## <img src="https://api.iconify.design/lucide/flask-conical.svg?color=%23888888" width="22" align="top" alt="" /> Testing
 
@@ -145,6 +152,8 @@ bun run dev
 - **Integration** tests live in `tests/integration` (e.g. the database on libSQL `:memory:` with the real migrations).
 - **End-to-end** tests live in `tests/e2e`: Playwright + axe, at 375px and desktop, in both themes.
 - Coverage is reported on every PR and does not block merging.
+- **CI** (GitHub Actions, `.github/workflows/ci.yml`) runs typecheck, lint, unit + integration
+  tests with coverage, the build, and the end-to-end suite on every pull request.
 
 ## <img src="https://api.iconify.design/lucide/git-pull-request.svg?color=%23888888" width="22" align="top" alt="" /> Git workflow
 

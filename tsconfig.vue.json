@@ -1,0 +1,16 @@
+{
+  // Used only by `vue-tsc --noEmit -p tsconfig.vue.json` (see `typecheck` in package.json).
+  //
+  // The type check runs in two passes:
+  // 1. `astro check` covers every .ts and .astro file, with Astro's language
+  //    server (the only tool that understands .astro files).
+  // 2. `vue-tsc` covers .vue files, which astro check does not type-check.
+  //
+  // vue-tsc does not understand .astro files, so it gets only the code that
+  // can be reached from .vue files: the shipped .ts and .vue modules in src/.
+  // Tests are left out because they import .astro components (Container API);
+  // astro check already checks them.
+  "extends": "./tsconfig.json",
+  "include": [".astro/types.d.ts", "src/**/*.ts", "src/**/*.vue"],
+  "exclude": ["src/**/*.test.ts", "src/pages/**"]
+}

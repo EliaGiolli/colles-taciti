@@ -1,0 +1,8 @@
+# Bun configuration.
+# https://bun.sh/docs/runtime/bunfig
+
+[install]
+# Save exact versions ("1.2.3", not "^1.2.3") in package.json.
+# The lockfile already pins the whole tree, but exact ranges make every
+# upgrade an explicit, reviewable diff in package.json too.
+exact = true

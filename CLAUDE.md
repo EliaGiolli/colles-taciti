@@ -21,20 +21,22 @@ No React, no shadcn, no Motion, no Sentry (for now).
 
 ## Commands
 
-Scripts are added during PR 0; until then some may not exist yet.
-
 | Command | Purpose |
 |---|---|
 | `bun run dev` / `build` / `preview` | Astro dev server, static build, preview of the build |
-| `bun run typecheck` | `astro check && vue-tsc --noEmit` |
+| `bunx astro dev --background` | Dev server in background (`astro dev stop`, `status`, `logs`) — use this from Claude |
+| `bun run typecheck` | `astro check` (.ts, .astro) + `vue-tsc -p tsconfig.vue.json` (.vue) |
 | `bun run lint` | Biome + Prettier check (`.astro`/`.vue` only) + dependency-cruiser |
-| `bun run test` | Unit tests (Vitest), co-located with the code |
+| `bun run format` | Biome + Prettier, writing fixes |
+| `bun run test` / `test:watch` | Unit tests (Vitest project `unit`), co-located with the code |
 | `bun run test:integration` | Integration tests in `tests/integration` |
-| `bun run test:e2e` | Playwright + axe in `tests/e2e` |
+| `bun run test:coverage` | Unit + integration with v8 coverage (informative, no thresholds) |
+| `bun run test:e2e` | Build, then Playwright + axe in `tests/e2e` against `astro preview` |
 | `bun run check` | Everything except e2e. Must be green before every commit |
-| `bun run db:generate` / `db:migrate` | Drizzle migrations |
-| `bun run libri:sync` | Fetch book data from Open Library into `content/books.json` |
-| `bun run copertine` | Render cover PNGs |
+
+Added by later PRs: `db:generate` / `db:migrate` (PR 9), `libri:sync` (PR 12), `copertine` (PR 4).
+
+Hooks (lefthook): pre-commit runs typecheck + lint + unit; pre-push runs `check` + e2e.
 
 ## Architecture
 
@@ -43,7 +45,14 @@ Scripts are added during PR 0; until then some may not exist yet.
 - `src/pages` files stay thin: they only wire features together.
 - File names: `*.controller.ts` (exports `connect(el): () => void`), `*.test.ts` next to the file
   under test, `copy.ts` per feature for UI strings.
-- Integration tests in `tests/integration`, e2e in `tests/e2e`, fixtures in `tests/fixtures`.
+- Integration tests in `tests/integration`, e2e in `tests/e2e` (`*.spec.ts`, Playwright only),
+  fixtures in `tests/fixtures`, helpers in `tests/helpers` (alias `@tests/*`).
+- Render `.astro` components in tests only through `tests/helpers/render-astro.ts`, and keep those
+  test files in the Node environment (never `@vitest-environment jsdom`: Astro refuses to render).
+  Controller tests use jsdom.
+- No test files inside `src/pages`: any `.ts` there becomes a route.
+- Controllers are discovered by `import.meta.glob` in `src/core/controllers/start.ts`; names must be
+  unique across `src/`.
 - Story pages must not ship Vue: only the planned controllers. Vue appears only on /racconti and /libri.
 
 ## Conventions
@@ -56,6 +65,8 @@ Scripts are added during PR 0; until then some may not exist yet.
 - Every component's JSDoc names its design-system counterpart (e.g. `DS: Button / primary`).
 - Dates: `Intl` with `it-IT` and `timeZone: "Europe/Rome"`.
 - TypeScript strictest. No `any`, no `@ts-ignore` without a comment explaining why.
+- Dependencies use exact versions (`bunfig.toml`). TypeScript stays on 6.x until `@astrojs/check`
+  supports 7.
 
 ## Brand rules (code and content)
 

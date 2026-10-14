@@ -1,0 +1,15 @@
+# Store every text file with LF line endings, on every OS.
+# Windows' default (core.autocrlf=true) would otherwise check files out with
+# CRLF, and Biome, Prettier and the CI (Linux) would then disagree with the
+# working copy about what "formatted" means.
+* text=auto eol=lf
+
+# Binary assets: never touch their bytes.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.woff binary
+*.woff2 binary

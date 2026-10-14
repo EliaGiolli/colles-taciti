@@ -1,0 +1,34 @@
+---
+/**
+ * Home page: temporary placeholder from PR 0 (`chore/bootstrap`).
+ *
+ * It exists to prove the toolchain end to end (build, preview, the controller
+ * registry script, unit/integration/e2e tests, accessibility checks) before
+ * any real feature is written. The base layout arrives in PR 2 and the real
+ * homepage in PR 7; until then this file carries its own <head>.
+ */
+import { homeCopy } from "@/features/home/copy";
+---
+
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{homeCopy.siteName}</title>
+    <meta name="description" content={homeCopy.metaDescription} />
+  </head>
+  <body>
+    <main>
+      <h1>{homeCopy.siteName}</h1>
+      <p>
+        {homeCopy.tagline} {homeCopy.underConstruction}
+      </p>
+    </main>
+
+    <!-- Processed by Astro: bundled, deferred and loaded as an ES module. -->
+    <script>
+      import "@/core/controllers/start";
+    </script>
+  </body>
+</html>

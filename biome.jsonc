@@ -1,0 +1,80 @@
+// Biome: linter + formatter for TypeScript, JavaScript, CSS and JSON.
+//
+// Division of labour (see docs/PLAN.md › change log): Biome's support for
+// .astro and .vue files is still experimental in 2.5, so Prettier owns the
+// formatting of those two file types. Biome still lints their <script> parts,
+// with the four rules its docs recommend disabling there (see `overrides`).
+// Each file has exactly one formatter, so the two tools never fight.
+//
+// https://biomejs.dev/reference/configuration/
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+
+  // Reuse .gitignore instead of repeating it here.
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+
+  "files": {
+    // Generated files: never lint or format them.
+    "includes": ["**", "!**/.astro", "!**/.vercel", "!**/dist", "!bun.lock"]
+  },
+
+  // Same style as prettier.config.mjs, so .ts and .astro files look alike.
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "lineEnding": "lf"
+  },
+  "javascript": {
+    "formatter": { "quoteStyle": "double", "semicolons": "always", "trailingCommas": "all" }
+  },
+
+  // Tailwind v4 syntax (@theme, @custom-variant, @apply…) arrives in PR 1;
+  // without this flag Biome's CSS parser reports it as invalid.
+  "css": { "parser": { "tailwindDirectives": true } },
+
+  // Sorts and groups imports on `biome check --write`.
+  "assist": { "enabled": true, "actions": { "source": { "organizeImports": "on" } } },
+
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "complexity": {
+        // Would turn `env["KEY"]` into `env.KEY`, which TypeScript's
+        // `noPropertyAccessFromIndexSignature` (tsconfig.json) forbids.
+        // The TypeScript rule wins: it makes possibly-missing keys visible.
+        "useLiteralKeys": "off"
+      },
+      "suspicious": {
+        // console.log is debugging left behind; error/warn are deliberate reports.
+        "noConsole": { "level": "error", "options": { "allow": ["error", "warn"] } }
+      },
+      "style": {
+        // `if (x) return;` on one line is fine and common in guard clauses.
+        "useBlockStatements": "off",
+        // `value!` hides a possible undefined; with noUncheckedIndexedAccess
+        // on, handle the undefined case explicitly instead.
+        "noNonNullAssertion": "error"
+      }
+    }
+  },
+
+  "overrides": [
+    {
+      // .astro and .vue: Prettier formats them; Biome only lints the script.
+      // Without full HTML support Biome cannot see variables and imports used
+      // in the template, so these rules would report false positives.
+      "includes": ["**/*.astro", "**/*.vue"],
+      "formatter": { "enabled": false },
+      "assist": { "enabled": false },
+      "linter": {
+        "rules": {
+          "style": { "useConst": "off", "useImportType": "off" },
+          "correctness": { "noUnusedVariables": "off", "noUnusedImports": "off" }
+        }
+      }
+    }
+  ]
+}

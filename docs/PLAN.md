@@ -240,3 +240,13 @@ Ogni modifica a una decisione si annota qui, nella stessa PR che la introduce (d
   - **`astro/tsconfigs/strictest`** include già `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` e `verbatimModuleSyntax`; si aggiunge solo `noPropertyAccessFromIndexSignature`.
   - **Biome 2.5**: il supporto a `.astro`/`.vue` è sperimentale (`html.experimentalFullSupportEnabled`, possibili falsi positivi). Decisione di Elia: Biome per `.ts`/`.js`/`.css`/`.json`, Prettier + prettier-plugin-astro solo per formattare `.astro`/`.vue`; su quei file Biome lavora con gli override consigliati dalla sua documentazione.
 - 2026-10-14 · PR 0 · Strumenti (§4) approvati da Elia, in `.mcp.json` (scope di progetto): Astro Docs MCP, Context7, Playwright MCP (versione fissata). L'MCP del database si valuta nella PR 9, quando Turso esisterà. `.gitattributes` con `eol=lf`, per avere gli stessi a capo su Windows e in CI.
+- 2026-10-14 · PR 0 · Scoperte dello scaffold:
+  - **TypeScript resta alla 6.x** (6.0.3): la 7 (nativa) è uscita, ma `@astrojs/check` accetta solo `^5 || ^6`. Si aggiorna quando Astro la supporta.
+  - **Versioni esatte** per tutte le dipendenze (`bunfig.toml` → `install.exact`), `packageManager: bun@1.4.0`.
+  - **Typecheck in due passate**: `astro check` controlla `.ts` e `.astro`; `vue-tsc` usa `tsconfig.vue.json`, limitato a `src/**/*.{ts,vue}` senza test né pagine, perché non capisce i file `.astro`. Una dichiarazione «shim» per `*.astro` mandava `astro check` in esaurimento di memoria, quindi è stata scartata.
+  - **Test dei `.astro`**: devono girare nell'ambiente Node di Vitest. Con jsdom, Vite compila il componente per il browser e Astro si rifiuta di renderizzarlo. L'helper `tests/helpers/render-astro.ts` renderizza lato server e usa JSDOM solo per leggere l'HTML.
+  - **Registro dei controller**: i file `*.controller.ts` sono scoperti con `import.meta.glob` invece che con un elenco scritto a mano, così `core` non importa da `features` (regola rispettata) e un controller nuovo non va registrato.
+  - **dependency-cruiser** non legge il frontmatter dei `.astro`: le regole valgono per `.ts` e `.vue`. Motivo in più per tenere sottili i `.astro`.
+  - **Script incorporati**: Astro mette nell'HTML gli script sotto i 4 KB. Con una CSP rigida servono gli hash (supporto CSP di Astro) oppure `vite.build.assetsInlineLimit: 0`. Da decidere nella PR 13.
+  - **URL senza slash finale** (`trailingSlash: "never"`), scelto subito per non cambiare i canonical dopo il lancio.
+  - **Playwright** usa file `*.spec.ts`, Vitest `*.test.ts`: i due runner non si pestano i piedi. `astro preview` funziona anche con l'adapter Vercel.

@@ -1,0 +1,30 @@
+# Git hooks, managed by lefthook (installed by `bun install` through the
+# `prepare` script). They run the same checks as CI, earlier and locally, so a
+# broken commit is caught on the machine that made it.
+#
+# Never skip them with `--no-verify` (see CLAUDE.md): fix the cause instead.
+#
+# https://lefthook.dev/configuration/
+
+# Before every commit: the fast checks.
+pre-commit:
+  # `piped` runs the commands in order and stops at the first failure, so the
+  # output shows one problem at a time.
+  piped: true
+  commands:
+    typecheck:
+      run: bun run typecheck
+    lint:
+      run: bun run lint
+    unit:
+      run: bun run test
+
+# Before every push: everything, including the slower integration and
+# end-to-end tests (e2e builds the site and drives a real browser).
+pre-push:
+  piped: true
+  commands:
+    check:
+      run: bun run check
+    e2e:
+      run: bun run test:e2e
