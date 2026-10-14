@@ -22,6 +22,11 @@ import { getViteConfig } from "astro/config";
 
 export default getViteConfig({
   test: {
+    // Locally at most 4 test processes. Each is a Node process of 100–150 MB,
+    // and the default (about one per core) exhausted the dev machine's commit
+    // memory while VS Code and a browser were open ("JavaScript heap out of
+    // memory" at ~45 MB, i.e. the system, not V8, ran out). CI keeps the default.
+    ...(process.env["CI"] ? {} : { maxWorkers: 4 }),
     projects: [
       {
         extends: true,

@@ -1,0 +1,110 @@
+---
+/**
+ * Labelled form field: label, input or textarea, help or error message.
+ * DS: Modulo › campo (`.ct-campo`). Classes from `shared/variants/field.ts`.
+ *
+ * Accessibility, which is the point of wrapping these three elements:
+ * - the `<label>` is always visible and tied to the control with `for`/`id`
+ *   (DS: «etichetta sempre visibile, mai solo segnaposto»);
+ * - the help or error text is linked with `aria-describedby`, so screen
+ *   readers announce it when the field gets focus;
+ * - in error, the control gets `aria-invalid="true"` and the error replaces
+ *   the help text (one message at a time, saying what to do).
+ *
+ * Optional fields say so in the label (`note`), instead of marking required
+ * ones with an asterisk: on this site only the message itself is required.
+ *
+ * @example <Field id="m-testo" name="message" label="Cosa ti è rimasto" multiline required />
+ * @example <Field id="m-mail" name="email" type="email" label="Email" note="(facoltativa)" />
+ */
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/shared/lib/cn";
+import {
+  fieldControl,
+  fieldLabel,
+  fieldLabelNote,
+  fieldMessage,
+  fieldWrapper,
+} from "@/shared/variants/field";
+
+interface Common {
+  /** Ties the label to the control; also used to build the message id. */
+  id: string;
+  /** Visible label text. */
+  label: string;
+  /** Muted text after the label, e.g. «(facoltativa, solo se vuoi una risposta)». */
+  note?: string;
+  /** Help text under the control. */
+  help?: string;
+  /** Error message: switches the field to the error state and replaces `help`. */
+  error?: string;
+  /** Extra classes for the wrapper. */
+  class?: string;
+}
+
+type InputProps = Common & Omit<HTMLAttributes<"input">, "id" | "class"> & { multiline?: false };
+
+type TextareaProps = Common &
+  Omit<HTMLAttributes<"textarea">, "id" | "class"> & { multiline: true };
+
+export type Props = InputProps | TextareaProps;
+
+const {
+  id,
+  label,
+  note,
+  help,
+  error,
+  class: className,
+  multiline = false,
+  ...attributes
+} = Astro.props;
+
+const state = error === undefined ? "default" : "error";
+const message = error ?? help;
+const messageId = `${id}-messaggio`;
+const controlClass = fieldControl({ state, multiline });
+const describedBy = message === undefined ? undefined : messageId;
+const invalid = state === "error" ? "true" : undefined;
+
+// A <textarea> has no `value` attribute in HTML: its text goes between the
+// tags. Pulled out here so a value passed as a prop (e.g. the message to show
+// again after a failed no-JS submit) is rendered as content.
+const { value: textareaValue, ...textareaAttributes } = attributes as HTMLAttributes<"textarea">;
+const inputAttributes = attributes as HTMLAttributes<"input">;
+---
+
+<div class={cn(fieldWrapper, className)}>
+  <label for={id} class={fieldLabel()}>
+    {label}
+    {note && (
+      <>
+        {/* Explicit space: Astro drops the line break between expressions,
+              which would glue «Email(facoltativa)» together for screen readers. */}{" "}
+        <small class={fieldLabelNote}>{note}</small>
+      </>
+    )}
+  </label>
+  {multiline ? (
+    <textarea
+      {...textareaAttributes}
+      id={id}
+      class={controlClass}
+      aria-describedby={describedBy}
+      aria-invalid={invalid}
+    >{textareaValue}</textarea>
+  ) : (
+    <input
+      {...inputAttributes}
+      id={id}
+      class={controlClass}
+      aria-describedby={describedBy}
+      aria-invalid={invalid}
+    />
+  )}
+  {message && (
+    <p id={messageId} class={fieldMessage({ state })}>
+      {message}
+    </p>
+  )}
+</div>

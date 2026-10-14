@@ -25,6 +25,8 @@ coverage/
 playwright-report/
 test-results/
 blob-report/
+# Snapshots, logs and screenshots written by the Playwright MCP server.
+.playwright-mcp/
 
 # Local SQLite/libSQL files used during development
 *.db

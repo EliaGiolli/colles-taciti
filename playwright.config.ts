@@ -23,6 +23,10 @@ export default defineConfig({
   // runners never pick up each other's tests.
   testMatch: "**/*.spec.ts",
   fullyParallel: true,
+  // Locally at most 2 browsers at once: with Playwright's default (half the
+  // CPU cores) the Windows dev machine crashed its workers (exit 0xC0000409)
+  // once the suite grew past a handful of tests. CI keeps the default.
+  ...(isCI ? {} : { workers: 2 }),
   // A stray `test.only` must not silently skip the rest of the suite in CI.
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
