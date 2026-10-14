@@ -1,0 +1,16 @@
+{
+  // Format on save with the same tool the `lint` script checks with:
+  // Biome for TS/JS/CSS/JSON, Prettier for .astro/.vue (see biome.jsonc).
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "[astro]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[vue]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[markdown]": { "editor.defaultFormatter": null },
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit",
+    "quickfix.biome": "explicit"
+  },
+  // Use the workspace TypeScript (6.x, pinned) instead of the one bundled with VS Code.
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.eol": "\n"
+}

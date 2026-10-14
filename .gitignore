@@ -1,0 +1,40 @@
+# Build output (Astro static build and the Vercel adapter's output)
+dist/
+.vercel/
+.output/
+
+# Astro's generated types and content-layer cache
+.astro/
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+bun-debug.log*
+
+# Environment: secrets never leave the developer's machine.
+# `.env.example` is committed on purpose as the documented template.
+.env
+.env.*
+!.env.example
+
+# Test artifacts (Vitest coverage, Playwright reports and traces)
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# Local SQLite/libSQL files used during development
+*.db
+*.db-journal
+
+# Editors and OS noise
+.DS_Store
+Thumbs.db
+.idea/
+
+# Original project brief: kept locally for reference only.
+# The versioned source of truth is docs/PLAN.md.
+docs/RULES-INIT.md

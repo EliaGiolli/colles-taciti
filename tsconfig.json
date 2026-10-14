@@ -1,0 +1,30 @@
+{
+  // Astro's strictest preset already enables `strict`, `noUncheckedIndexedAccess`,
+  // `exactOptionalPropertyTypes`, `noImplicitReturns`, `noUnusedLocals/Parameters`
+  // and `verbatimModuleSyntax` (see node_modules/astro/tsconfigs/strictest.json).
+  "extends": "astro/tsconfigs/strictest",
+  "compilerOptions": {
+    // Index-signature properties must be read with brackets (`env["KEY"]`),
+    // which makes "this key might not exist" visible at the call site.
+    "noPropertyAccessFromIndexSignature": true,
+
+    // Layer aliases. They mirror the architecture (core / features / shared),
+    // so an import path tells the reader which layer it crosses into.
+    // dependency-cruiser enforces the rules between layers.
+    "paths": {
+      "@/core/*": ["./src/core/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@tests/*": ["./tests/*"]
+    },
+
+    "types": ["node"]
+  },
+  // Options read by vue-tsc only (TypeScript ignores them).
+  "vueCompilerOptions": {
+    // Type-check component props, events and slots in templates as strictly as TS code.
+    "strictTemplates": true
+  },
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", ".vercel", "coverage", "playwright-report", "test-results"]
+}

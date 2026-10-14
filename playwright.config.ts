@@ -1,0 +1,63 @@
+/**
+ * Playwright configuration for end-to-end tests (tests/e2e).
+ *
+ * Tests run against the production build served by `astro preview`, not the
+ * dev server: what readers get (bundled scripts, prerendered HTML) is what
+ * gets tested. `bun run test:e2e` builds first, then Playwright starts the
+ * preview server itself through `webServer`.
+ *
+ * Two viewports, as required by the plan's visual checks: a 375px phone and a
+ * desktop. Theme projects (Notte / Nebbia) are added with the theme in PR 2.
+ *
+ * @see https://playwright.dev/docs/test-configuration
+ */
+import { defineConfig, devices } from "@playwright/test";
+
+const PORT = 4321;
+const BASE_URL = `http://localhost:${PORT}`;
+const isCI = Boolean(process.env["CI"]);
+
+export default defineConfig({
+  testDir: "tests/e2e",
+  // Playwright files end in .spec.ts, Vitest files in .test.ts: the two
+  // runners never pick up each other's tests.
+  testMatch: "**/*.spec.ts",
+  fullyParallel: true,
+  // A stray `test.only` must not silently skip the rest of the suite in CI.
+  forbidOnly: isCI,
+  retries: isCI ? 2 : 0,
+  reporter: isCI ? [["github"], ["html", { open: "never" }]] : "list",
+
+  use: {
+    baseURL: BASE_URL,
+    // Keep a trace of the first retry: enough to debug a failure in CI.
+    trace: "on-first-retry",
+    locale: "it-IT",
+    timezoneId: "Europe/Rome",
+  },
+
+  projects: [
+    {
+      name: "desktop",
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "mobile-375",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 375, height: 812 },
+        deviceScaleFactor: 2,
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
+  ],
+
+  webServer: {
+    command: `bun run preview --port ${PORT}`,
+    url: BASE_URL,
+    // Locally, reuse a preview server that is already running.
+    reuseExistingServer: !isCI,
+    timeout: 60_000,
+  },
+});
