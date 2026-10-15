@@ -1,23 +1,126 @@
 ---
 /**
- * Home page: temporary placeholder from PR 0 (`chore/bootstrap`), inside the
- * real site frame since PR 2. The real homepage arrives in PR 5.
+ * The homepage (PLAN › Pagine › 1, SEO brief v2 › §6, mockup page 1).
  *
- * It proves the toolchain end to end (build, preview, the controller
- * registry, unit/integration/e2e tests, accessibility checks) before any
- * real feature is written.
+ * Order: Hero · «Stai leggendo» (only for a reader with a story left
+ * half-way) · introduction · «Da dove cominciare» · «Ultimi racconti» ·
+ * InCorso · «Scegli la tua paura» · «Perché Colles Taciti» · feedback form
+ * (PR 7).
+ *
+ * Its job is to convert, not to rank (SEO brief › §1: traffic arrives on the
+ * story pages): get a second story read, get feedback written. Hence the one
+ * primary button, «Inizia a leggere», leads straight to the first story of
+ * «Da dove cominciare», the one Elia picked for newcomers, rather than to
+ * another list.
+ *
+ * Sections are 72px apart on phones and 112px on desktop (DS › Spazio:
+ * «il vuoto è parte del racconto»). The page ships no Vue: the cards are Vue
+ * components rendered to HTML on the server. Its only scripts are the theme
+ * switch and «Stai leggendo».
  */
 import BaseLayout from "@/core/layout/BaseLayout.astro";
-import { homeCopy } from "@/features/home/copy";
+import FearPicker from "@/features/categories/FearPicker.astro";
+import { categoriesCopy } from "@/features/categories/copy";
+import { brandArtSvg, coversCopy } from "@/features/covers";
+import { homeCopy as copy } from "@/features/home/copy";
+import HomeHero from "@/features/home/HomeHero.astro";
+import HomeSection from "@/features/home/HomeSection.astro";
+import WhyCollesTaciti from "@/features/home/WhyCollesTaciti.astro";
+import {
+  getFearsWithCounts,
+  getLatestStories,
+  getOngoingStories,
+  getStarters,
+  getStoryThumbnail,
+  STORIES_PATH,
+  storiesCopy,
+  storyCard,
+} from "@/features/stories";
+import OngoingBanner from "@/features/stories/OngoingBanner.astro";
+import ContinueReading from "@/features/stories/reading-progress/ContinueReading.astro";
+import StoryCard from "@/features/stories/StoryCard.vue";
+
+/** Three cards per row from 1024px (DS › Spazio: grids only from 1024px). */
+const LATEST_COUNT = 3;
+
+const [starters, latest, ongoing, fears] = await Promise.all([
+  getStarters(),
+  getLatestStories(LATEST_COUNT),
+  getOngoingStories(),
+  getFearsWithCounts(),
+]);
+
+// «Da dove cominciare»: the hook in the label place, no metadata (mockup).
+const starterCards = starters.map((story) => ({
+  ...storyCard(story),
+  label: story.data.starter?.hook ?? story.data.label,
+  meta: undefined,
+}));
+const latestCards = await Promise.all(
+  latest.map(async (story) =>
+    storyCard(story, { withSetting: true, cover: await getStoryThumbnail(story) }),
+  ),
+);
+// One InCorso banner per page at most (DS › InCorso): the newest ongoing story.
+const [current] = ongoing;
+const firstStory = starters[0]?.href ?? latest[0]?.href ?? STORIES_PATH;
+const grid = "grid gap-x-6 lg:grid-cols-3";
 ---
 
-<BaseLayout title={homeCopy.siteName} description={homeCopy.metaDescription}>
-  <div class="mx-auto flex max-w-pagina flex-col gap-4 px-4 py-8 md:px-6 md:py-9">
-    <h1 class="font-display text-display md:text-display-xl">{homeCopy.siteName}</h1>
-    <!-- One expression: Astro drops the line break between two expressions,
-         which would glue the sentences together («italiano.Il sito»). -->
-    <p class="font-display text-titolo-corsivo text-osso-muto italic">
-      {`${homeCopy.tagline} ${homeCopy.underConstruction}`}
-    </p>
+<BaseLayout title={copy.title} description={copy.metaDescription}>
+  <div class="mx-auto flex max-w-pagina flex-col gap-8 px-4 py-7 md:gap-9 md:px-6 md:py-8">
+    <HomeHero href={firstStory}>
+      <Fragment slot="media" set:html={brandArtSvg(coversCopy.brandArtLabel)} />
+    </HomeHero>
+
+    <ContinueReading />
+
+    <p class="max-w-misura text-corpo">{copy.intro}</p>
+
+    {starterCards.length > 0 && (
+      <HomeSection id="da-dove-cominciare" title={copy.starters.title}>
+        <ul class={grid}>
+          {starterCards.map((story) => (
+            <li>
+              <StoryCard story={story} />
+            </li>
+          ))}
+        </ul>
+      </HomeSection>
+    )}
+
+    {latestCards.length > 0 && (
+      <HomeSection
+        id="ultimi-racconti"
+        title={copy.latest.title}
+        action={{ href: STORIES_PATH, label: copy.latest.all }}
+      >
+        <ul class={grid}>
+          {latestCards.map((story) => (
+            <li>
+              <StoryCard story={story} />
+            </li>
+          ))}
+        </ul>
+      </HomeSection>
+    )}
+
+    {current && current.data.chapterReached !== undefined && (
+      <OngoingBanner
+        chapter={current.data.chapterReached}
+        title={current.data.title}
+        text={`${current.data.logline} ${storiesCopy.ongoingBanner.text}`}
+        href={current.href}
+        action={copy.ongoing.action}
+      />
+    )}
+
+    <HomeSection id="scegli-la-tua-paura" title={categoriesCopy.picker.title}>
+      <FearPicker fears={fears} />
+    </HomeSection>
+
+    <WhyCollesTaciti />
+
+    <!-- The feedback form («Ti è rimasto addosso qualcosa?») goes here in PR 7. -->
   </div>
 </BaseLayout>

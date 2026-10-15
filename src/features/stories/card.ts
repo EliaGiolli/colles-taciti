@@ -18,8 +18,13 @@ export interface StoryCardData {
   /** Adds «in corso» to the label (DS › SchedaRacconto). */
   ongoing: boolean;
   logline: string;
-  /** The metadata line: «5 capitoli · 38 min». */
-  meta: string;
+  /** The metadata line: «5 capitoli · 38 min». Left out in «Da dove cominciare». */
+  meta?: string | undefined;
+  /**
+   * The cover thumbnail, as an SVG string from `coverSvg()` (Wattpad format).
+   * Only escaped markup may go here: the card inserts it with `v-html`.
+   */
+  cover?: string | undefined;
 }
 
 /** The facts a reading summary is made of. */

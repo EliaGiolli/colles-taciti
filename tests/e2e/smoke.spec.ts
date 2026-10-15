@@ -24,7 +24,9 @@ test.describe("home page", () => {
 
     expect(response?.status()).toBe(200);
     await expect(page.locator("html")).toHaveAttribute("lang", "it");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Colles Taciti");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Racconti horror dalla Toscana che tace",
+    );
     expect(errors).toEqual([]);
   });
 

@@ -16,6 +16,7 @@ export { FILTER_PARAMS, fearHref, STORIES_PATH, tagFilterHref } from "./links";
 export {
   type FearWithCount,
   getFearsWithCounts,
+  getLatestStories,
   getOngoingStories,
   getRelatedStories,
   getStarters,
@@ -24,7 +25,9 @@ export {
   getStory,
   getStoryCover,
   getStoryLinks,
+  getStoryThumbnail,
   type Story,
+  type StoryCardOptions,
   type StoryEntry,
   type StoryLink,
   type StoryLinks,

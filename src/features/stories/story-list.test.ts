@@ -6,6 +6,7 @@ import {
   findIntegrityProblems,
   readingMinutes,
   type StoryLike,
+  selectLatest,
   selectOngoing,
   selectStarters,
   sortByPublished,
@@ -95,6 +96,20 @@ describe("selectStarters / selectOngoing", () => {
     expect(
       selectOngoing([story("finito"), story("aperto", { status: "ongoing" })]).map((s) => s.id),
     ).toEqual(["aperto"]);
+  });
+});
+
+describe("selectLatest", () => {
+  it("keeps the newest stories, without the ongoing ones", () => {
+    const stories = [
+      story("vecchio", { publishedAt: new Date("2026-10-01") }),
+      story("in-corso", { publishedAt: new Date("2026-10-20"), status: "ongoing" }),
+      story("nuovo", { publishedAt: new Date("2026-10-15") }),
+      story("medio", { publishedAt: new Date("2026-10-10") }),
+    ];
+
+    expect(selectLatest(stories, 2).map((s) => s.id)).toEqual(["nuovo", "medio"]);
+    expect(selectLatest(stories, 10)).toHaveLength(3);
   });
 });
 

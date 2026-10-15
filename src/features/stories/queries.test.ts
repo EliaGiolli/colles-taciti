@@ -14,9 +14,19 @@ vi.mock("astro:content", () => ({
 }));
 
 // Imported after vi.mock (which Vitest hoists anyway), so the queries see the fake module.
-const { getFearsWithCounts, getRelatedStories, getStarters, getStories, getStory } = await import(
-  "./queries"
-);
+const {
+  getFearsWithCounts,
+  getLatestStories,
+  getRelatedStories,
+  getStarters,
+  getStories,
+  getStory,
+  getStoryCover,
+  getStoryLinks,
+  getStoryThumbnail,
+  storyCard,
+  storyReadingSummary,
+} = await import("./queries");
 
 const fear = (id: string, order: number) => ({
   id,
@@ -31,6 +41,9 @@ function story(id: string, day: number, extra: Record<string, unknown> = {}) {
     body: "parola ".repeat(450),
     data: {
       title: id,
+      label: "Slasher folk",
+      logline: "Una riga asciutta.",
+      setting: "Mugello",
       publishedAt: new Date(`2026-10-${day}`),
       status: "complete",
       categories: [{ collection: "fears", id: "slasher" }],
@@ -105,5 +118,75 @@ describe("helpers", () => {
         count: 0,
       },
     ]);
+  });
+});
+
+describe("story page and card helpers", () => {
+  /** The story with this slug, or a failed test. */
+  async function find(id: string) {
+    const found = await getStory(id);
+    if (found === undefined) throw new Error(`no story ${id}`);
+    return found;
+  }
+
+  it("leaves ongoing stories out of «Ultimi racconti»", async () => {
+    // An ongoing story needs as many chapters in its text as `chapterReached`.
+    const ongoing = { ...story("in-corso", 14, { status: "ongoing", chapterReached: 1 }) };
+    ongoing.body = "## Capitolo 1\n\nTesto.";
+    collections["stories"] = [...(collections["stories"] ?? []), ongoing];
+
+    expect((await getLatestStories(3)).map((s) => s.id)).toEqual(["nuovo", "vecchio"]);
+    expect((await getLatestStories(1)).map((s) => s.id)).toEqual(["nuovo"]);
+  });
+
+  it("builds the card props, with the setting and cover when asked", async () => {
+    const nuovo = await find("nuovo");
+
+    expect(storyCard(nuovo)).toEqual({
+      href: "/racconti/nuovo",
+      title: "nuovo",
+      label: "Slasher folk",
+      ongoing: false,
+      logline: "Una riga asciutta.",
+      meta: "Racconto breve · 3 min",
+      cover: undefined,
+    });
+    expect(storyCard(nuovo, { withSetting: true, cover: "<svg/>" })).toMatchObject({
+      meta: "Racconto breve · 3 min · Mugello",
+      cover: "<svg/>",
+    });
+    expect(storyReadingSummary(nuovo)).toBe("Racconto breve · 3 min");
+  });
+
+  it("resolves fears and tags into named links", async () => {
+    collections["stories"] = [
+      story("con-tag", 10, {
+        categories: [{ collection: "fears", id: "liminale" }],
+        tags: {
+          places: [{ collection: "tags", id: "mugello" }],
+          themes: [],
+          inspirations: [],
+        },
+      }),
+    ];
+
+    expect(await getStoryLinks(await find("con-tag"))).toEqual({
+      fears: [{ label: "liminale", href: "/liminale" }],
+      tags: [{ label: "Mugello", href: "/racconti?luogo=mugello" }],
+    });
+  });
+
+  it("gives the cover the main fear's motif, and the thumbnail a short name", async () => {
+    const nuovo = await find("nuovo");
+
+    expect(await getStoryCover(nuovo, "banda")).toEqual({
+      id: "nuovo",
+      title: "nuovo",
+      format: "banda",
+      motif: "colline",
+      genre: "Slasher folk",
+      lines: undefined,
+    });
+    expect(await getStoryThumbnail(nuovo)).toContain('aria-label="Copertina di nuovo"');
   });
 });

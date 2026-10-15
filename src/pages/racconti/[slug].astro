@@ -109,7 +109,7 @@ const reading = storyReadingSummary(story);
 
     <!-- The feedback form («Ti è rimasto addosso qualcosa?») goes here in PR 7. -->
 
-    <RelatedStories stories={related.map(storyCard)} />
+    <RelatedStories stories={related.map((story) => storyCard(story))} />
 
     {data.wattpadUrl && (
       <p>
