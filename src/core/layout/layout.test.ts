@@ -86,16 +86,17 @@ describe("Footer", () => {
     const names = getAllByRole(nav, "link").map((link) => link.textContent?.trim());
 
     expect(body.textContent).toContain("La carne ricorda ciò che le colline tacciono.");
-    expect(names).toEqual(["Racconti", "Libri", "Portfolio", "Instagram", "Wattpad"]);
+    // No Instagram until the profile exists (nav.ts).
+    expect(names).toEqual(["Racconti", "Libri", "Portfolio", "Wattpad"]);
     expect(body.textContent).toMatch(/Racconti di Elia Giolli · \d{4}/);
   });
 
   it("opens external profiles in the same tab (DS › Navigazione)", async () => {
     const { body } = await renderAstro(Footer, at("/"));
-    const instagram = getByRole(body, "link", { name: "Instagram" });
+    const wattpad = getByRole(body, "link", { name: "Wattpad" });
 
-    expect(instagram.getAttribute("href")).toBe(EXTERNAL_LINKS.instagram);
-    expect(instagram.hasAttribute("target")).toBe(false);
+    expect(wattpad.getAttribute("href")).toBe(EXTERNAL_LINKS.wattpad);
+    expect(wattpad.hasAttribute("target")).toBe(false);
   });
 });
 

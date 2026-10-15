@@ -4,8 +4,9 @@
  * DS: Navigazione / piede (bundle.css › .ct-piede).
  *
  * Links (PLAN › Pagine › Piede): Racconti · Libri · Portfolio · Instagram ·
- * Wattpad · Preferenze cookie. «Preferenze cookie» reopens the consent
- * banner, so it arrives with the banner in PR 11. External profiles open
+ * Wattpad · Preferenze cookie. Two are not here yet: Instagram, until the
+ * profile exists (see nav.ts), and «Preferenze cookie», which reopens the
+ * consent banner and so arrives with it in PR 11. External profiles open
  * in the same tab (DS › Navigazione): a new tab is the reader's choice.
  *
  * The motto follows the DS preview exactly (Bodoni italic, 20px, osso-muto),
@@ -23,7 +24,6 @@ const links = [
   { href: ROUTES.stories, label: copy.nav.stories },
   { href: ROUTES.books, label: copy.nav.books },
   { href: EXTERNAL_LINKS.portfolio, label: copy.nav.portfolio },
-  { href: EXTERNAL_LINKS.instagram, label: copy.nav.instagram },
   { href: EXTERNAL_LINKS.wattpad, label: copy.nav.wattpad },
 ];
 const pathname = Astro.url.pathname;

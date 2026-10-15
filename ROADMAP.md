@@ -57,7 +57,11 @@ See `docs/PLAN.md` › change log.
 
 ## PR 2 · `feat/layout-theme`
 
-PR: – · Merged: – · Notes: –
+PR: [#3](https://github.com/EliaGiolli/colles-taciti/pull/3) · Merged: 2026-10-15 · Notes: Notte always
+by default (system preference ignored); toggle with two `aria-pressed` buttons; anti-flash script fed by
+`define:vars`; `styleguide-theme` controller removed; Bodoni «C» favicon; skip link. Footer links fixed
+afterwards in `fix/footer-links` (Instagram omitted until the profile exists). See `docs/PLAN.md` ›
+change log.
 
 - [x] `BaseLayout` (reuses `core/layout/GlobalHead.astro`), `Header` (Racconti · Libri), `Footer`, `Brand`
 - [x] Favicon (today a 404 in the browser console): Bodoni «C» as SVG outlines, `public/favicon.svg`
@@ -183,7 +187,8 @@ PR: – · Merged: – · Notes: –
 - [ ] Real texts, fear notes, warnings, dates and tags for each story
 - [ ] Photo `abat-jour-notte.jpg`
 - [ ] Books list
-- [ ] Register @collestaciti on Instagram and Wattpad, and give a stable portfolio URL: the footer links in `core/layout/nav.ts` are provisional
+- [x] Portfolio and Wattpad URLs (`core/layout/nav.ts`)
+- [ ] Instagram profile: when it exists, add its link to `EXTERNAL_LINKS` and the footer
 - [ ] Resend and GA4 keys
 
 ## After launch
