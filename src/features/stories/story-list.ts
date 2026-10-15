@@ -6,6 +6,7 @@
  * they read), so they are tested with small fixtures, without Astro.
  * `queries.ts` feeds them the real collections.
  */
+import { chaptersFromMarkdown } from "./chapters";
 import type { TagKind } from "./schema";
 
 /** A `reference()` after parsing: the id of the referenced entry. */
@@ -21,6 +22,7 @@ export interface StoryLike {
     title: string;
     publishedAt: Date;
     status: "complete" | "ongoing";
+    chapterReached?: number | undefined;
     categories: Ref[];
     tags: { places: Ref[]; themes: Ref[]; inspirations: Ref[] };
     related: Ref[];
@@ -103,7 +105,10 @@ const TAG_GROUPS = { places: "place", themes: "theme", inspirations: "inspiratio
  *   checks the shape of a slug, not that the entry is there);
  * - each tag sits in the right group (a place under `places`…);
  * - a story is not related to itself;
- * - two stories do not claim the same «Da dove cominciare» position.
+ * - two stories do not claim the same «Da dove cominciare» position;
+ * - an ongoing story's `chapterReached` matches the chapters in its text
+ *   (the field is said out loud on cards and banners, so a stale number
+ *   would promise a chapter that is not there).
  */
 export function findIntegrityProblems(
   stories: readonly StoryLike[],
@@ -140,6 +145,15 @@ export function findIntegrityProblems(
         problems.push(`${where}: non può essere correlato a se stesso`);
       } else if (!storyIds.has(related.id)) {
         problems.push(`${where}: il racconto correlato «${related.id}» non esiste`);
+      }
+    }
+
+    if (story.data.status === "ongoing" && story.data.chapterReached !== undefined) {
+      const written = chaptersFromMarkdown(story.body ?? "").length;
+      if (written !== story.data.chapterReached) {
+        problems.push(
+          `${where}: chapterReached è ${story.data.chapterReached}, ma il testo ha ${written} capitoli`,
+        );
       }
     }
 

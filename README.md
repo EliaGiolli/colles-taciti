@@ -160,6 +160,57 @@ Content Collections ([`src/content.config.ts`](src/content.config.ts)):
 - The launch stories are **placeholders**: their metadata comes from the SEO brief, but the text
   and the fear notes are marked `[Segnaposto]` until the real ones arrive.
 
+### Story pages
+
+Each story is one page, `/racconti/<slug>`, prerendered at build time
+([`src/pages/racconti/[slug].astro`](src/pages/racconti/[slug].astro)):
+
+- **Hero** with the story's cover band, then the **facts** (sub-genre, setting, reading time,
+  date, content warnings), with fears linking to their pages and tags to the filtered archive
+  (`/racconti?luogo=…`, `?tema=…`, `?ispirazione=…`).
+- **Chapters**: every `## …` heading in the Markdown is a chapter with a stable anchor,
+  `#capitolo-N`, whatever its title. Write `## La rampa` for a titled chapter (shown with a
+  «Capitolo 1» label) or `## Capitolo 1` for an untitled one. A chapter index links to them, and
+  `***` is a scene break («⁂»).
+- **Reading controls**: «A−» and «A+» change the text size; the choice is remembered
+  (`colles-taciti:testo`).
+- **Reading progress**: while you read, story, chapter and percentage are saved in your browser
+  only (`colles-taciti:lettura`, no cookie, nothing sent anywhere). Come back half-way and the page
+  offers «Eri al capitolo N → Riprendi»; the homepage will show «Stai leggendo» (PR 5).
+- Then the ongoing-story banner, **«La paura dietro il racconto»**, «Se ti è piaciuto» (two
+  related stories) and the Wattpad link.
+
+Story pages ship no framework: the cards are Vue components rendered to HTML on the server, and
+the only scripts are three small controllers (theme, reading controls, reading progress). Without
+JavaScript the whole story still reads; only the controls that need scripts are hidden.
+
+### Covers
+
+Every story gets a generated cover, no photo needed
+([`src/features/covers`](src/features/covers)): a motif chosen by its main fear (a stitched slab
+for body horror, a neon corridor for liminal stories, hills for slashers, circles for
+psychological horror, notebook lines while a story is ongoing, a dot grid for experiments), its
+title and the signature. The same SVG is drawn inline on the site, following the theme, and
+rendered to PNG by `bun run copertine`:
+
+| File | Size | Used for |
+|---|---|---|
+| `public/copertine/<slug>-anteprima.png` | 1200 × 630 | Link previews (Open Graph, WhatsApp) |
+| `public/copertine/<slug>-wattpad.png` | 512 × 800 | Wattpad cover |
+| `public/copertine/<slug>-instagram.png` | 1080 × 1350 | Instagram post |
+
+Run it after adding a story or changing a title, label, status or main fear, and commit the PNGs
+with `scripts/copertine.json`: a test fails while the covers are out of date. The script uses
+[resvg](https://github.com/thx/resvg-js) with two static font instances in
+[`scripts/fonts`](scripts/fonts) (SIL Open Font License). A story can override its cover in the
+frontmatter:
+
+```yaml
+cover:
+  lines: ["Se ni' mondo", "esistesse un", "po' di male"]  # title broken by hand, 1–3 lines
+  motif: punti  # carne | corridoio | colline | cerchi | diario | punti
+```
+
 ## <img src="https://api.iconify.design/lucide/rocket.svg?color=%23888888" width="22" align="top" alt="" /> Getting started
 
 **Prerequisites**: [Bun](https://bun.sh) 1.4+, [Node.js](https://nodejs.org) 22.12+ (Astro's CLI
@@ -203,9 +254,10 @@ format on save with the right tool for each file type.
 | `bun run test:coverage` | Unit + integration tests with v8 coverage |
 | `bun run test:e2e` | Build, then end-to-end tests (Playwright + axe) |
 | `bun run check` | Everything except e2e |
+| `bun run copertine` | Render every story cover to PNG in `public/copertine` (see [Covers](#covers)) |
 
 Coming with later features: `db:generate` / `db:migrate` (Drizzle migrations), `libri:sync`
-(book data from Open Library), `copertine` (cover PNGs).
+(book data from Open Library).
 
 **Git hooks** (lefthook): every commit runs typecheck, lint and unit tests; every push runs
 `check` and the end-to-end tests.

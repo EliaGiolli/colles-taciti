@@ -98,6 +98,22 @@ describe("selectStarters / selectOngoing", () => {
   });
 });
 
+describe("findIntegrityProblems: chapters of ongoing stories", () => {
+  it("reports a chapterReached that does not match the text", () => {
+    const ongoing = {
+      ...story("in-corso", { status: "ongoing", chapterReached: 3 }),
+      body: "## Capitolo 1\n\n## Capitolo 2",
+    };
+
+    expect(findIntegrityProblems([ongoing], vocabularies)).toEqual([
+      "racconto «in-corso»: chapterReached è 3, ma il testo ha 2 capitoli",
+    ]);
+    expect(
+      findIntegrityProblems([{ ...ongoing, body: `${ongoing.body}\n\n## Tre` }], vocabularies),
+    ).toEqual([]);
+  });
+});
+
 describe("findIntegrityProblems", () => {
   it("accepts consistent content", () => {
     expect(

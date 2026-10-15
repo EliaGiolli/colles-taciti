@@ -18,7 +18,7 @@
  * - `~ ` in front adds the static glitch (the line seen double);
  * - `~~ ` in front adds the live glitch, the twitch. The DS allows at most
  *   one per block («il glitch funziona perché è raro»), so a second one is
- *   a build error. It stops by itself with reduced motion (CSS, PR 4).
+ *   a build error. It stops by itself with reduced motion (app.css).
  *
  * Option: `etichetta="…"` replaces the accessible name «Righe di log».
  *

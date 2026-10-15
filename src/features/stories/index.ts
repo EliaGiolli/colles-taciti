@@ -3,11 +3,16 @@
  * import (dependency-cruiser forbids reaching into a feature's files from
  * outside, see .dependency-cruiser.mjs).
  *
- * Not exported here: the Markdown plugin (`blocks/plugin.ts`), which only
- * astro.config.ts imports, by path. Importing it through this file would
- * load the queries, and with them `astro:content`, into the config.
+ * Not exported here: the Markdown plugins (`blocks/plugin.ts`,
+ * `chapters-plugin.ts`), which only astro.config.ts imports, by path.
+ * Importing them through this file would load the queries, and with them
+ * `astro:content`, into the config. Nor the `.astro` and `.vue` components:
+ * pages import those by path, like any component they wire together.
  */
+export { cardMeta, readingSummary, type StoryCardData } from "./card";
+export { type Chapter, chapterId, chaptersFromMarkdown } from "./chapters";
 export { storiesCopy } from "./copy";
+export { FILTER_PARAMS, fearHref, STORIES_PATH, tagFilterHref } from "./links";
 export {
   type FearWithCount,
   getFearsWithCounts,
@@ -17,9 +22,15 @@ export {
   getStories,
   getStoriesByFear,
   getStory,
+  getStoryCover,
+  getStoryLinks,
   type Story,
   type StoryEntry,
+  type StoryLink,
+  type StoryLinks,
+  storyCard,
   storyHref,
+  storyReadingSummary,
 } from "./queries";
 export { STORY_STATUSES, TAG_KINDS, type TagKind } from "./schema";
 export { readingMinutes } from "./story-list";
