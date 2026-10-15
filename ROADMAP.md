@@ -86,8 +86,11 @@ text; content in `src/core/content/` next to the brand-tone check; content tests
 
 ## PR 4 · `feat/story-page`
 
-PR: – · Merged: – · Notes: covers, story page and reading progress in one PR (they were PRs 4, 5 and 6,
-each too small on its own).
+PR: [#6](https://github.com/EliaGiolli/colles-taciti/pull/6) · Merged: 2026-10-15 · Notes: covers, story
+page and reading progress in one PR (they were PRs 4, 5 and 6). resvg needs static font instances
+(`scripts/fonts`); a 1600×640 band format for the Hero; optional `cover` frontmatter field; chapter
+anchors from a second Sätteri plugin; `StoryCard.vue` brought forward from PR 6; «finished» when the fear
+note reaches the reading line. See `docs/PLAN.md` › change log.
 
 Covers
 - [x] `cover.ts` (pure SVG) + `Cover.astro` (four formats, including the 1600×640 band for the Hero; optional `cover` frontmatter override)
@@ -109,9 +112,10 @@ Reading progress
 
 PR: – · Merged: – · Notes: –
 
-- [ ] Hero, «Stai leggendo…» (`ContinueReading`, built in PR 4), intro, «Da dove cominciare», «Ultimi racconti», InCorso
-- [ ] SceltaPaura with counts, «Perché Colles Taciti», form slot
-- [ ] README updated
+- [x] Hero, «Stai leggendo…» (`ContinueReading`, built in PR 4), intro, «Da dove cominciare», «Ultimi racconti», InCorso
+- [x] SceltaPaura with counts, «Perché Colles Taciti», form slot
+- [x] `StoryCard.vue` cover-thumbnail variant (`ct-scheda--copertina`) for «Ultimi racconti» (was listed under PR 6)
+- [x] README updated
 
 ## PR 6 · `feat/search-filters`
 
@@ -121,7 +125,7 @@ PR: – · Merged: – · Notes: –
 - [ ] `SearchBrowser.vue` island (`client:idle`, MiniSearch, facets, `TransitionGroup`, `aria-live`)
 - [ ] `useUrlState` composable (zod ↔ URLSearchParams), back button works
 - [ ] `/racconti` (static list + island) and the 5 `/[categoria]` pages
-- [ ] `StoryCard.vue` (created in PR 4) used in the archive and in the island; cover thumbnail variant
+- [ ] `StoryCard.vue` (created in PR 4, cover variant in PR 5) used in the archive and in the island
 - [ ] README updated
 
 ## PR 7 · `feat/feedback`
@@ -184,7 +188,7 @@ PR: – · Merged: – · Notes: –
 - [ ] Domain
 - [ ] Real texts, fear notes, warnings, dates and tags for each story (placeholders marked `[Segnaposto]` in `src/core/content/stories`)
 - [ ] Wattpad addresses of Le vibrazioni and Senza Rimorso (`wattpadUrl` in their frontmatter)
-- [ ] Photo `abat-jour-notte.jpg`
+- [ ] Photo `abat-jour-notte.jpg` (the homepage Hero shows the DS brand illustration until it arrives)
 - [ ] Books list
 - [x] Portfolio and Wattpad URLs (`core/layout/nav.ts`)
 - [ ] Instagram profile: when it exists, add its link to `EXTERNAL_LINKS` and the footer

@@ -1,0 +1,46 @@
+---
+/**
+ * The opening of the homepage. DS: Hero / home (`.ct-hero--home`).
+ *
+ * Text on the left (5/12), image on the right (7/12, 16:9); on a phone the
+ * image goes below. The text never sits on the image (DS › Hero). Inside:
+ * the eyebrow «Colles Taciti · racconti di Elia Giolli», the H1, the
+ * tagline in Bodoni italic and the one primary button of the page.
+ *
+ * The image is the page's `media` slot: the brand illustration for now,
+ * the photo `abat-jour-notte.jpg` once it exists (DS › Hero).
+ *
+ * H1 size: `display` (48px) at every width, as in the DS Hero preview and
+ * the mockup. The type scale would allow `display-xl` (72px) from 768px,
+ * but in a 5/12 column it would break «Racconti horror» word by word.
+ *
+ * @example
+ * <HomeHero href="/racconti/il-limbo-dei-processi"><svg slot="media" … /></HomeHero>
+ */
+import Button from "@/shared/components/Button.astro";
+import Label from "@/shared/components/Label.astro";
+import { homeCopy as copy } from "./copy";
+
+export interface Props {
+  /** Where «Inizia a leggere» leads. */
+  href: string;
+}
+
+const { href } = Astro.props;
+---
+
+<section class="grid items-end gap-6 md:grid-cols-[5fr_7fr]">
+  <div class="flex flex-col items-start gap-4">
+    <Label tone="muted" as="p">
+      {copy.hero.eyebrow}
+    </Label>
+    <h1 class="font-display text-display">{copy.hero.title}</h1>
+    <p class="font-display text-titolo-corsivo text-osso-muto italic">{copy.hero.tagline}</p>
+    <Button variant="primary" href={href}>
+      {copy.hero.action}
+    </Button>
+  </div>
+  <div class="relative aspect-hero overflow-hidden [&>svg]:absolute [&>svg]:inset-0 [&>svg]:h-full">
+    <slot name="media" />
+  </div>
+</section>

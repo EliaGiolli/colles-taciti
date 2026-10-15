@@ -200,6 +200,24 @@ describe("RelatedStories and StoryCard", () => {
     expect(body.querySelector("astro-island, script")).toBeNull();
   });
 
+  it("draws the cover thumbnail and hides an empty metadata line", async () => {
+    const { body } = await renderAstro(RelatedStories, {
+      props: {
+        stories: [
+          card({
+            meta: undefined,
+            cover: '<svg role="img" aria-label="Copertina di prova"></svg>',
+          }),
+        ],
+      },
+    });
+    const link = getAllByRole(body, "link")[0];
+
+    expect(link?.querySelector('svg[aria-label="Copertina di prova"]')).not.toBeNull();
+    expect(link?.className).toContain("grid-cols-[96px_1fr]");
+    expect(link?.querySelector(".text-meta")).toBeNull();
+  });
+
   it("renders nothing without related stories", async () => {
     const { body } = await renderAstro(RelatedStories, { props: { stories: [] } });
 

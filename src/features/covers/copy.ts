@@ -18,6 +18,8 @@ export const coversCopy = {
   ongoing: "in corso",
   /** Accessible name of a cover thumbnail next to its title (DS › SchedaRacconto). */
   thumbnailLabel: (title: string) => `Copertina di ${title}`,
+  /** The brand illustration in the homepage Hero (brand-art.ts). */
+  brandArtLabel: "Una lastra di carne cucita, mezza sepolta da due colline",
   /**
    * What each motif shows, for the cover band of the story Hero, which has
    * no text of its own: «Testo alternativo descrittivo per ogni immagine»

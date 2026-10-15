@@ -13,7 +13,7 @@
  * chapters).
  */
 import { type CollectionEntry, getCollection } from "astro:content";
-import { type CoverInput, storyCover } from "@/features/covers";
+import { type CoverInput, coverSvg, coversCopy, storyCover } from "@/features/covers";
 import { cardMeta, readingSummary, type StoryCardData } from "./card";
 import { type Chapter, chaptersFromMarkdown } from "./chapters";
 import { fearHref, tagFilterHref } from "./links";
@@ -23,6 +23,7 @@ import {
   filterByFear,
   findIntegrityProblems,
   readingMinutes,
+  selectLatest,
   selectOngoing,
   selectStarters,
   sortByPublished,
@@ -110,6 +111,11 @@ export async function getStarters(): Promise<Story[]> {
   return selectStarters(await getStories());
 }
 
+/** «Ultimi racconti» on the homepage: the newest stories, ongoing ones left out. */
+export async function getLatestStories(count: number): Promise<Story[]> {
+  return selectLatest(await getStories(), count);
+}
+
 /** Stories still coming out in chapters (InCorso), newest first. */
 export async function getOngoingStories(): Promise<Story[]> {
   return selectOngoing(await getStories());
@@ -144,15 +150,29 @@ export function storyReadingSummary(story: Story): string {
   return readingSummary(readingFacts(story));
 }
 
+/** Options of {@link storyCard}. */
+export interface StoryCardOptions {
+  /**
+   * Adds the setting to the metadata line, «5 capitoli · 38 min ·
+   * Aeroporto F., marzo 2020», for the cards with a cover (DS ›
+   * SchedaRacconto: «capitoli o tempo di lettura, luogo»).
+   */
+  withSetting?: boolean;
+  /** The cover thumbnail SVG (see {@link getStoryThumbnail}). */
+  cover?: string | undefined;
+}
+
 /** The props of `StoryCard.vue` for a story. */
-export function storyCard(story: Story): StoryCardData {
+export function storyCard(story: Story, options: StoryCardOptions = {}): StoryCardData {
+  const meta = cardMeta(readingFacts(story));
   return {
     href: story.href,
     title: story.data.title,
     label: story.data.label,
     ongoing: story.data.status === "ongoing",
     logline: story.data.logline,
-    meta: cardMeta(readingFacts(story)),
+    meta: options.withSetting ? `${meta} · ${story.data.setting}` : meta,
+    cover: options.cover,
   };
 }
 
@@ -228,4 +248,13 @@ export async function getStoryCover(
     fearNames,
   );
   return { id: story.id, title: story.data.title, format, ...cover };
+}
+
+/**
+ * The cover thumbnail of a card: the Wattpad-format cover as an SVG string,
+ * named «Copertina di …» because the real title is the heading beside it.
+ */
+export async function getStoryThumbnail(story: Story): Promise<string> {
+  const cover = await getStoryCover(story, "wattpad");
+  return coverSvg({ ...cover, label: coversCopy.thumbnailLabel(story.data.title) });
 }

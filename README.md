@@ -160,6 +160,17 @@ Content Collections ([`src/content.config.ts`](src/content.config.ts)):
 - The launch stories are **placeholders**: their metadata comes from the SEO brief, but the text
   and the fear notes are marked `[Segnaposto]` until the real ones arrive.
 
+### Homepage
+
+The homepage ([`src/pages/index.astro`](src/pages/index.astro)) follows the SEO brief's copy and the
+mockup: a Hero (the design system's brand illustration until the photo `abat-jour-notte.jpg`
+exists), «Stai leggendo» for a reader with a story left half-way, the introduction, «Da dove
+cominciare» (three stories picked for newcomers, set with `starter` in their frontmatter), «Ultimi
+racconti» (the newest stories with their covers, ongoing ones left out), the InCorso banner for
+the story still coming out, «Scegli la tua paura» with story counts, and «Perché Colles Taciti».
+Like the story pages it ships no framework: only the theme switch and the «Stai leggendo»
+controller.
+
 ### Story pages
 
 Each story is one page, `/racconti/<slug>`, prerendered at build time
@@ -176,7 +187,7 @@ Each story is one page, `/racconti/<slug>`, prerendered at build time
   (`colles-taciti:testo`).
 - **Reading progress**: while you read, story, chapter and percentage are saved in your browser
   only (`colles-taciti:lettura`, no cookie, nothing sent anywhere). Come back half-way and the page
-  offers «Eri al capitolo N → Riprendi»; the homepage will show «Stai leggendo» (PR 5).
+  offers «Eri al capitolo N → Riprendi»; the homepage shows «Stai leggendo».
 - Then the ongoing-story banner, **«La paura dietro il racconto»**, «Se ti è piaciuto» (two
   related stories) and the Wattpad link.
 

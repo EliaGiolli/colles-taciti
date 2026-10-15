@@ -6,6 +6,7 @@
  * content.config.ts, where an `.astro` import has no business. Pages import
  * `Cover.astro` by path, as they do with every component they wire together.
  */
+export { brandArtSvg } from "./brand-art";
 export { coversCopy } from "./copy";
 export {
   COVER_FORMATS,

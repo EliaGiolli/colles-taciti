@@ -86,6 +86,20 @@ export function selectOngoing<T extends StoryLike>(stories: readonly T[]): T[] {
   return sortByPublished(stories.filter((story) => story.data.status === "ongoing"));
 }
 
+/**
+ * «Ultimi racconti» on the homepage: the `count` most recent stories,
+ * leaving out the ongoing ones. A story still coming out already has the
+ * page's one big banner (InCorso, DS: «uno solo per pagina»); listing it
+ * again right above would spend a card on a story the reader is about to
+ * see in carne. The mockup does the same.
+ */
+export function selectLatest<T extends StoryLike>(stories: readonly T[], count: number): T[] {
+  return sortByPublished(stories.filter((story) => story.data.status !== "ongoing")).slice(
+    0,
+    count,
+  );
+}
+
 /** What the integrity check needs to know about the vocabularies. */
 export interface Vocabularies {
   /** Tag id → its kind. */

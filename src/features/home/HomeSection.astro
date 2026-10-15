@@ -1,0 +1,44 @@
+---
+/**
+ * A titled section of the homepage: an H2 in Bodoni (`titolo-1`), an
+ * optional link on the right of the heading («Tutti i racconti →», as in
+ * the mockup), then the content. DS: no dedicated component; the sections
+ * of the mockup's homepage.
+ *
+ * The section is a region named by its heading (`aria-labelledby`), so a
+ * screen-reader user can jump between «Da dove cominciare», «Ultimi
+ * racconti»… from the landmarks list.
+ *
+ * The space between sections (space-8 on phones, space-9 on desktop: «il
+ * vuoto è parte del racconto», DS › Spazio) belongs to the page, which
+ * stacks them; a section has no outer margin of its own.
+ *
+ * @example
+ * <HomeSection id="ultimi" title="Ultimi racconti" action={{ href: "/racconti", label: "Tutti i racconti" }}>…</HomeSection>
+ */
+import Button from "@/shared/components/Button.astro";
+
+export interface Props {
+  /** Id of the heading (and the section's name). */
+  id: string;
+  title: string;
+  /** A link shown next to the heading. */
+  action?: { href: string; label: string };
+}
+
+const { id, title, action } = Astro.props;
+---
+
+<section aria-labelledby={id} class="flex flex-col gap-5">
+  <div class="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-2">
+    <h2 id={id} class="font-display text-titolo-1">
+      {title}
+    </h2>
+    {action && (
+      <Button variant="link" href={action.href}>
+        {action.label}
+      </Button>
+    )}
+  </div>
+  <slot />
+</section>

@@ -8,6 +8,7 @@ import { join } from "node:path";
 import { renderAstro } from "@tests/helpers/render-astro";
 import { JSDOM } from "jsdom";
 import { describe, expect, it } from "vitest";
+import { brandArtSvg } from "./brand-art";
 import Cover from "./Cover.astro";
 import { COVER_FORMATS, type CoverInput, coverSvg, monoWidth, storyCover } from "./cover";
 import { MOTIFS } from "./motifs";
@@ -181,5 +182,18 @@ describe("Cover.astro", () => {
 
     expect(svg?.getAttribute("aria-label")).toBe("Copertina di prova");
     expect(doc.querySelectorAll("tspan")).toHaveLength(2);
+  });
+});
+
+describe("brandArtSvg", () => {
+  it("is the DS brand illustration: a named image in 16:9, filling its box", () => {
+    const svg = parse(brandArtSvg("Una lastra di carne"));
+
+    expect(svg.getAttribute("role")).toBe("img");
+    expect(svg.getAttribute("aria-label")).toBe("Una lastra di carne");
+    expect(svg.getAttribute("viewBox")).toBe("0 0 480 270");
+    expect(svg.getAttribute("preserveAspectRatio")).toBe("xMidYMid slice");
+    expect(svg.querySelectorAll(".f-carne, .f-crete, .f-ruggine, .f-ferita")).toHaveLength(4);
+    expect(svg.querySelectorAll(".s-osso")).toHaveLength(5);
   });
 });
