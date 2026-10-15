@@ -118,8 +118,8 @@ describe("findIntegrityProblems", () => {
     );
 
     expect(problems).toEqual([
-      "racconto «uno»: la paura «splatter» non esiste in content/fears.json",
-      "racconto «uno»: il tag «atlantide» non esiste in content/tags.json",
+      "racconto «uno»: la paura «splatter» non esiste in src/core/content/fears.json",
+      "racconto «uno»: il tag «atlantide» non esiste in src/core/content/tags.json",
       "racconto «uno»: il racconto correlato «fantasma» non esiste",
     ]);
   });

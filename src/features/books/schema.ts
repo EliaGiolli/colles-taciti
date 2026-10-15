@@ -1,5 +1,5 @@
 /**
- * Schema of the `books` collection (`content/books.json`).
+ * Schema of the `books` collection (`src/core/content/books.json`).
  *
  * Provisional: the file is empty until Elia's list arrives, and PR 12
  * (`feat/books`) generates it with `libri:sync` from Open Library. The

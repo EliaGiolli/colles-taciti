@@ -22,7 +22,7 @@ import { publicCopy } from "@/core/content/public-copy";
 /** A story is either finished or still coming out in chapters (Senza Rimorso). */
 export const STORY_STATUSES = ["complete", "ongoing"] as const;
 
-/** The three families of the controlled tag vocabulary (`content/tags.json`). */
+/** The three families of the controlled tag vocabulary (`src/core/content/tags.json`). */
 export const TAG_KINDS = ["place", "theme", "inspiration"] as const;
 export type TagKind = (typeof TAG_KINDS)[number];
 
@@ -47,7 +47,7 @@ const warning = z
     message: "Le avvertenze si scrivono in minuscolo («violenza esplicita»)",
   });
 
-/** The frontmatter of a story (`content/stories/<slug>.md`). The slug is the file name. */
+/** The frontmatter of a story (`src/core/content/stories/<slug>.md`). The slug is the file name. */
 export const storySchema = z
   .object({
     title: publicCopy(),
@@ -127,7 +127,7 @@ export const storySchema = z
     }
   });
 
-/** One entry of the controlled tag vocabulary (`content/tags.json`). */
+/** One entry of the controlled tag vocabulary (`src/core/content/tags.json`). */
 export const tagSchema = z.object({
   label: publicCopy(),
   kind: z.enum(TAG_KINDS),

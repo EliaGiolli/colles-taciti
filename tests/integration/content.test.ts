@@ -1,5 +1,5 @@
 /**
- * Integration tests of the content: the real files in `content/`, validated
+ * Integration tests of the content: the real files in `src/core/content/`, validated
  * with the schemas of content.config.ts and checked for cross-entry
  * consistency (see tests/helpers/content-files.ts for why the files are read
  * directly instead of through `getCollection`).

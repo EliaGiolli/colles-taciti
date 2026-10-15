@@ -118,7 +118,7 @@ export function findIntegrityProblems(
 
     for (const fear of story.data.categories) {
       if (!vocabularies.fears.has(fear.id)) {
-        problems.push(`${where}: la paura «${fear.id}» non esiste in content/fears.json`);
+        problems.push(`${where}: la paura «${fear.id}» non esiste in src/core/content/fears.json`);
       }
     }
 
@@ -126,7 +126,7 @@ export function findIntegrityProblems(
       for (const tag of story.data.tags[group as keyof typeof TAG_GROUPS]) {
         const actual = vocabularies.tags.get(tag.id);
         if (actual === undefined) {
-          problems.push(`${where}: il tag «${tag.id}» non esiste in content/tags.json`);
+          problems.push(`${where}: il tag «${tag.id}» non esiste in src/core/content/tags.json`);
         } else if (actual !== kind) {
           problems.push(
             `${where}: il tag «${tag.id}» è di tipo ${actual}, non può stare in ${group}`,

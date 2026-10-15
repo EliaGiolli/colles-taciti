@@ -116,7 +116,7 @@ describe("ctBlocks plugin", () => {
   });
 
   it("stops the build naming the file and quoting the broken line", () => {
-    const fileURL = pathToFileURL("/content/stories/senza-rimorso.md");
+    const fileURL = pathToFileURL("/src/core/content/stories/senza-rimorso.md");
 
     expect(() =>
       markdownToHtml(fence("chat", "riga senza due punti"), { mdastPlugins: [ctBlocks], fileURL }),

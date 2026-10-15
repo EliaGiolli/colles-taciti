@@ -81,10 +81,9 @@ Feature-based layout. `src/pages` only wires things together.
 ```text
 src/
   pages/        thin route files
-  core/         app-wide infrastructure: layout, theme, consent, analytics, SEO, db, controllers
+  core/         app-wide infrastructure: layout, theme, content (stories, vocabularies, brand-tone check), consent, analytics, SEO, db, controllers
   features/     stories, search, categories, covers, books, feedback, home
   shared/       UI primitives, cva variants, utilities
-content/        stories (Markdown), tags, fears, books
 tests/          integration, e2e, fixtures
 docs/           PLAN.md (decisions)
 ```
@@ -122,15 +121,15 @@ Racconti · Libri, theme switch), `<main>`, footer, and a skip link for keyboard
 
 ### Content
 
-The stories and vocabularies live in [`content/`](content), outside `src/`, and are loaded as Astro
+The stories and vocabularies live in [`src/core/content/`](src/core/content), next to the brand-tone check, and are loaded as Astro
 Content Collections ([`src/content.config.ts`](src/content.config.ts)):
 
 | Collection | Source | Notes |
 |---|---|---|
-| `stories` | `content/stories/<slug>.md` | One file per story; the file name is the URL slug |
-| `fears` | `content/fears.json` | The five categories (`/body-horror`, `/slasher`…) |
-| `tags` | `content/tags.json` | Controlled vocabulary: places, themes, inspirations |
-| `books` | `content/books.json` | Empty until `libri:sync` (PR 12) |
+| `stories` | `src/core/content/stories/<slug>.md` | One file per story; the file name is the URL slug |
+| `fears` | `src/core/content/fears.json` | The five categories (`/body-horror`, `/slasher`…) |
+| `tags` | `src/core/content/tags.json` | Controlled vocabulary: places, themes, inspirations |
+| `books` | `src/core/content/books.json` | Empty until `libri:sync` (PR 12) |
 
 - **Validation**: every entry is checked by a zod schema when `astro check` or the build runs. A
   missing field, a misspelt tag or a fear note outside 80–150 words stops the build with the file

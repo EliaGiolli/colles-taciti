@@ -1,5 +1,5 @@
 /**
- * Schema of the `fears` collection (`content/fears.json`): the five
+ * Schema of the `fears` collection (`src/core/content/fears.json`): the five
  * categories of the site, each with its own indexable page
  * (/body-horror, /horror-psicologico, /slasher, /liminale, /esperimenti).
  *

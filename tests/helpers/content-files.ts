@@ -1,5 +1,5 @@
 /**
- * Reads the real files in `content/` the way a loader would, for tests.
+ * Reads the real files in `src/core/content/` the way a loader would, for tests.
  *
  * Astro's content layer (`getCollection`) does not run inside Vitest: the
  * data store is filled by Astro's own build pipeline, and Vitest only gets
@@ -11,7 +11,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
 
-const CONTENT_DIR = join(import.meta.dirname, "..", "..", "content");
+const CONTENT_DIR = join(import.meta.dirname, "..", "..", "src", "core", "content");
 
 /** A Markdown story file split into slug, frontmatter and body. */
 export interface StoryFile {
@@ -23,7 +23,7 @@ export interface StoryFile {
 // Frontmatter is the YAML between the first two `---` lines.
 const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
 
-/** Every story in `content/stories`, sorted by slug. */
+/** Every story in `src/core/content/stories`, sorted by slug. */
 export function readStoryFiles(): StoryFile[] {
   const dir = join(CONTENT_DIR, "stories");
   return readdirSync(dir)
@@ -41,7 +41,7 @@ export function readStoryFiles(): StoryFile[] {
     });
 }
 
-/** The entries of a `file()` collection (`content/<name>.json`). */
+/** The entries of a `file()` collection (`src/core/content/<name>.json`). */
 export function readJsonEntries(name: "tags" | "fears" | "books"): { id: string }[] {
   return JSON.parse(readFileSync(join(CONTENT_DIR, `${name}.json`), "utf8")) as { id: string }[];
 }

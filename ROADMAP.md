@@ -74,7 +74,7 @@ afterwards in PR 3 (Instagram omitted until the profile exists). See `docs/PLAN.
 PR: – · Merged: – · Notes: –
 
 - [x] Footer links: real portfolio and Wattpad URLs, no Instagram link until the profile exists (was the separate PR #4, folded in here)
-- [x] `content.config.ts`: `stories`, `tags`, `fears`, `books` collections with the full frontmatter schema (content in `content/` at the repository root)
+- [x] `content.config.ts`: `stories`, `tags`, `fears`, `books` collections with the full frontmatter schema (content in `src/core/content/`, next to the brand-tone check)
 - [x] Plugin for ```` ```chat ```` / ```` ```log ```` blocks: a Sätteri mdast plugin (Astro 7's default Markdown processor) instead of `remark-ct`
 - [x] Placeholder stories (3 complete + Senza Rimorso ongoing): real metadata from the SEO brief, placeholder text and fear notes
 - [x] Queries in `features/stories`, with a cross-entry integrity check (tags in the right group, existing references, starter positions)
@@ -184,7 +184,7 @@ PR: – · Merged: – · Notes: –
 - [x] Vercel link (project `colles-taciti`, linked with the CLI, previews on every PR)
 - [ ] Turso account
 - [ ] Domain
-- [ ] Real texts, fear notes, warnings, dates and tags for each story (placeholders marked `[Segnaposto]` in `content/stories`)
+- [ ] Real texts, fear notes, warnings, dates and tags for each story (placeholders marked `[Segnaposto]` in `src/core/content/stories`)
 - [ ] Wattpad addresses of Le vibrazioni and Senza Rimorso (`wattpadUrl` in their frontmatter)
 - [ ] Photo `abat-jour-notte.jpg`
 - [ ] Books list
