@@ -1,7 +1,7 @@
 /**
  * Schema of the `books` collection (`src/core/content/books.json`).
  *
- * Provisional: the file is empty until Elia's list arrives, and PR 12
+ * Provisional: the file is empty until Elia's list arrives, and PR 10
  * (`feat/books`) generates it with `libri:sync` from Open Library. The
  * collection exists now so the content pipeline is complete and its types
  * are stable for the pages that will use it.

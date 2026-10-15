@@ -22,8 +22,8 @@
  * Options: `spettatori=<n>` shows the viewer count in the header;
  * `etichetta="…"` replaces the accessible name «Chat della diretta».
  *
- * The output is the DS markup (`ct-chat` classes). Its styles arrive with
- * the story page (PR 5), in app.css › components.
+ * The output is the DS markup (`ct-chat` classes), styled in app.css ›
+ * Story components.
  */
 import { formatCount } from "@/shared/lib/plural";
 import { storiesCopy } from "../copy";

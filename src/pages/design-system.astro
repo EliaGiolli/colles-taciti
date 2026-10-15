@@ -12,16 +12,32 @@
  * choice instead of clicking, so each theme is checked from first paint.
  *
  * `noindex`: useful to us, not to search engines. Whether it stays public
- * after launch is decided in PR 13 (see ROADMAP).
+ * after launch is decided in PR 11 (see ROADMAP).
  */
 import BaseLayout from "@/core/layout/BaseLayout.astro";
 import Brand from "@/core/layout/Brand.astro";
+import Cover from "@/features/covers/Cover.astro";
+import { coversCopy } from "@/features/covers";
+import ChapterIndex from "@/features/stories/ChapterIndex.astro";
+import FearNote from "@/features/stories/FearNote.astro";
+import OngoingBanner from "@/features/stories/OngoingBanner.astro";
+import Prose from "@/features/stories/Prose.astro";
+import ReadingControls from "@/features/stories/ReadingControls.astro";
+import ContinueReading from "@/features/stories/reading-progress/ContinueReading.astro";
+import ResumeLine from "@/features/stories/reading-progress/ResumeLine.astro";
+import StoryCard from "@/features/stories/StoryCard.vue";
+import StoryFacts from "@/features/stories/StoryFacts.astro";
+import StoryHero from "@/features/stories/StoryHero.astro";
+import { chaptersFromMarkdown } from "@/features/stories";
 import { styleguideCopy as copy } from "@/features/styleguide/copy";
 import Button from "@/shared/components/Button.astro";
 import Field from "@/shared/components/Field.astro";
 import Label from "@/shared/components/Label.astro";
 
 const section = "flex flex-col gap-5 border-t border-linea pt-5";
+const story = copy.story;
+// Two sample chapters whose anchors match the headings of the sample prose.
+const chapters = chaptersFromMarkdown(`## ${story.chapterTitle}\n\n## Capitolo 2`);
 const heading = "font-display text-titolo-2";
 ---
 
@@ -130,6 +146,91 @@ const heading = "font-display text-titolo-2";
           </Button>
         </div>
       </form>
+    </section>
+
+    <section class={section} aria-labelledby="sg-copertine">
+      <h2 id="sg-copertine" class={heading}>
+        {copy.sections.covers}
+      </h2>
+      <ul class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
+        {copy.covers.map((cover) => (
+          <li>
+            <Cover {...cover} format="wattpad" />
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class={section} aria-labelledby="sg-racconto">
+      <h2 id="sg-racconto" class={heading}>
+        {copy.sections.story}
+      </h2>
+      <StoryHero title={story.title} label={story.label} byline={story.byline}>
+        <Cover
+          slot="media"
+          id="sg-banda"
+          title={story.title}
+          genre={story.label}
+          motif="corridoio"
+          format="banda"
+          label={coversCopy.motifDescriptions.corridoio}
+        />
+      </StoryHero>
+      <StoryFacts
+        label={story.label}
+        setting={story.setting}
+        reading={story.reading}
+        publishedAt={new Date("2026-10-12")}
+        warnings={story.warnings}
+        links={{ fears: story.fears, tags: story.tags }}
+      />
+      <ResumeLine preview={story.resume} />
+      <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-y border-linea py-3 md:max-w-misura">
+        <ChapterIndex chapters={chapters} />
+        <ReadingControls />
+      </div>
+      <Prose>
+        <h2 id="capitolo-1">
+          <small>Capitolo 1</small> {story.chapterTitle}
+        </h2>
+        {story.paragraphs.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+        <hr />
+        <p>{story.afterBreak}</p>
+        <h2 id="capitolo-2">Capitolo 2</h2>
+        <div class="ct-chat" role="log" aria-label="Chat della diretta">
+          <div class="ct-chat__testa">
+            <span class="ct-chat__diretta">In diretta</span>
+            <span>1204 spettatori</span>
+          </div>
+          <ol>
+            <li>
+              <span class="ct-chat__ora">23:41</span>
+              <span class="ct-chat__utente">dannyboi_88:</span>{" "}
+              <span class="ct-chat__msg">ma è vero sangue?</span>
+            </li>
+            <li class="ct-chat__sistema">dannyboi_88 ha lasciato la chat</li>
+            <li class="ct-chat__sistema ct-chat__sistema--grave">La diretta è stata interrotta.</li>
+          </ol>
+        </div>
+        <pre
+          class="ct-log"
+          role="log"
+          aria-label="Log del sistema"
+        ><span>[06:12:04] INFO  legacy.boot(): avvio processo notturno</span><span>[06:12:09] WARN  luci: sensore non risponde</span><span class="ct-log__err ct-glitch">[06:12:11] ERR   body.handover(): corpo non trovato</span><span class="ct-log__err ct-glitch ct-glitch--vivo">[06:12:11] ERR   body.handover(): corpo non trovato</span></pre>
+      </Prose>
+      <OngoingBanner chapter={3} />
+      <FearNote note={story.fearNote} />
+      <ul class="grid gap-x-6 md:grid-cols-2">
+        <li>
+          <StoryCard story={story.card} />
+        </li>
+        <li>
+          <StoryCard story={story.ongoingCard} />
+        </li>
+      </ul>
+      <ContinueReading preview={{ href: "#sg-racconto", ...story.continueReading }} />
     </section>
   </div>
 </BaseLayout>

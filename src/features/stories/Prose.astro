@@ -1,0 +1,24 @@
+---
+/**
+ * The text of a story. DS: Prosa (`.ct-prosa`).
+ *
+ * The page renders the Markdown into the slot (`<Content />`), so the whole
+ * story is in the HTML from the start: no JavaScript is involved in showing
+ * it, which is what search engines need (DS › Prosa, SEO brief › §8).
+ *
+ * All its styles are in app.css › Story components, because the elements
+ * inside come from Markdown and cannot carry utility classes: chapters
+ * (`<h2 id="capitolo-N"><small>Capitolo N</small>…</h2>`, chapters-plugin.ts),
+ * scene breaks (`***` → «⁂»), the chat and log blocks.
+ *
+ * `id="testo"` and `tabindex="-1"` let the «Riprendi» link move the focus
+ * here after scrolling back to the reader's place; `data-prose` is how the
+ * reading-progress controller finds the text to measure.
+ *
+ * @example <Prose><Content /></Prose>
+ */
+---
+
+<article id="testo" tabindex="-1" data-prose class="ct-prosa">
+  <slot />
+</article>

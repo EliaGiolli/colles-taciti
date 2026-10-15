@@ -6,7 +6,7 @@
  * never require touching component logic.
  *
  * For now this only holds the temporary home page of PR 0; the real homepage
- * sections arrive in PR 7 (`feat/home`).
+ * sections arrive in PR 5 (`feat/home`).
  */
 export const homeCopy = {
   siteName: "Colles Taciti",

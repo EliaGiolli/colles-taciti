@@ -4,7 +4,7 @@
  * The site is fully static: every page is prerendered at build time, so readers
  * (and Google) get plain HTML with no framework runtime. The Vercel adapter is
  * still installed because one feature is on demand: the feedback Astro Action
- * (PR 9) runs as a serverless function. Without an adapter, Astro could not
+ * (PR 7) runs as a serverless function. Without an adapter, Astro could not
  * build that function at all.
  *
  * @see https://docs.astro.build/en/reference/configuration-reference/
@@ -15,6 +15,7 @@ import vue from "@astrojs/vue";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
 import { ctBlocks } from "./src/features/stories/blocks/plugin";
+import { ctChapters } from "./src/features/stories/chapters-plugin";
 
 export default defineConfig({
   /**
@@ -40,7 +41,7 @@ export default defineConfig({
   integrations: [
     /**
      * Vue is used for exactly one interactive island (search and filters,
-     * PR 8). Vue components rendered without a `client:` directive ship zero
+     * PR 6). Vue components rendered without a `client:` directive ship zero
      * JavaScript, which is how the shared story cards are reused on static
      * pages.
      */
@@ -101,14 +102,17 @@ export default defineConfig({
 
   /**
    * Markdown (the stories). Sätteri is Astro 7's default processor; it is
-   * configured explicitly only to add one plugin, which turns ```chat and
-   * ```log fenced blocks into the DS ChatDiretta and RigheDiLog markup
-   * (src/features/stories/blocks/plugin.ts). GitHub-flavoured Markdown and
+   * configured explicitly only to add two plugins:
+   * - `ctBlocks` turns ```chat and ```log fenced blocks into the DS
+   *   ChatDiretta and RigheDiLog markup (src/features/stories/blocks/plugin.ts);
+   * - `ctChapters` gives every `## …` heading its `#capitolo-N` anchor and
+   *   «Capitolo N» label (src/features/stories/chapters-plugin.ts).
+   * GitHub-flavoured Markdown and
    * smart punctuation («...» → «…», straight quotes → curly) stay on, as by
    * default.
    */
   markdown: {
-    processor: satteri({ mdastPlugins: [ctBlocks] }),
+    processor: satteri({ mdastPlugins: [ctBlocks, ctChapters] }),
   },
 
   vite: {

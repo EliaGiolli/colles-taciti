@@ -18,6 +18,7 @@
 import { reference } from "astro:content";
 import { z } from "astro/zod";
 import { publicCopy } from "@/core/content/public-copy";
+import { MAX_LINES, MOTIFS } from "@/features/covers";
 
 /** A story is either finished or still coming out in chapters (Senza Rimorso). */
 export const STORY_STATUSES = ["complete", "ongoing"] as const;
@@ -72,7 +73,7 @@ export const storySchema = z
     status: z.enum(STORY_STATUSES),
     /** Ongoing stories only: how many chapters are out. */
     chapterReached: z.number().int().positive().optional(),
-    /** Name of the series the story belongs to (JSON-LD CreativeWorkSeries, PR 10). */
+    /** Name of the series the story belongs to (JSON-LD CreativeWorkSeries, PR 8). */
     series: z.string().trim().min(1).optional(),
     wattpadUrl: z.url({ hostname: /^(www\.)?wattpad\.com$/ }).optional(),
     seo: z.object({
@@ -84,6 +85,18 @@ export const storySchema = z
       .object({
         order: z.number().int().positive(),
         hook: publicCopy(),
+      })
+      .optional(),
+    /**
+     * Optional cover overrides (DS › Copertina). By default the motif comes
+     * from the main fear (the notebook while the story is ongoing) and the
+     * title is broken into lines automatically. `lines` breaks it by hand
+     * («il titolo spezzato a mano in 1–3 righe»); `motif` picks another one.
+     */
+    cover: z
+      .object({
+        lines: z.array(z.string().trim().min(1)).min(1).max(MAX_LINES).optional(),
+        motif: z.enum(MOTIFS).optional(),
       })
       .optional(),
     /** «Se ti è piaciuto»: two related stories (SEO brief v2 › §7). */
@@ -116,6 +129,15 @@ export const storySchema = z
         code: "custom",
         path: ["chapterReached"],
         message: "chapterReached vale solo per i racconti in corso",
+      });
+    }
+    // Hand-broken cover lines only move the line breaks: a typo in them
+    // would print a different title on the cover than on the page.
+    if (story.cover?.lines !== undefined && story.cover.lines.join(" ") !== story.title) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["cover", "lines"],
+        message: "Le righe della copertina, unite da uno spazio, devono dare esattamente il titolo",
       });
     }
     if (story.updatedAt !== undefined && story.updatedAt < story.publishedAt) {

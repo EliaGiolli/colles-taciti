@@ -33,8 +33,9 @@ No React, no shadcn, no Motion, no Sentry (for now).
 | `bun run test:coverage` | Unit + integration with v8 coverage (informative, no thresholds) |
 | `bun run test:e2e` | Build, then Playwright + axe in `tests/e2e` against `astro preview` |
 | `bun run check` | Everything except e2e. Must be green before every commit |
+| `bun run copertine` | Render the story covers to PNG (`public/copertine`) and update `scripts/copertine.json`; run after adding a story or changing its title, label, status or main fear |
 
-Added by later PRs: `db:generate` / `db:migrate` (PR 9), `libri:sync` (PR 12), `copertine` (PR 4).
+Added by later PRs: `db:generate` / `db:migrate` (PR 7), `libri:sync` (PR 10).
 
 Hooks (lefthook): pre-commit runs typecheck + lint + unit; pre-push runs `check` + e2e.
 
@@ -140,6 +141,6 @@ MCP servers approved by Elia, registered in [.mcp.json](.mcp.json) (project scop
   Drizzle, Vitest, Biome, zod). Used without an API key for now.
 - **playwright** (`@playwright/mcp`, pinned): visual checks. Wrapped in `cmd /c` because `npx` needs
   it on native Windows.
-- Database MCP: deferred to PR 9 (no database exists before then).
+- Database MCP: deferred to PR 7 (no database exists before then).
 
 Prefer these over memory when an API might have changed.

@@ -71,7 +71,10 @@ afterwards in PR 3 (Instagram omitted until the profile exists). See `docs/PLAN.
 
 ## PR 3 · `feat/content-pipeline`
 
-PR: – · Merged: – · Notes: –
+PR: [#5](https://github.com/EliaGiolli/colles-taciti/pull/5) · Merged: 2026-10-15 · Notes: includes the footer-link
+fix (closed #4). Sätteri mdast plugin instead of remark (Astro 7 default); `readingTime` computed from the
+text; content in `src/core/content/` next to the brand-tone check; content tests read the files directly
+(`getCollection` is empty inside Vitest). See `docs/PLAN.md` › change log.
 
 - [x] Footer links: real portfolio and Wattpad URLs, no Instagram link until the profile exists (was the separate PR #4, folded in here)
 - [x] `content.config.ts`: `stories`, `tags`, `fears`, `books` collections with the full frontmatter schema (content in `src/core/content/`, next to the brand-tone check)
@@ -81,41 +84,36 @@ PR: – · Merged: – · Notes: –
 - [x] Brand-tone check (no `!`, emoji, shouting caps, banned names in `seo`/`title`/`logline`/`tags`), enforced by the schemas through `publicCopy()`
 - [x] README updated
 
-## PR 4 · `feat/covers`
+## PR 4 · `feat/story-page`
+
+PR: – · Merged: – · Notes: covers, story page and reading progress in one PR (they were PRs 4, 5 and 6,
+each too small on its own).
+
+Covers
+- [x] `cover.ts` (pure SVG) + `Cover.astro` (four formats, including the 1600×640 band for the Hero; optional `cover` frontmatter override)
+- [x] `copertine` script: PNG via resvg (1200×630, 512×800, 1080×1350), static font instances in `scripts/fonts`, hash manifest checked by a test
+
+Story page
+- [x] `/racconti/[slug]`: Hero (with the cover), StoryFacts (tags link to filters), ChapterIndex (`#capitolo-N`, set by a second Sätteri plugin)
+- [x] `Prose`, `LiveChat`, `LogLines`, `FearNote`, `OngoingBanner` (styles for the `ct-chat`/`ct-log`/`ct-glitch` markup the PR 3 plugin already emits, in app.css › Story components)
+- [x] `ReadingControls` + `reading-controls.controller.ts`
+- [x] «Se ti è piaciuto» + Wattpad link (with `StoryCard.vue`, brought forward from PR 6)
+
+Reading progress
+- [x] `reading-progress.controller.ts` + storage (story, chapter, %) in `localStorage`
+- [x] `ResumeLine` («Eri al capitolo N → Riprendi») and `ContinueReading` (placed on the homepage in PR 5)
+
+- [x] README updated
+
+## PR 5 · `feat/home`
 
 PR: – · Merged: – · Notes: –
 
-- [ ] `cover.ts` (pure SVG) + `Cover.astro`
-- [ ] `copertine` script: PNG via resvg (1200×630, 512×800, 1080×1350)
-- [ ] README updated
-
-## PR 5 · `feat/story-page`
-
-PR: – · Merged: – · Notes: –
-
-- [ ] `/racconti/[slug]`: Hero, StoryFacts (tags link to filters), ChapterIndex (`#capitolo-N`)
-- [ ] `Prose`, `LiveChat`, `LogLines`, `FearNote`, `OngoingBanner` (styles for the `ct-chat`/`ct-log`/`ct-glitch` markup the PR 3 plugin already emits)
-- [ ] `ReadingControls` + `reading-controls.controller.ts`
-- [ ] «Se ti è piaciuto» + Wattpad link
-- [ ] README updated
-
-## PR 6 · `feat/reading-progress`
-
-PR: – · Merged: – · Notes: –
-
-- [ ] `reading-progress.controller.ts` + storage (story, chapter, %) in `localStorage`
-- [ ] `ResumeLine` («Eri al capitolo N → Riprendi») and `ContinueReading`
-- [ ] README updated
-
-## PR 7 · `feat/home`
-
-PR: – · Merged: – · Notes: –
-
-- [ ] Hero, «Stai leggendo…», intro, «Da dove cominciare», «Ultimi racconti», InCorso
+- [ ] Hero, «Stai leggendo…» (`ContinueReading`, built in PR 4), intro, «Da dove cominciare», «Ultimi racconti», InCorso
 - [ ] SceltaPaura with counts, «Perché Colles Taciti», form slot
 - [ ] README updated
 
-## PR 8 · `feat/search-filters`
+## PR 6 · `feat/search-filters`
 
 PR: – · Merged: – · Notes: –
 
@@ -123,10 +121,10 @@ PR: – · Merged: – · Notes: –
 - [ ] `SearchBrowser.vue` island (`client:idle`, MiniSearch, facets, `TransitionGroup`, `aria-live`)
 - [ ] `useUrlState` composable (zod ↔ URLSearchParams), back button works
 - [ ] `/racconti` (static list + island) and the 5 `/[categoria]` pages
-- [ ] `StoryCard.vue` used statically and in the island
+- [ ] `StoryCard.vue` (created in PR 4) used in the archive and in the island; cover thumbnail variant
 - [ ] README updated
 
-## PR 9 · `feat/feedback`
+## PR 7 · `feat/feedback`
 
 PR: – · Merged: – · Notes: –
 
@@ -137,7 +135,7 @@ PR: – · Merged: – · Notes: –
 - [ ] DB tests on libSQL `:memory:`; MSW for Resend
 - [ ] README updated
 
-## PR 10 · `feat/seo`
+## PR 8 · `feat/seo`
 
 PR: – · Merged: – · Notes: –
 
@@ -146,7 +144,7 @@ PR: – · Merged: – · Notes: –
 - [ ] `@astrojs/sitemap`, `robots.txt`
 - [ ] README updated
 
-## PR 11 · `feat/consent-analytics`
+## PR 9 · `feat/consent-analytics`
 
 PR: – · Merged: – · Notes: –
 
@@ -156,7 +154,7 @@ PR: – · Merged: – · Notes: –
 - [ ] UTM conventions in README
 - [ ] README updated
 
-## PR 12 · `feat/books`
+## PR 10 · `feat/books`
 
 PR: – · Merged: – · Notes: –
 
@@ -165,7 +163,7 @@ PR: – · Merged: – · Notes: –
 - [ ] Test data until Elia's list arrives
 - [ ] README updated
 
-## PR 13 · `chore/launch`
+## PR 11 · `chore/launch`
 
 PR: – · Merged: – · Notes: –
 

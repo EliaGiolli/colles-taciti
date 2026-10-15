@@ -13,6 +13,8 @@
  *    (`bg-terra`, `text-osso`, `text-lettura`, `max-w-misura`…).
  * 4. Base styles: page colours, body text, focus ring, reduced motion.
  * 5. Page transitions: native cross-document View Transitions.
+ * 6. Story components: classes for markup utilities cannot reach (the story
+ *    text from Markdown, the chat and log blocks, the cover SVG).
  *
  * Why the Tailwind defaults are reset (`--color-*: initial` and so on): the
  * design system has its own palette, type scale, spacing, radii and no
@@ -361,5 +363,345 @@
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation-duration: 200ms;
+  }
+}
+
+/* ─── 6. Story components ──────────────────────────────────────────────── */
+
+/*
+ * Classes for markup that Tailwind utilities cannot reach: the story text
+ * comes out of Markdown (Prosa, the chat and log blocks of the Sätteri
+ * plugin) and the covers are SVG strings. Values follow bundle.css in the
+ * DS artifact, written with the tokens above instead of pixels.
+ *
+ * They live in the `components` layer, between `base` and `utilities`: a
+ * utility on the same element still wins, as in the rest of the site.
+ */
+@layer components {
+  /* Prosa (DS › Prosa): the story text, read like a book. */
+  .ct-prosa {
+    /* The reading column. In em, so a larger text size widens it in step:
+       the line keeps the same number of characters. */
+    max-width: var(--container-misura);
+    font-family: var(--font-testo);
+    /* ReadingControls set --scala-lettura on <html> (text-size.ts); size
+       and leading scale together, so the rhythm never changes. */
+    font-size: calc(var(--text-lettura) * var(--scala-lettura, 1));
+    line-height: calc(var(--text-lettura--line-height) * var(--scala-lettura, 1));
+    font-weight: var(--peso-testo);
+    color: var(--osso);
+    hyphens: auto;
+  }
+
+  /* Programmatic focus target of «Riprendi»: no ring around a whole article. */
+  .ct-prosa:focus {
+    outline: none;
+  }
+
+  .ct-prosa p {
+    margin: 0;
+  }
+
+  /* First-line indent from the second paragraph on, no gap between them. */
+  .ct-prosa p + p {
+    text-indent: 1.5em;
+  }
+
+  /* A paragraph that opens a chapter or follows a break or a block is not indented. */
+  .ct-prosa :is(h2, hr, blockquote, .ct-chat, .ct-log) + p {
+    text-indent: 0;
+  }
+
+  /* Chapters (`## …`): Bodoni titolo-2, with the «Capitolo N» label above. */
+  .ct-prosa h2 {
+    margin: var(--spacing-7) 0 var(--spacing-5);
+    font-family: var(--font-display);
+    font-size: var(--text-titolo-2);
+    line-height: var(--text-titolo-2--line-height);
+    font-weight: var(--peso-titolo);
+    /* Some air above the heading when an index link jumps to it. */
+    scroll-margin-top: var(--spacing-5);
+  }
+
+  .ct-prosa h2:first-child {
+    margin-top: 0;
+  }
+
+  .ct-prosa h2 small {
+    display: block;
+    margin-bottom: var(--spacing-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-etichetta);
+    line-height: var(--text-etichetta--line-height);
+    letter-spacing: var(--text-etichetta--letter-spacing);
+    font-weight: var(--text-etichetta--font-weight);
+    text-transform: uppercase;
+    color: var(--osso-muto);
+  }
+
+  /*
+   * Scene break. Elia writes `***` and Markdown makes an <hr>, the HTML
+   * element for exactly this, a thematic break. The DS draws it as «⁂»; the
+   * mark is CSS content, so screen readers announce a separator rather than
+   * reading out the symbol (the DS asks for it to be hidden from them).
+   */
+  .ct-prosa hr {
+    margin: var(--spacing-6) 0;
+    border: 0;
+    text-align: center;
+    color: var(--osso-muto);
+  }
+
+  .ct-prosa hr::after {
+    content: "⁂";
+    letter-spacing: 0.5em;
+  }
+
+  /* Epigraph (DS ct-epigrafe): a Markdown quote, right-aligned and quiet. */
+  .ct-prosa blockquote {
+    max-width: 24em;
+    margin: 0 0 var(--spacing-6) auto;
+    text-align: right;
+    font-size: var(--text-presentazione);
+    line-height: var(--text-presentazione--line-height);
+    font-style: italic;
+    color: var(--osso-muto);
+  }
+
+  .ct-prosa a {
+    text-decoration: underline;
+    text-decoration-color: var(--linea-forte);
+    text-underline-offset: 4px;
+  }
+
+  .ct-prosa a:hover {
+    color: var(--ferita);
+    text-decoration-color: var(--ferita);
+  }
+
+  .ct-prosa :is(.ct-chat, .ct-log) {
+    margin-block: var(--spacing-6);
+  }
+
+  /* ChatDiretta (DS): the raw stream of a live chat, on terra-fonda. */
+  .ct-chat {
+    background: var(--terra-fonda);
+    border-block: 1px solid var(--linea);
+    font-family: var(--font-mono);
+    font-size: var(--text-log);
+    line-height: var(--text-log--line-height);
+    font-weight: var(--peso-mono);
+    text-indent: 0;
+    hyphens: manual;
+  }
+
+  .ct-chat__testa {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-4);
+    padding: var(--spacing-3) var(--spacing-5);
+    border-bottom: 1px solid var(--linea);
+    font-size: var(--text-etichetta);
+    line-height: var(--text-etichetta--line-height);
+    letter-spacing: var(--text-etichetta--letter-spacing);
+    font-weight: var(--text-etichetta--font-weight);
+    text-transform: uppercase;
+    color: var(--osso-muto);
+  }
+
+  .ct-chat__diretta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    color: var(--ferita);
+  }
+
+  /* The live dot: the one circle of the interface (DS › Bordi). */
+  .ct-chat__diretta::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-circle);
+    background: var(--ferita);
+  }
+
+  .ct-chat ol {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    margin: 0;
+    padding: var(--spacing-4) var(--spacing-5);
+    list-style: none;
+  }
+
+  .ct-chat__ora,
+  .ct-chat__utente {
+    color: var(--osso-muto);
+  }
+
+  .ct-chat__ora {
+    margin-right: var(--spacing-2);
+  }
+
+  .ct-chat__sistema {
+    font-style: italic;
+    color: var(--osso-muto);
+  }
+
+  .ct-chat__sistema--grave {
+    font-style: normal;
+    color: var(--ferita);
+  }
+
+  /* RigheDiLog (DS): numbered log lines in neon on terra-fonda. */
+  .ct-log {
+    margin: 0;
+    padding: var(--spacing-4) var(--spacing-5);
+    background: var(--terra-fonda);
+    color: var(--neon);
+    font-family: var(--font-mono);
+    font-size: var(--text-log);
+    line-height: var(--text-log--line-height);
+    font-weight: var(--peso-mono);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    counter-reset: riga;
+    hyphens: manual;
+  }
+
+  /* One line per span, numbered 01, 02… with a hanging indent. */
+  .ct-log span {
+    display: block;
+    padding-left: 5ch;
+    text-indent: -5ch;
+  }
+
+  .ct-log span::before {
+    counter-increment: riga;
+    content: counter(riga, decimal-leading-zero);
+    display: inline-block;
+    width: 3ch;
+    margin-right: 2ch;
+    text-indent: 0;
+    color: var(--osso-muto);
+  }
+
+  .ct-log .ct-log__err {
+    color: var(--ferita);
+  }
+
+  /*
+   * The glitch: the line seen double. The DS's one exception to «no
+   * shadows», and it belongs to the machine only, never to prose or titles.
+   */
+  .ct-glitch {
+    text-shadow:
+      1px 0 var(--ferita),
+      -1px 0 var(--neon);
+  }
+
+  .ct-glitch::before {
+    text-shadow: none;
+  }
+
+  /* The live glitch twitches every 4s. With reduced motion this rule does
+     not exist at all (and the base reset would stop it anyway). */
+  @media (prefers-reduced-motion: no-preference) {
+    .ct-glitch--vivo {
+      animation: ct-scatto 4s steps(1) infinite;
+    }
+  }
+
+  /*
+   * Copertina (DS): the generated cover SVG (features/covers). These rules
+   * only map its paint classes to the theme tokens; shapes, sizes and
+   * stroke widths are attributes of the SVG itself. Without this stylesheet
+   * (the PNG renderer) the attributes' Notte colours apply.
+   */
+  .ct-copertina {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .ct-copertina .f-terra {
+    fill: var(--terra);
+  }
+
+  .ct-copertina .f-carne {
+    fill: var(--carne);
+  }
+
+  .ct-copertina .f-ruggine {
+    fill: var(--ruggine);
+  }
+
+  .ct-copertina .f-crete {
+    fill: var(--crete);
+  }
+
+  .ct-copertina .f-ferita {
+    fill: var(--ferita);
+  }
+
+  .ct-copertina .f-linea {
+    fill: var(--linea-forte);
+  }
+
+  .ct-copertina .s-osso {
+    stroke: var(--osso);
+  }
+
+  .ct-copertina .s-neon {
+    stroke: var(--neon);
+  }
+
+  .ct-copertina .s-linea {
+    stroke: var(--linea-forte);
+  }
+
+  .ct-copertina .t-titolo {
+    fill: var(--osso);
+    font-family: var(--font-display);
+  }
+
+  .ct-copertina :is(.t-mono, .t-genere) {
+    font-family: var(--font-mono);
+  }
+
+  .ct-copertina .t-mono {
+    fill: var(--osso-muto);
+  }
+
+  .ct-copertina .t-genere {
+    fill: var(--ruggine-testo);
+  }
+
+  /* Grain over an image (DS ct-grana), never over text. */
+  .ct-grana::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.14;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+  }
+}
+
+@keyframes ct-scatto {
+  0%,
+  93%,
+  100% {
+    transform: none;
+  }
+  94% {
+    transform: translateX(2px);
+  }
+  96% {
+    transform: translateX(-3px);
+  }
+  98% {
+    transform: translateX(1px);
   }
 }

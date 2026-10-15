@@ -21,7 +21,8 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "astro build && playwright test",
     "check": "bun run typecheck && bun run lint && bun run test && bun run test:integration",
-    "prepare": "lefthook install"
+    "prepare": "lefthook install",
+    "copertine": "bun scripts/copertine.ts"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "0.4.3",
@@ -39,6 +40,7 @@
     "@axe-core/playwright": "4.13.0",
     "@biomejs/biome": "2.5.15",
     "@playwright/test": "1.64.1",
+    "@resvg/resvg-js": "2.6.2",
     "@tailwindcss/vite": "4.3.3",
     "@testing-library/dom": "10.4.2",
     "@testing-library/vue": "8.1.0",

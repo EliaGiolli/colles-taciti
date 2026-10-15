@@ -1,15 +1,16 @@
 /**
  * Integration tests of the content: the real files in `src/core/content/`, validated
  * with the schemas of content.config.ts and checked for cross-entry
- * consistency (see tests/helpers/content-files.ts for why the files are read
+ * consistency (see scripts/lib/content-files.ts for why the files are read
  * directly instead of through `getCollection`).
  *
- * `astro check` already validates each entry against its schema; what only
- * runs here (until the pages use the queries, PR 5) is the integrity check
- * across entries: tags in the right group, related stories that exist…
+ * `astro check` already validates each entry against its schema, and the
+ * build runs the integrity check across entries (tags in the right group,
+ * related stories that exist…) on the first page that asks for stories.
+ * Here both run without a build, so a mistake shows up in `bun run check`.
  * Plus the schema rules themselves, tested on small variations.
  */
-import { readJsonEntries, readStoryFiles } from "@tests/helpers/content-files";
+
 import { describe, expect, it } from "vitest";
 import { bookSchema } from "@/features/books/schema";
 import { fearSchema } from "@/features/categories/schema";
@@ -22,6 +23,7 @@ import {
   selectStarters,
   sortByPublished,
 } from "@/features/stories/story-list";
+import { readJsonEntries, readStoryFiles } from "../../scripts/lib/content-files";
 
 /** Parses every entry of a vocabulary, failing the test on the first invalid one. */
 function parseAll<T>(entries: { id: string }[], parse: (data: unknown) => T) {
@@ -158,6 +160,17 @@ describe("story schema", () => {
     expect(messages({ ...valid, chapterReached: 2 })).toEqual([
       "chapterReached: chapterReached vale solo per i racconti in corso",
     ]);
+  });
+
+  it("accepts cover overrides whose lines spell the title exactly", () => {
+    expect(messages({ ...valid, cover: { lines: ["Un", "titolo"], motif: "punti" } })).toEqual([]);
+    expect(messages({ ...valid, cover: { lines: ["Un", "titlo"] } })).toEqual([
+      "cover.lines: Le righe della copertina, unite da uno spazio, devono dare esattamente il titolo",
+    ]);
+    expect(messages({ ...valid, cover: { lines: ["a", "b", "c", "d"] } })[0]).toMatch(
+      /^cover\.lines/,
+    );
+    expect(messages({ ...valid, cover: { motif: "zucca" } })[0]).toMatch(/^cover\.motif/);
   });
 
   it("accepts Wattpad links only for wattpad.com", () => {

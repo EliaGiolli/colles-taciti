@@ -15,8 +15,9 @@
  * fields, tag labels), never on the story text: a character may shout, a
  * story may need a name. The content schemas call it at build time, so a
  * violation fails `astro check` and the build with a message naming the
- * field. The function itself is pure and reusable (PR 4 will run it on the
- * social copy of the covers).
+ * field. The function itself is pure and reusable. The covers need no check
+ * of their own: they draw only fields that have already passed it (title,
+ * label, fear names) and fixed words from their copy.ts.
  *
  * It lives in `core` because it is a site-wide policy, not a feature: the
  * stories, the categories and later the covers all use it.

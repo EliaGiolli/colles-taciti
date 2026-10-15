@@ -1,0 +1,122 @@
+---
+/**
+ * /racconti/<slug>: one story, on a single page with a chapter index
+ * (PLAN › Racconti a capitoli, Pagine › 3).
+ *
+ * Order, from the PLAN and the mockup: Hero (cover band, sub-genre, title,
+ * byline) · SchedaTecnica · ResumeLine · chapter index and reading controls
+ * · Prosa · InCorso (ongoing stories) · NotaPaura · feedback form (PR 7) ·
+ * «Se ti è piaciuto» · Wattpad link.
+ *
+ * Every story is prerendered at build time: `getStaticPaths` lists them,
+ * and the integrity check of `getStories()` runs first, so a broken
+ * reference stops the build instead of publishing a broken page.
+ *
+ * JavaScript on this page: only the controllers it names (theme switch,
+ * reading controls, reading progress), loaded lazily by the registry. No
+ * Vue: the story cards are Vue components rendered to HTML on the server.
+ *
+ * Title and description come from the SEO brief through the frontmatter;
+ * canonical URL, Open Graph and JSON-LD arrive with Seo.astro in PR 8.
+ */
+import { render } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "@/core/layout/BaseLayout.astro";
+import Cover from "@/features/covers/Cover.astro";
+import { coversCopy } from "@/features/covers";
+import ChapterIndex from "@/features/stories/ChapterIndex.astro";
+import FearNote from "@/features/stories/FearNote.astro";
+import OngoingBanner from "@/features/stories/OngoingBanner.astro";
+import Prose from "@/features/stories/Prose.astro";
+import ReadingControls from "@/features/stories/ReadingControls.astro";
+import RelatedStories from "@/features/stories/RelatedStories.astro";
+import ResumeLine from "@/features/stories/reading-progress/ResumeLine.astro";
+import StoryFacts from "@/features/stories/StoryFacts.astro";
+import StoryHero from "@/features/stories/StoryHero.astro";
+import {
+  getRelatedStories,
+  getStories,
+  getStoryCover,
+  getStoryLinks,
+  type Story,
+  storiesCopy as copy,
+  storyCard,
+  storyReadingSummary,
+} from "@/features/stories";
+import Button from "@/shared/components/Button.astro";
+
+export const getStaticPaths = (async () => {
+  const stories = await getStories();
+  return stories.map((story) => ({ params: { slug: story.id }, props: { story } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  story: Story;
+}
+
+const { story } = Astro.props;
+const { data } = story;
+const { Content } = await render(story.entry);
+const [cover, links, related] = await Promise.all([
+  getStoryCover(story, "banda"),
+  getStoryLinks(story),
+  getRelatedStories(story),
+]);
+const reading = storyReadingSummary(story);
+---
+
+<BaseLayout title={data.seo.title} description={data.seo.description}>
+  <div class="mx-auto flex max-w-pagina flex-col gap-7 px-4 py-6 md:px-6 md:py-7">
+    <StoryHero
+      title={data.title}
+      label={data.label}
+      ongoing={data.status === "ongoing"}
+      byline={`${copy.byline} · ${reading}`}
+    >
+      <Cover slot="media" {...cover} label={coversCopy.motifDescriptions[cover.motif]} />
+    </StoryHero>
+
+    <StoryFacts
+      label={data.label}
+      setting={data.setting}
+      reading={reading}
+      publishedAt={data.publishedAt}
+      updatedAt={data.updatedAt}
+      warnings={data.warnings}
+      links={links}
+    />
+
+    <div
+      data-controller="reading-progress"
+      data-story-id={story.id}
+      data-story-title={data.title}
+      data-story-href={story.href}
+      class="flex flex-col gap-6"
+    >
+      <ResumeLine />
+      <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-y border-linea py-3 md:max-w-misura">
+        <ChapterIndex chapters={story.chapters} />
+        <ReadingControls />
+      </div>
+      <Prose>
+        <Content />
+      </Prose>
+      {data.status === "ongoing" && data.chapterReached !== undefined && (
+        <OngoingBanner chapter={data.chapterReached} />
+      )}
+      <FearNote note={data.fearNote} />
+    </div>
+
+    <!-- The feedback form («Ti è rimasto addosso qualcosa?») goes here in PR 7. -->
+
+    <RelatedStories stories={related.map(storyCard)} />
+
+    {data.wattpadUrl && (
+      <p>
+        <Button variant="link" href={data.wattpadUrl}>
+          {copy.wattpad}
+        </Button>
+      </p>
+    )}
+  </div>
+</BaseLayout>

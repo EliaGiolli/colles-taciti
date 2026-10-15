@@ -1,11 +1,16 @@
 /**
- * Reads the real files in `src/core/content/` the way a loader would, for tests.
+ * Reads the real files in `src/core/content/` the way a loader would, for
+ * the scripts and the tests.
  *
- * Astro's content layer (`getCollection`) does not run inside Vitest: the
- * data store is filled by Astro's own build pipeline, and Vitest only gets
- * empty collections. So the integration tests read the files directly, then
- * validate them with the very schemas content.config.ts uses. Same files,
- * same rules, no Astro runtime.
+ * Astro's content layer (`getCollection`) only runs inside Astro's own build
+ * pipeline: Vitest gets empty collections, and a script run with Bun has no
+ * `astro:content` at all. So both read the files directly. The integration
+ * tests then validate them with the very schemas content.config.ts uses:
+ * same files, same rules, no Astro runtime.
+ *
+ * It lives in `scripts/lib` (and not in `tests/helpers`, where it started)
+ * because `bun run copertine` needs it too, and a script should not depend
+ * on test code.
  */
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
