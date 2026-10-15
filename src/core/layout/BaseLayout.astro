@@ -1,0 +1,80 @@
+---
+/**
+ * The frame of every page: `<head>`, theme, Testata, content, Piede and the
+ * controller registry. Pages render their content into the default slot,
+ * which sits inside `<main>`.
+ *
+ * Order inside `<head>` matters:
+ * 1. `charset` first: it must appear in the first 1024 bytes.
+ * 2. ThemeScript next: it sets `data-theme` before anything is painted
+ *    (see ThemeScript.astro), and it is tiny and blocks nothing.
+ * 3. Then title, meta, favicon and the stylesheet with the fonts.
+ *
+ * Title and description are passed as they are. The SEO component (PR 10)
+ * will take over canonical URL, Open Graph and structured data.
+ *
+ * `<body>` is a full-height column, so on a short page the footer still sits
+ * at the bottom of the screen instead of floating in the middle.
+ *
+ * The skip link is the first focusable element: a keyboard user can jump
+ * past the header straight to the content. It is hidden until focused.
+ *
+ * @example
+ * <BaseLayout title="Colles Taciti" description="Racconti horror in italiano.">
+ *   <h1>…</h1>
+ * </BaseLayout>
+ */
+import ThemeScript from "@/core/theme/ThemeScript.astro";
+import { layoutCopy as copy } from "./copy";
+import Footer from "./Footer.astro";
+import GlobalHead from "./GlobalHead.astro";
+import Header from "./Header.astro";
+
+export interface Props {
+  /** The full document title, as shown in the browser tab and in search results. */
+  title: string;
+  /** The meta description (search result snippet). */
+  description: string;
+  /** Keeps the page out of search engines (e.g. /design-system). */
+  noindex?: boolean;
+}
+
+const { title, description, noindex = false } = Astro.props;
+
+/** Id of `<main>`, the skip link's target. */
+const MAIN_ID = "contenuto";
+---
+
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <ThemeScript />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="generator" content={Astro.generator} />
+    <GlobalHead />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a
+      href={`#${MAIN_ID}`}
+      class="sr-only font-mono text-meta focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-10 focus:bg-terra focus:px-4 focus:py-3"
+    >
+      {copy.skipLink}
+    </a>
+    <Header />
+    <main id={MAIN_ID} class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Processed by Astro: bundled, deferred and loaded as an ES module.
+         It connects every [data-controller] on the page (the theme toggle
+         in the header, plus whatever the page itself uses). -->
+    <script>
+      import "@/core/controllers/start";
+    </script>
+  </body>
+</html>

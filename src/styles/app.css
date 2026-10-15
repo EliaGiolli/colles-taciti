@@ -12,6 +12,7 @@
  * 3. `@theme inline`: exposes those tokens to Tailwind as utilities
  *    (`bg-terra`, `text-osso`, `text-lettura`, `max-w-misura`…).
  * 4. Base styles: page colours, body text, focus ring, reduced motion.
+ * 5. Page transitions: native cross-document View Transitions.
  *
  * Why the Tailwind defaults are reset (`--color-*: initial` and so on): the
  * design system has its own palette, type scale, spacing, radii and no
@@ -35,8 +36,9 @@
   /*
    * Notte: the default theme (stories are read in the evening, on a phone).
    * It also applies when <html> has no data-theme at all, so the page is
-   * never unstyled. How the attribute is set (saved choice, system
-   * preference) is the job of the theme script (PR 2).
+   * never unstyled (for instance with JavaScript off). The attribute is set
+   * from the reader's saved choice by core/theme/ThemeScript.astro; the
+   * system's prefers-color-scheme is deliberately ignored (see theme.ts).
    */
   :root,
   [data-theme="dark"] {
@@ -330,5 +332,34 @@
       /* biome-ignore lint/complexity/noImportantStyles: see the comment above. */
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/* ─── 5. Page transitions ──────────────────────────────────────────────── */
+
+/*
+ * Native cross-document View Transitions (PLAN › Animazioni): when a reader
+ * follows a link to another page of the site, the browser cross-fades the
+ * old page into the new one instead of flashing white. No JavaScript and no
+ * client-side router: each page is still a normal, full navigation, so
+ * scripts, analytics and the back button behave as usual. Browsers without
+ * support simply navigate as before.
+ *
+ * Only for readers who have not asked for less motion: the rule sits inside
+ * `prefers-reduced-motion: no-preference`, so with `reduce` it does not
+ * exist at all (nothing to override, unlike the transitions in section 4).
+ *
+ * The header has its own `view-transition-name` (Header.astro): it is the
+ * same on both pages, so it stays still while the content fades.
+ * 200ms matches the DS colour transitions (DS › Stati e movimento).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 200ms;
   }
 }

@@ -7,7 +7,8 @@
  * preview server itself through `webServer`.
  *
  * Two viewports, as required by the plan's visual checks: a 375px phone and a
- * desktop. Theme projects (Notte / Nebbia) are added with the theme in PR 2.
+ * desktop. Themes are not separate projects (that would run every test
+ * twice): the tests that depend on the theme loop over Notte and Nebbia.
  *
  * @see https://playwright.dev/docs/test-configuration
  */

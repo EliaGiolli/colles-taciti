@@ -3,7 +3,7 @@
  * Rome, where formatting in the wrong time zone would show the wrong day.
  */
 import { describe, expect, it } from "vitest";
-import { formatDate, toIsoDate } from "./format-date";
+import { formatDate, formatYear, toIsoDate } from "./format-date";
 
 describe("formatDate", () => {
   const date = new Date("2026-10-14T10:00:00Z");
@@ -35,5 +35,16 @@ describe("toIsoDate", () => {
 
   it("agrees with formatDate on the day", () => {
     expect(toIsoDate(new Date("2026-10-14T22:30:00Z"))).toBe("2026-10-15");
+  });
+});
+
+describe("formatYear", () => {
+  it("returns the year in Rome", () => {
+    expect(formatYear(new Date("2026-10-14T10:00:00Z"))).toBe("2026");
+  });
+
+  it("changes at midnight in Rome, not in UTC", () => {
+    // 23:30 UTC on 31 December is 00:30 on 1 January in Rome (UTC+1).
+    expect(formatYear(new Date("2026-12-31T23:30:00Z"))).toBe("2027");
   });
 });

@@ -60,3 +60,18 @@ export function formatDate(date: Date, style: DateStyle = "short"): string {
 export function toIsoDate(date: Date): string {
   return isoFormat.format(date);
 }
+
+const yearFormat = new Intl.DateTimeFormat(SITE_LOCALE, {
+  year: "numeric",
+  timeZone: SITE_TIME_ZONE,
+});
+
+/**
+ * The year in Rome, as shown in the footer signature («… · 2026»). Pages are
+ * built ahead of time, so this is the year of the build: a new deploy in
+ * January updates it. The year turns at midnight in Rome, an hour before
+ * it does in UTC.
+ */
+export function formatYear(date: Date): string {
+  return yearFormat.format(date);
+}
