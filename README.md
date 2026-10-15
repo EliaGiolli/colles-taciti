@@ -104,7 +104,21 @@ All colours, type styles, spacing and radii come from the Colles Taciti design s
 default scales are reset, so only design-system values exist (`bg-terra`, `text-lettura`,
 `max-w-misura`, `p-5` = 24px), and there are no shadows or rounded utilities. Two themes, *Notte*
 and *Nebbia*, switch with `data-theme` on `<html>`. The shared components are shown at
-`/design-system` (append `?tema=nebbia` for the light theme).
+`/design-system` (noindex).
+
+### Layout and theme
+
+Every page renders inside [`BaseLayout`](src/core/layout/BaseLayout.astro): header (wordmark,
+Racconti · Libri, theme switch), `<main>`, footer, and a skip link for keyboard users.
+
+- **Notte is the default for everyone**; the operating system's `prefers-color-scheme` is
+  deliberately ignored. The reader picks *Nebbia* with the switch in the header, and the choice is
+  saved in `localStorage` (`colles-taciti:tema`).
+- A tiny inline script in `<head>` applies the saved theme before the first paint, so there is no
+  flash of the wrong theme. Its constants come from [`theme.ts`](src/core/theme/theme.ts) through
+  `define:vars`. Without JavaScript the switch is hidden and the page stays in Notte.
+- Navigating between pages uses native cross-document **View Transitions** (a 200ms cross-fade,
+  CSS only), disabled entirely for readers who prefer reduced motion.
 
 ## <img src="https://api.iconify.design/lucide/rocket.svg?color=%23888888" width="22" align="top" alt="" /> Getting started
 

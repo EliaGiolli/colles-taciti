@@ -2,9 +2,8 @@
 /**
  * Global <head> assets: the stylesheet with the design tokens and the fonts.
  *
- * Every page includes this once (until PR 2, pages include it directly;
- * from PR 2 the BaseLayout does). Keeping it in one component means the
- * font loading strategy is decided in a single place.
+ * Included once per page by BaseLayout. Keeping it in its own component
+ * means the font loading strategy is decided in a single place.
  *
  * Font strategy (DS › Tipografia, PLAN › Font):
  * - all three families are self-hosted by the Fonts API (see astro.config.ts);

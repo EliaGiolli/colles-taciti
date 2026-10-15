@@ -3,31 +3,38 @@
  * (every shared component in one page):
  * - both themes pass axe, which includes colour contrast: a token pair that
  *   drops below WCAG AA fails CI;
- * - the theme switch really changes the page colours;
+ * - each theme really paints the page with its own colours;
  * - the fonts are self-hosted: no request ever reaches Google;
  * - Literata is preloaded and actually loads.
  */
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
+import { THEME_STORAGE_KEY } from "@/core/theme/theme";
 
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
-// The preview switches theme after load, and buttons animate their colours
-// (200ms). With reduced motion the base styles make transitions instant, so
-// axe and the colour checks never measure a half-way colour. It also
-// exercises the reduced-motion rule of app.css on every run.
+// Buttons animate their colours (200ms). With reduced motion the base styles
+// make transitions instant, so axe and the colour checks never measure a
+// half-way colour. It also exercises the reduced-motion rule of app.css on
+// every run.
 test.use({ reducedMotion: "reduce" });
 
 /** DS `terra`, the page background, in each theme (tokens.json). */
 const TERRA = { notte: "rgb(17, 16, 14)", nebbia: "rgb(236, 233, 226)" };
 
+/**
+ * Opens /design-system as a reader who saved `theme`: the choice is written
+ * to localStorage before any page script runs, so the anti-flash script
+ * applies it from the first paint, exactly as on a real return visit.
+ */
 async function openInTheme(page: Page, theme: "notte" | "nebbia") {
-  await page.goto(`/design-system?tema=${theme}`);
-  // The preview controller sets data-theme after load; wait for it.
-  await expect(page.locator("html")).toHaveAttribute(
-    "data-theme",
-    theme === "nebbia" ? "light" : "dark",
-  );
+  const value = theme === "nebbia" ? "light" : "dark";
+  await page.addInitScript(([key, saved]) => window.localStorage.setItem(key, saved), [
+    THEME_STORAGE_KEY,
+    value,
+  ] as const);
+  await page.goto("/design-system");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", value);
 }
 
 for (const theme of ["notte", "nebbia"] as const) {

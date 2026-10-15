@@ -40,7 +40,10 @@ into PR 1. See `docs/PLAN.md` › change log.
 
 ## PR 1 · `feat/design-tokens`
 
-PR: – · Merged: – · Notes: –
+PR: [#2](https://github.com/EliaGiolli/colles-taciti/pull/2) · Merged: 2026-10-14 · Notes: Tailwind
+default scales reset (only DS values exist); Nebbia weights as tokens; fonts self-hosted by the Fonts
+API; Vue components named `Base*`; Vitest and Playwright worker limits for the low-memory dev machine.
+See `docs/PLAN.md` › change log.
 
 - [x] `styles/app.css` from the artifact tokens (Notte and Nebbia on `[data-theme]`, `@theme inline`, dark custom variant); Tailwind default scales reset (no off-palette colours, no shadows, no radii, DS spacing only)
 - [x] Nebbia weights as theme tokens (`--peso-*`, read by every `text-*` style); no radius, no shadows
@@ -56,12 +59,12 @@ PR: – · Merged: – · Notes: –
 
 PR: – · Merged: – · Notes: –
 
-- [ ] `BaseLayout` (reuses `core/layout/GlobalHead.astro`), `Header` (Racconti · Libri), `Footer`, `Brand`
-- [ ] Favicon (today a 404 in the browser console)
-- [ ] Decide with Elia: the DS says the theme follows `prefers-color-scheme` until the reader chooses; the plan says Notte by default
-- [ ] Anti-flash theme script (`is:inline`) + `ThemeToggle` + `theme-toggle.controller.ts`
-- [ ] Native cross-document View Transitions; `prefers-reduced-motion` turns everything off
-- [ ] README updated
+- [x] `BaseLayout` (reuses `core/layout/GlobalHead.astro`), `Header` (Racconti · Libri), `Footer`, `Brand`
+- [x] Favicon (today a 404 in the browser console): Bodoni «C» as SVG outlines, `public/favicon.svg`
+- [x] Decided with Elia (2026-10-14): Notte by default, always; `prefers-color-scheme` is not followed, the reader switches with the toggle
+- [x] Anti-flash theme script (`is:inline`) + `ThemeToggle` + `theme-toggle.controller.ts`
+- [x] Native cross-document View Transitions; `prefers-reduced-motion` turns everything off
+- [x] README updated
 
 ## PR 3 · `feat/content-pipeline`
 
@@ -180,6 +183,7 @@ PR: – · Merged: – · Notes: –
 - [ ] Real texts, fear notes, warnings, dates and tags for each story
 - [ ] Photo `abat-jour-notte.jpg`
 - [ ] Books list
+- [ ] Register @collestaciti on Instagram and Wattpad, and give a stable portfolio URL: the footer links in `core/layout/nav.ts` are provisional
 - [ ] Resend and GA4 keys
 
 ## After launch

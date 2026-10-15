@@ -1,0 +1,64 @@
+---
+/**
+ * Theme switch: two buttons, «Notte» and «Nebbia», the current one pressed.
+ * DS: no dedicated component; styled like Navigazione (Plex Mono, osso-muto,
+ * osso when active) so it sits quietly in the Testata.
+ *
+ * Accessibility: a `role="group"` named «Tema» holding two toggle buttons
+ * with `aria-pressed`. A screen reader announces «Tema, gruppo · Notte,
+ * pulsante, premuto». Two visible options were preferred over one button
+ * that flips its own label: the reader sees both choices and which one is
+ * active, and a button whose name changes on press is a known source of
+ * confusion. The active option is underlined as well as brighter, so the
+ * state is not conveyed by colour alone (WCAG 1.4.1).
+ *
+ * Behaviour lives in `theme-toggle.controller.ts`. The server renders Notte
+ * as pressed; the controller corrects it on load if the reader saved Nebbia.
+ *
+ * Without JavaScript the buttons could do nothing, so they are hidden: the
+ * anti-flash script (ThemeScript.astro) always sets `data-theme` on <html>,
+ * so a missing attribute means scripts did not run. Hiding with CSS (rather
+ * than revealing from the controller) means no layout shift when JS is on.
+ */
+import { cn } from "@/shared/lib/cn";
+import { themeCopy as copy } from "./copy";
+import { DEFAULT_THEME, THEMES } from "./theme";
+
+export interface Props {
+  /** Extra classes for the group, merged with `cn()`. */
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const options = Object.values(THEMES).map((value) => ({ value, label: copy.options[value] }));
+---
+
+<div
+  data-controller="theme-toggle"
+  role="group"
+  aria-label={copy.groupLabel}
+  class={cn("theme-toggle flex items-center gap-4", className)}
+>
+  {options.map(({ value, label }) => (
+    <button
+      type="button"
+      data-theme-value={value}
+      aria-pressed={value === DEFAULT_THEME ? "true" : "false"}
+      class={cn(
+        "inline-flex min-h-tocco cursor-pointer items-center font-mono text-meta",
+        "text-osso-muto transition-colors hover:text-osso",
+        "decoration-linea-forte underline-offset-4 aria-pressed:text-osso aria-pressed:underline",
+      )}
+    >
+      {label}
+    </button>
+  ))}
+</div>
+
+<style>
+  /* No data-theme on <html>: the anti-flash script did not run, so neither
+     will the controller. See the header comment. */
+  :global(:root:not([data-theme])) .theme-toggle {
+    display: none;
+  }
+</style>

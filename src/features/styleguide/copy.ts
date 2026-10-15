@@ -11,6 +11,7 @@ export const styleguideCopy = {
   metaDescription: "Componenti e token di Colles Taciti.",
   intro: "I componenti condivisi del sito, con i token di Notte e Nebbia.",
   sections: {
+    brand: "Marchio",
     type: "Tipografia",
     buttons: "Pulsanti",
     labels: "Etichette",

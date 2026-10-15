@@ -7,14 +7,15 @@
  * Nebbia: if a token pair ever drops below the required contrast, CI fails.
  * Add each new shared component here as it is built.
  *
- * `?tema=nebbia` switches to Nebbia (styleguide-theme.controller.ts). The
- * switch happens after load, so the page briefly shows Notte first: fine for
- * a preview page; the real theme script (PR 2) runs before first paint.
+ * The theme is switched with the real toggle in the header (since PR 2):
+ * the choice is saved like on any other page. The e2e test seeds the saved
+ * choice instead of clicking, so each theme is checked from first paint.
  *
  * `noindex`: useful to us, not to search engines. Whether it stays public
  * after launch is decided in PR 13 (see ROADMAP).
  */
-import GlobalHead from "@/core/layout/GlobalHead.astro";
+import BaseLayout from "@/core/layout/BaseLayout.astro";
+import Brand from "@/core/layout/Brand.astro";
 import { styleguideCopy as copy } from "@/features/styleguide/copy";
 import Button from "@/shared/components/Button.astro";
 import Field from "@/shared/components/Field.astro";
@@ -24,128 +25,111 @@ const section = "flex flex-col gap-5 border-t border-linea pt-5";
 const heading = "font-display text-titolo-2";
 ---
 
-<html lang="it">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex" />
-    <title>{`${copy.title} · Colles Taciti`}</title>
-    <meta name="description" content={copy.metaDescription} />
-    <GlobalHead />
-  </head>
-  <body>
-    <main
-      data-controller="styleguide-theme"
-      class="mx-auto flex max-w-pagina flex-col gap-7 px-4 py-8 md:px-6"
-    >
-      <header class="flex flex-col gap-2">
-        <Label tone="muted" as="p">
-          Colles Taciti
-        </Label>
-        <h1 class="font-display text-titolo-1 md:text-display">{copy.title}</h1>
-        <p class="max-w-misura text-osso-muto">{copy.intro}</p>
-        <nav class="flex gap-5 font-mono text-meta" aria-label="Tema">
-          <a href="?tema=notte" class="py-3 text-osso-muto hover:text-osso">
-            Notte
-          </a>
-          <a href="?tema=nebbia" class="py-3 text-osso-muto hover:text-osso">
-            Nebbia
-          </a>
-        </nav>
-      </header>
+<BaseLayout title={`${copy.title} · Colles Taciti`} description={copy.metaDescription} noindex>
+  <div class="mx-auto flex max-w-pagina flex-col gap-7 px-4 py-8 md:px-6">
+    <header class="flex flex-col gap-2">
+      <Label tone="muted" as="p">
+        Colles Taciti
+      </Label>
+      <h1 class="font-display text-titolo-1 md:text-display">{copy.title}</h1>
+      <p class="max-w-misura text-osso-muto">{copy.intro}</p>
+    </header>
 
-      <section class={section} aria-labelledby="sg-tipografia">
-        <h2 id="sg-tipografia" class={heading}>
-          {copy.sections.type}
-        </h2>
-        <p class="font-display text-display md:text-display-xl">{copy.type.display}</p>
-        <p class="font-display text-titolo-1">{copy.type.titolo1}</p>
-        <p class="font-display text-titolo-2">{copy.type.titolo2}</p>
-        <p class="font-display text-titolo-corsivo italic">{copy.type.corsivo}</p>
-        <p class="max-w-misura font-testo text-lettura">{copy.type.lettura}</p>
-        <p class="max-w-misura text-corpo">{copy.type.corpo}</p>
-        <p class="text-presentazione text-osso-muto italic">{copy.type.presentazione}</p>
-        <p class="font-mono text-meta text-osso-muto">{copy.type.meta}</p>
-      </section>
+    <section class={section} aria-labelledby="sg-marchio">
+      <h2 id="sg-marchio" class={heading}>
+        {copy.sections.brand}
+      </h2>
+      <Brand size="large" signature />
+      <Brand />
+    </section>
 
-      <section class={section} aria-labelledby="sg-pulsanti">
-        <h2 id="sg-pulsanti" class={heading}>
-          {copy.sections.buttons}
-        </h2>
-        <div class="flex flex-wrap items-center gap-4">
-          <Button variant="primary" href="#sg-pulsanti">
-            {copy.buttons.primary}
-          </Button>
-          <Button href="#sg-pulsanti">{copy.buttons.secondary}</Button>
-          <Button variant="link" href="#sg-pulsanti">
-            {copy.buttons.link}
+    <section class={section} aria-labelledby="sg-tipografia">
+      <h2 id="sg-tipografia" class={heading}>
+        {copy.sections.type}
+      </h2>
+      <p class="font-display text-display md:text-display-xl">{copy.type.display}</p>
+      <p class="font-display text-titolo-1">{copy.type.titolo1}</p>
+      <p class="font-display text-titolo-2">{copy.type.titolo2}</p>
+      <p class="font-display text-titolo-corsivo italic">{copy.type.corsivo}</p>
+      <p class="max-w-misura font-testo text-lettura">{copy.type.lettura}</p>
+      <p class="max-w-misura text-corpo">{copy.type.corpo}</p>
+      <p class="text-presentazione text-osso-muto italic">{copy.type.presentazione}</p>
+      <p class="font-mono text-meta text-osso-muto">{copy.type.meta}</p>
+    </section>
+
+    <section class={section} aria-labelledby="sg-pulsanti">
+      <h2 id="sg-pulsanti" class={heading}>
+        {copy.sections.buttons}
+      </h2>
+      <div class="flex flex-wrap items-center gap-4">
+        <Button variant="primary" href="#sg-pulsanti">
+          {copy.buttons.primary}
+        </Button>
+        <Button href="#sg-pulsanti">{copy.buttons.secondary}</Button>
+        <Button variant="link" href="#sg-pulsanti">
+          {copy.buttons.link}
+        </Button>
+      </div>
+      <div class="flex flex-wrap items-center gap-4">
+        <Button variant="primary" disabled>
+          {copy.buttons.disabled}
+        </Button>
+      </div>
+      <div class="flex flex-wrap items-center gap-4 bg-carne p-5">
+        <Label tone="onFlesh">{copy.labels.onFlesh}</Label>
+        <Button variant="onFlesh" href="#sg-pulsanti">
+          {copy.buttons.onFlesh}
+        </Button>
+      </div>
+    </section>
+
+    <section class={section} aria-labelledby="sg-etichette">
+      <h2 id="sg-etichette" class={heading}>
+        {copy.sections.labels}
+      </h2>
+      <div class="flex flex-wrap gap-5">
+        <Label>{copy.labels.rust}</Label>
+        <Label tone="muted">{copy.labels.muted}</Label>
+      </div>
+    </section>
+
+    <section class={section} aria-labelledby="sg-modulo">
+      <h2 id="sg-modulo" class={heading}>
+        {copy.sections.form}
+      </h2>
+      <form class="flex max-w-misura flex-col gap-4" action="#sg-modulo">
+        <p class="font-display text-titolo-corsivo italic">{copy.form.title}</p>
+        <p class="text-osso-muto">{copy.form.lead}</p>
+        <Field
+          id="sg-testo"
+          name="message"
+          label={copy.form.messageLabel}
+          placeholder={copy.form.messagePlaceholder}
+          multiline
+          required
+        />
+        <Field
+          id="sg-testo-errore"
+          name="message-error"
+          label={copy.form.messageLabel}
+          error={copy.form.messageError}
+          multiline
+        />
+        <Field
+          id="sg-mail"
+          name="email"
+          type="email"
+          autocomplete="email"
+          label={copy.form.emailLabel}
+          note={copy.form.emailNote}
+          help={copy.form.emailHelp}
+        />
+        <div>
+          <Button variant="primary" type="submit">
+            {copy.form.submit}
           </Button>
         </div>
-        <div class="flex flex-wrap items-center gap-4">
-          <Button variant="primary" disabled>
-            {copy.buttons.disabled}
-          </Button>
-        </div>
-        <div class="flex flex-wrap items-center gap-4 bg-carne p-5">
-          <Label tone="onFlesh">{copy.labels.onFlesh}</Label>
-          <Button variant="onFlesh" href="#sg-pulsanti">
-            {copy.buttons.onFlesh}
-          </Button>
-        </div>
-      </section>
-
-      <section class={section} aria-labelledby="sg-etichette">
-        <h2 id="sg-etichette" class={heading}>
-          {copy.sections.labels}
-        </h2>
-        <div class="flex flex-wrap gap-5">
-          <Label>{copy.labels.rust}</Label>
-          <Label tone="muted">{copy.labels.muted}</Label>
-        </div>
-      </section>
-
-      <section class={section} aria-labelledby="sg-modulo">
-        <h2 id="sg-modulo" class={heading}>
-          {copy.sections.form}
-        </h2>
-        <form class="flex max-w-misura flex-col gap-4" action="#sg-modulo">
-          <p class="font-display text-titolo-corsivo italic">{copy.form.title}</p>
-          <p class="text-osso-muto">{copy.form.lead}</p>
-          <Field
-            id="sg-testo"
-            name="message"
-            label={copy.form.messageLabel}
-            placeholder={copy.form.messagePlaceholder}
-            multiline
-            required
-          />
-          <Field
-            id="sg-testo-errore"
-            name="message-error"
-            label={copy.form.messageLabel}
-            error={copy.form.messageError}
-            multiline
-          />
-          <Field
-            id="sg-mail"
-            name="email"
-            type="email"
-            autocomplete="email"
-            label={copy.form.emailLabel}
-            note={copy.form.emailNote}
-            help={copy.form.emailHelp}
-          />
-          <div>
-            <Button variant="primary" type="submit">
-              {copy.form.submit}
-            </Button>
-          </div>
-        </form>
-      </section>
-    </main>
-
-    <script>
-      import "@/core/controllers/start";
-    </script>
-  </body>
-</html>
+      </form>
+    </section>
+  </div>
+</BaseLayout>
