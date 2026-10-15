@@ -25,7 +25,7 @@ Elia vuole anche imparare dal codice: architettura manutenibile, test fin da sub
 | Architettura | **Feature-based**: `core` / `features` / `shared`; `src/pages` contiene solo file sottili |
 | Racconti a capitoli | **Pagina unica con indice** (`/racconti/[slug]`, capitoli H2 con ancore `#capitolo-N`) |
 | Contenuti | **Content Collections di Astro** (`src/content.config.ts`, loader `glob`, zod, `reference()`). Al lancio i testi sono segnaposto |
-| Chat e log nel testo | Blocchi recintati ```` ```chat ```` / ```` ```log ```` trasformati da un plugin remark registrato in `astro.config` (niente MDX) |
+| Chat e log nel testo | Blocchi recintati ```` ```chat ```` / ```` ```log ```` trasformati da un plugin mdast di **Sätteri** (il processore Markdown predefinito di Astro 7) registrato in `astro.config` (niente MDX) |
 | Tag | **Vocabolario controllato** come collection (`tags`); i racconti ci si collegano con `reference()`, così uno slug sbagliato fa fallire la build |
 | Ricerca e filtri | **Isola Vue** (`client:idle`) con **MiniSearch** (indice di metadati e incipit generato alla build, scaricato al primo uso) + faccette nell'URL (zod + composable `useUrlState`), su racconti e libri. Astro la renderizza lato server, quindi l'elenco completo è già nell'HTML |
 | Schede condivise | `StoryCard.vue` e `BookItem.vue` sono **componenti Vue usati anche staticamente** dalle pagine Astro (senza direttiva `client:`, cioè 0 JS) e dall'isola: una sola fonte per il markup delle schede |
@@ -52,7 +52,7 @@ Elia vuole anche imparare dal codice: architettura manutenibile, test fin da sub
 
 ```
 src/
-  content.config.ts              collections: stories (glob su content/stories), tags, fears, books (file JSON)
+  content.config.ts              collections: stories (glob su src/core/content/stories), tags, fears, books (file JSON)
   actions/index.ts               registra le Astro Actions (riesporta quella di features/feedback)
   pages/                         index.astro, racconti/index.astro, racconti/[slug].astro, [categoria].astro,
                                  libri.astro, search-index.json.ts (endpoint prerenderizzato), 404.astro
@@ -62,11 +62,14 @@ src/
     controllers/registry.ts      mini-registro: per ogni [data-controller] chiama il controller giusto (un solo punto d'ingresso, nessuna libreria)
     layout/                      BaseLayout.astro (head, tema, banner), Header, Footer, Brand
     theme/                       script anti-flash (is:inline), ThemeToggle.astro + theme-toggle.controller.ts
+    content/                     contenuti e regole sui testi: stories/*.md (un racconto per file),
+                                 tags.json, fears.json (vocabolari), books.json (generato da libri:sync),
+                                 brand-tone.ts + public-copy.ts (controllo sul tono del brand)
     consent/                     Consent Mode v2, loader di gtag, ConsentBanner.astro + consent.controller.ts
     analytics/track.ts           track(event, params): eventi tipizzati, inviati solo con il consenso
     seo/                         Seo.astro (title, meta, canonical, og, JSON-LD) + builder JSON-LD
   features/
-    stories/                     query (getCollection), remark-ct, StoryCard.vue (statica o nell'isola), StoryFacts,
+    stories/                     query (getCollection), blocks/ (plugin chat e log), StoryCard.vue (statica o nell'isola), StoryFacts,
                                  Prose, ChapterIndex, FearNote, LiveChat, LogLines, OngoingBanner,
                                  ReadingControls + reading-controls.controller.ts,
                                  reading-progress/ (reading-progress.controller.ts, storage, ResumeLine, ContinueReading)
@@ -84,10 +87,6 @@ src/
     variants/                    varianti cva in .ts, condivise da .astro e .vue
     lib/                         cn(), formatDate (Europe/Rome), plurali, normalizzazione del testo
   styles/app.css
-content/
-  stories/*.md                   un racconto per file
-  tags.json, fears.json          vocabolari (le collection li validano)
-  books.json                     generato da libri:sync
 drizzle/  drizzle.config.ts      migrazioni versionate
 scripts/                         copertine.ts, libri-sync.ts
 tests/  integration/  e2e/  fixtures/
@@ -98,10 +97,10 @@ tests/  integration/  e2e/  fixtures/
 - **Feedback**: `<form method="POST" action={actions.feedback}>` → Action → zod → honeypot (se pieno: «ok» finto, nessun salvataggio) → insert in Turso → Resend → update `delivered`. Senza JS si ricarica la pagina con l'esito; con JS lo script invia con `fetch` e mostra «Ricevuto. Grazie per avermelo detto.».
 - **Tabella `feedback`**: `id`, `story_slug` (null = homepage), `message`, `name`, `email`, `created_at`, `delivered`.
 - **Analytics**: `track()` invia `story_start`, `story_finish` (NotaPaura visibile), `feedback_submit`, `wattpad_click`, `resume_reading` solo con il consenso. UTM documentate nel README. GA a 14 mesi di conservazione.
-- **Libri**: `libri:sync` (manuale) → `content/books.json` + copertine → collection `books` → prerender.
+- **Libri**: `libri:sync` (manuale) → `src/core/content/books.json` + copertine → collection `books` → prerender.
 
 ### Schema di un racconto (frontmatter)
-`title, lang: "it", categories[] (reference fears), tags{places[], themes[], inspirations[]} (reference tags), label, logline, setting, readingTime, publishedAt, updatedAt?, warnings[], status: complete|ongoing, chapterReached?, series?, wattpadUrl?, seo{title, description}, starter?{order, hook}, related[] (reference stories), fearNote`. Lo slug è l'id del file.
+`title, lang: "it", categories[] (reference fears), tags{places[], themes[], inspirations[]} (reference tags), label, logline, setting, publishedAt, updatedAt?, warnings[], status: complete|ongoing, chapterReached?, series?, wattpadUrl?, seo{title, description}, starter?{order, hook}, related[] (reference stories), fearNote`. Lo slug è l'id del file.
 
 ## Ricerca, filtri e tag
 - **/racconti**: l'HTML statico contiene già l'elenco completo, perché Astro renderizza l'isola Vue lato server (SEO e utenti senza JS). Dopo l'idratazione (`client:idle`) `SearchBrowser.vue` aggiunge ricerca (prefisso, ricerca approssimata, accenti ignorati), faccette paura/luogo/tema/forma e ordinamento per data o titolo, con tutto nell'URL. Risultati annunciati con `aria-live`; stato vuoto «Nessun racconto qui, per ora.».
@@ -200,7 +199,7 @@ Prima di scrivere le parti che dipendono dalla versione, controllare sulla docum
 0. `chore/bootstrap`: `docs/PLAN.md`, `CLAUDE.md`, `ROADMAP.md` (vedi la sezione sopra), `create astro` (template minimo, TS strictest), Bun, adapter Vercel, integrazione Vue, registro dei controller, Biome, depcruise, lefthook, Vitest (unit + integration), Playwright, CI, test smoke, README.
 1. `feat/design-tokens`: `app.css` dai token dell'artifact, font, varianti cva condivise, Button/Field/Label.
 2. `feat/layout-theme`: BaseLayout, Header, Footer, Brand, tema, View Transitions native.
-3. `feat/content-pipeline`: `content.config.ts`, collections, remark-ct, racconti segnaposto, query, controllo sul tono del brand.
+3. `feat/content-pipeline`: `content.config.ts`, collections, plugin chat e log, racconti segnaposto, query, controllo sul tono del brand.
 4. `feat/covers`: `cover.ts` + Cover + script PNG.
 5. `feat/story-page`: componenti di lettura + pagina racconto.
 6. `feat/reading-progress`.
@@ -273,3 +272,16 @@ Ogni modifica a una decisione si annota qui, nella stessa PR che la introduce (d
   - **View Transitions** native (`@view-transition { navigation: auto; }`) solo dentro `prefers-reduced-motion: no-preference`, dissolvenza di 200ms; la testata ha un proprio `view-transition-name` e resta ferma.
   - **Pagina `/design-system`**: il controller `styleguide-theme` e `?tema=nebbia` sono stati rimossi, ora c'è il selettore vero. Gli e2e impostano la scelta in `localStorage` prima del caricamento, così ogni tema è verificato dal primo disegno. Nuova sezione Marchio.
   - **Link per saltare al contenuto** («Vai al contenuto»), primo elemento con il focus di ogni pagina.
+- 2026-10-15 · fix/footer-links · Link del piede confermati da Elia: portfolio `elia-giolli-portfolio-astro.vercel.app` e Wattpad `wattpad.com/user/EliaGiolli` (il profilo personale, dove i racconti sono già pubblicati, non @collestaciti). Il profilo Instagram non esiste ancora, quindi il link non c'è: si aggiunge quando il profilo sarà aperto, invece di mandare chi legge su una pagina vuota.
+- 2026-10-15 · PR 3 · Pipeline dei contenuti:
+  - **Sätteri al posto di remark**: da Astro 7 il processore Markdown predefinito è Sätteri (Rust); unified non è più installato e `markdown.remarkPlugins` è deprecato. Il plugin per ```` ```chat ```` e ```` ```log ```` è un plugin mdast di Sätteri (`features/stories/blocks/plugin.ts`). Il parsing sta in funzioni pure (`chat.ts`, `log.ts`), quindi cambiare processore toccherebbe un solo file. Il plugin produce il markup del design system (`ct-chat`, `ct-log`); gli stili arrivano con la pagina del racconto (PR 5). Un blocco scritto male ferma la build con il file e la riga sbagliata (Sätteri non fornisce il numero di riga ai plugin). Sintassi: `ora utente: messaggio`, `-- sistema`, `!! sistema grave`, opzioni `spettatori=` ed `etichetta=`; nei log `ERR`/`ERROR`/`FATAL` segnano l'errore, `~ ` il glitch statico, `~~ ` quello vivo (al massimo uno per blocco, come dice il design system).
+  - **`readingTime` esce dal frontmatter**: il tempo di lettura si calcola dal testo (200 parole al minuto), così non invecchia quando il racconto cambia.
+  - **Contenuti in `src/core/content/`** (scelta di Elia): i file dei racconti e dei vocabolari stanno nella stessa cartella del controllo sul tono del brand, così tutto ciò che riguarda i contenuti è in un posto solo. I `.md` e `.json` sono scrittura, i `.ts` codice. Le pagine non sono ancora collegate (PR 5).
+  - **Controllo sul tono del brand** in `core/content` (vale per più feature): `findBrandToneIssues()` e lo schema `publicCopy()`, usato dagli schemi per titolo, etichetta, logline, campi SEO, `starter.hook`, nomi dei tag e delle paure. Una violazione fa fallire `astro check` e la build con il campo indicato. I nomi vietati sono una lista nel codice (`BANNED_NAMES`); quelli ambigui («Mele», «Vinci», «Lotti») sono scritti con il nome di battesimo, per non segnalare parole comuni.
+  - **Altre regole negli schemi**: title SEO ≤ 60 caratteri e description ≤ 160 (brief SEO §5), nota sulla paura fra 80 e 150 parole (design system), avvertenze in minuscolo, `chapterReached` obbligatorio solo per i racconti in corso, `wattpadUrl` solo su wattpad.com, al massimo 2 racconti correlati.
+  - **Controllo di integrità fra le voci** nelle query (`getStories()`): paure, tag e racconti correlati devono esistere, ogni tag deve stare nel gruppo giusto (luogo, tema, ispirazione), nessun racconto correlato a se stesso, nessuna posizione doppia in «Da dove cominciare». `reference()` controlla solo la forma dello slug, non l'esistenza.
+  - **Test dei contenuti**: il content layer di Astro non gira dentro Vitest (`getCollection` restituisce collezioni vuote). I test d'integrazione leggono i file di `content/` e li validano con gli stessi schemi, più il controllo di integrità; le query si testano con `astro:content` simulato.
+  - **Racconti segnaposto**: titoli, etichette, logline, ambientazioni e testi SEO vengono dal brief SEO v2; date, avvertenze, tag, testi e note sulla paura sono segnaposto marcati `[Segnaposto]`.
+  - **Libri**: collection `books` con uno schema provvisorio e il file vuoto, finché la PR 12 non lo genera con `libri:sync`.
+  - **Link del piede** (prima nella PR #4, chiusa e riunita a questa su richiesta di Elia): vedi la voce `fix/footer-links` qui sopra.
+  - **Bun e Sätteri**: eseguire Sätteri direttamente con Bun si blocca (binding nativo); Astro e Vitest girano su Node, quindi il progetto non ne risente.

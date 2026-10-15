@@ -16,15 +16,14 @@ export const ROUTES = {
  * External profiles, linked from the footer only, opened in the same tab
  * (DS › Navigazione).
  *
- * Provisional, see ROADMAP › Open points: the @collestaciti handle is not
- * registered on Instagram and Wattpad yet (marketing brief v4 › Nome), and
- * the portfolio URL is the address on Elia's GitHub profile, a Vercel
- * deployment URL that may change. Confirm all three before launch.
+ * Addresses confirmed by Elia on 2026-10-15. Wattpad is Elia's own profile,
+ * where the stories are already published. There is no Instagram profile
+ * yet: its link is added here (and to the footer) when the account exists,
+ * rather than pointing readers to a page that is not there.
  */
 export const EXTERNAL_LINKS = {
-  portfolio: "https://portfolio-personale-bvuzb0kwd-elias-projects-5d10482a.vercel.app/",
-  instagram: "https://www.instagram.com/collestaciti/",
-  wattpad: "https://www.wattpad.com/user/collestaciti",
+  portfolio: "https://elia-giolli-portfolio-astro.vercel.app/",
+  wattpad: "https://www.wattpad.com/user/EliaGiolli",
 } as const;
 
 /**

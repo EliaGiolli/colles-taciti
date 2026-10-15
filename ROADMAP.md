@@ -57,7 +57,10 @@ See `docs/PLAN.md` › change log.
 
 ## PR 2 · `feat/layout-theme`
 
-PR: – · Merged: – · Notes: –
+PR: [#3](https://github.com/EliaGiolli/colles-taciti/pull/3) · Merged: 2026-10-15 · Notes: Notte always
+by default (system preference ignored); toggle with two `aria-pressed` buttons; anti-flash script fed by
+`define:vars`; `styleguide-theme` controller removed; Bodoni «C» favicon; skip link. Footer links fixed
+afterwards in PR 3 (Instagram omitted until the profile exists). See `docs/PLAN.md` › change log.
 
 - [x] `BaseLayout` (reuses `core/layout/GlobalHead.astro`), `Header` (Racconti · Libri), `Footer`, `Brand`
 - [x] Favicon (today a 404 in the browser console): Bodoni «C» as SVG outlines, `public/favicon.svg`
@@ -70,12 +73,13 @@ PR: – · Merged: – · Notes: –
 
 PR: – · Merged: – · Notes: –
 
-- [ ] `content.config.ts`: `stories`, `tags`, `fears`, `books` collections with the full frontmatter schema
-- [ ] `remark-ct` plugin for ```` ```chat ```` / ```` ```log ```` blocks
-- [ ] Placeholder stories (3 complete + Senza Rimorso ongoing)
-- [ ] Queries in `features/stories`
-- [ ] Brand-tone check (no `!`, emoji, shouting caps, banned names in `seo`/`title`/`logline`/`tags`)
-- [ ] README updated
+- [x] Footer links: real portfolio and Wattpad URLs, no Instagram link until the profile exists (was the separate PR #4, folded in here)
+- [x] `content.config.ts`: `stories`, `tags`, `fears`, `books` collections with the full frontmatter schema (content in `src/core/content/`, next to the brand-tone check)
+- [x] Plugin for ```` ```chat ```` / ```` ```log ```` blocks: a Sätteri mdast plugin (Astro 7's default Markdown processor) instead of `remark-ct`
+- [x] Placeholder stories (3 complete + Senza Rimorso ongoing): real metadata from the SEO brief, placeholder text and fear notes
+- [x] Queries in `features/stories`, with a cross-entry integrity check (tags in the right group, existing references, starter positions)
+- [x] Brand-tone check (no `!`, emoji, shouting caps, banned names in `seo`/`title`/`logline`/`tags`), enforced by the schemas through `publicCopy()`
+- [x] README updated
 
 ## PR 4 · `feat/covers`
 
@@ -90,7 +94,7 @@ PR: – · Merged: – · Notes: –
 PR: – · Merged: – · Notes: –
 
 - [ ] `/racconti/[slug]`: Hero, StoryFacts (tags link to filters), ChapterIndex (`#capitolo-N`)
-- [ ] `Prose`, `LiveChat`, `LogLines`, `FearNote`, `OngoingBanner`
+- [ ] `Prose`, `LiveChat`, `LogLines`, `FearNote`, `OngoingBanner` (styles for the `ct-chat`/`ct-log`/`ct-glitch` markup the PR 3 plugin already emits)
 - [ ] `ReadingControls` + `reading-controls.controller.ts`
 - [ ] «Se ti è piaciuto» + Wattpad link
 - [ ] README updated
@@ -180,10 +184,12 @@ PR: – · Merged: – · Notes: –
 - [x] Vercel link (project `colles-taciti`, linked with the CLI, previews on every PR)
 - [ ] Turso account
 - [ ] Domain
-- [ ] Real texts, fear notes, warnings, dates and tags for each story
+- [ ] Real texts, fear notes, warnings, dates and tags for each story (placeholders marked `[Segnaposto]` in `src/core/content/stories`)
+- [ ] Wattpad addresses of Le vibrazioni and Senza Rimorso (`wattpadUrl` in their frontmatter)
 - [ ] Photo `abat-jour-notte.jpg`
 - [ ] Books list
-- [ ] Register @collestaciti on Instagram and Wattpad, and give a stable portfolio URL: the footer links in `core/layout/nav.ts` are provisional
+- [x] Portfolio and Wattpad URLs (`core/layout/nav.ts`)
+- [ ] Instagram profile: when it exists, add its link to `EXTERNAL_LINKS` and the footer
 - [ ] Resend and GA4 keys
 
 ## After launch

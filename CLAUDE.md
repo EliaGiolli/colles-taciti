@@ -73,6 +73,9 @@ Hooks (lefthook): pre-commit runs typecheck + lint + unit; pre-push runs `check`
 - Astro drops the line break between two `{expressions}` or between `<slot />` and an element:
   write the space explicitly (`{" "}`, or `&nbsp;` inside the element).
 - Every new shared component also goes on `/design-system` (e2e runs axe there in both themes).
+- Content lives in `src/core/content/` (stories, `tags.json`, `fears.json`, `books.json`), next to the brand-tone check. Any field readers
+  or search engines see uses `publicCopy()` from `@/core/content/public-copy` in its schema (brand-tone
+  check). Markdown runs through Sätteri (Astro 7 default), not remark: plugins are Sätteri mdast plugins.
 - Dependencies use exact versions (`bunfig.toml`). TypeScript stays on 6.x until `@astrojs/check`
   supports 7.
 

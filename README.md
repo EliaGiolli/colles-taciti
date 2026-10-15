@@ -67,7 +67,7 @@ Planned for launch (track progress in [ROADMAP.md](ROADMAP.md)):
 |---|---|
 | Framework | Astro, static output, `@astrojs/vercel` |
 | Interactivity | Plain TypeScript controllers (`data-controller`); one Vue island for search |
-| Content | Astro Content Collections (Markdown + zod, controlled tag vocabulary) |
+| Content | Astro Content Collections (Markdown + zod, controlled tag vocabulary), Sätteri Markdown processor |
 | Styling | Tailwind v4 + cva + clsx + tailwind-merge, design-system tokens in `@theme` |
 | Feedback | Astro Action + Turso (libSQL) + Drizzle + Resend, honeypot protection |
 | Search | MiniSearch, index generated at build time |
@@ -81,10 +81,9 @@ Feature-based layout. `src/pages` only wires things together.
 ```text
 src/
   pages/        thin route files
-  core/         app-wide infrastructure: layout, theme, consent, analytics, SEO, db, controllers
+  core/         app-wide infrastructure: layout, theme, content (stories, vocabularies, brand-tone check), consent, analytics, SEO, db, controllers
   features/     stories, search, categories, covers, books, feedback, home
   shared/       UI primitives, cva variants, utilities
-content/        stories (Markdown), tags, fears, books
 tests/          integration, e2e, fixtures
 docs/           PLAN.md (decisions)
 ```
@@ -119,6 +118,47 @@ Racconti · Libri, theme switch), `<main>`, footer, and a skip link for keyboard
   `define:vars`. Without JavaScript the switch is hidden and the page stays in Notte.
 - Navigating between pages uses native cross-document **View Transitions** (a 200ms cross-fade,
   CSS only), disabled entirely for readers who prefer reduced motion.
+
+### Content
+
+The stories and vocabularies live in [`src/core/content/`](src/core/content), next to the brand-tone check, and are loaded as Astro
+Content Collections ([`src/content.config.ts`](src/content.config.ts)):
+
+| Collection | Source | Notes |
+|---|---|---|
+| `stories` | `src/core/content/stories/<slug>.md` | One file per story; the file name is the URL slug |
+| `fears` | `src/core/content/fears.json` | The five categories (`/body-horror`, `/slasher`…) |
+| `tags` | `src/core/content/tags.json` | Controlled vocabulary: places, themes, inspirations |
+| `books` | `src/core/content/books.json` | Empty until `libri:sync` (PR 12) |
+
+- **Validation**: every entry is checked by a zod schema when `astro check` or the build runs. A
+  missing field, a misspelt tag or a fear note outside 80–150 words stops the build with the file
+  and the field named. The queries in `src/features/stories` also check the entries against each
+  other (tags in the right group, related stories that exist).
+- **Brand-tone check**: public copy (titles, labels, loglines, SEO fields, tag and fear names) must
+  have no `!`, no emoji, no shouted capitals and no real names from the Monster of Florence case
+  ([`brand-tone.ts`](src/core/content/brand-tone.ts)).
+- **Chat and log blocks**: inside a story, a fenced block with the language `chat` or `log`
+  becomes the design system's live chat or log lines. The Sätteri plugin that handles them is in
+  [`src/features/stories/blocks`](src/features/stories/blocks).
+
+  ````md
+  ```chat spettatori=1204
+  23:41 dannyboi_88: ma è vero sangue?
+  -- dannyboi_88 ha lasciato la chat
+  !! La diretta è stata interrotta.
+  ```
+
+  ```log etichetta="Log del sistema"
+  [06:12:04] INFO  legacy.boot(): avvio processo notturno
+  ~~ [06:12:11] ERR   body.handover(): corpo non trovato
+  ```
+  ````
+
+  In a chat, `--` marks a system line and `!!` the line that breaks the scene. In a log, `ERR`
+  lines are errors, `~ ` adds a static glitch and `~~ ` the live one (at most one per block).
+- The launch stories are **placeholders**: their metadata comes from the SEO brief, but the text
+  and the fear notes are marked `[Segnaposto]` until the real ones arrive.
 
 ## <img src="https://api.iconify.design/lucide/rocket.svg?color=%23888888" width="22" align="top" alt="" /> Getting started
 

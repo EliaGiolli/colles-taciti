@@ -88,8 +88,11 @@ export default {
       comment: "An import that cannot be resolved is a typo or a missing dependency.",
       from: {},
       // Astro's virtual modules (astro:content, astro:container…) exist only
-      // inside Vite, so they look unresolvable from the outside.
-      to: { couldNotResolve: true, pathNot: "^astro:" },
+      // inside Vite, so they look unresolvable from the outside. `mdast` and
+      // `hast` are type-only modules (the syntax-tree types of the Markdown
+      // plugin): they exist only as @types/mdast and @types/hast, with no
+      // JavaScript to resolve.
+      to: { couldNotResolve: true, pathNot: ["^astro:", "^(mdast|hast)$"] },
     },
   ],
   options: {

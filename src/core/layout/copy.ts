@@ -20,7 +20,6 @@ export const layoutCopy = {
     stories: "Racconti",
     books: "Libri",
     portfolio: "Portfolio",
-    instagram: "Instagram",
     wattpad: "Wattpad",
   },
 } as const;
