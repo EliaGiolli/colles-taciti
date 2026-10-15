@@ -1,0 +1,32 @@
+[
+  {
+    "id": "body-horror",
+    "name": "Body horror",
+    "definition": "Quando il corpo smette di essere tuo.",
+    "order": 1
+  },
+  {
+    "id": "horror-psicologico",
+    "name": "Horror psicologico",
+    "definition": "Quando il pericolo è dentro la testa.",
+    "order": 2
+  },
+  {
+    "id": "slasher",
+    "name": "Slasher",
+    "definition": "Quando qualcuno ha deciso che tocca a te.",
+    "order": 3
+  },
+  {
+    "id": "liminale",
+    "name": "Liminale",
+    "definition": "Quando un luogo familiare non finisce più.",
+    "order": 4
+  },
+  {
+    "id": "esperimenti",
+    "name": "Esperimenti",
+    "definition": "Racconti brevi, prove, frammenti. Il laboratorio.",
+    "order": 5
+  }
+]

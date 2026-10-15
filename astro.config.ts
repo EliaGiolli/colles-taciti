@@ -9,10 +9,12 @@
  *
  * @see https://docs.astro.build/en/reference/configuration-reference/
  */
+import { satteri } from "@astrojs/markdown-satteri";
 import vercel from "@astrojs/vercel";
 import vue from "@astrojs/vue";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
+import { ctBlocks } from "./src/features/stories/blocks/plugin";
 
 export default defineConfig({
   /**
@@ -96,6 +98,18 @@ export default defineConfig({
       fallbacks: ["ui-monospace", "Menlo", "monospace"],
     },
   ],
+
+  /**
+   * Markdown (the stories). Sätteri is Astro 7's default processor; it is
+   * configured explicitly only to add one plugin, which turns ```chat and
+   * ```log fenced blocks into the DS ChatDiretta and RigheDiLog markup
+   * (src/features/stories/blocks/plugin.ts). GitHub-flavoured Markdown and
+   * smart punctuation («...» → «…», straight quotes → curly) stay on, as by
+   * default.
+   */
+  markdown: {
+    processor: satteri({ mdastPlugins: [ctBlocks] }),
+  },
 
   vite: {
     // Tailwind v4 runs as a Vite plugin; its configuration lives in CSS

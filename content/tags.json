@@ -1,0 +1,23 @@
+[
+  { "id": "aeroporto-f", "label": "Aeroporto F.", "kind": "place" },
+  { "id": "colline-fiorentine", "label": "Colline fiorentine", "kind": "place" },
+  { "id": "mugello", "label": "Mugello", "kind": "place" },
+  { "id": "appennino", "label": "Appennino", "kind": "place" },
+  { "id": "provincia-di-siena", "label": "Provincia di Siena", "kind": "place" },
+  { "id": "pisa", "label": "Pisa", "kind": "place" },
+  { "id": "grosseto", "label": "Grosseto", "kind": "place" },
+
+  { "id": "spazi-liminali", "label": "Spazi liminali", "kind": "theme" },
+  { "id": "lockdown", "label": "Lockdown", "kind": "theme" },
+  { "id": "lavoro", "label": "Lavoro", "kind": "theme" },
+  { "id": "ansia", "label": "Ansia", "kind": "theme" },
+  { "id": "corpo", "label": "Corpo", "kind": "theme" },
+  { "id": "folk-horror", "label": "Folk horror", "kind": "theme" },
+  { "id": "famiglia", "label": "Famiglia", "kind": "theme" },
+  { "id": "diretta-streaming", "label": "Diretta streaming", "kind": "theme" },
+  { "id": "diario", "label": "Diario", "kind": "theme" },
+
+  { "id": "metallica-one", "label": "One dei Metallica", "kind": "inspiration" },
+  { "id": "the-last-of-us-parte-ii", "label": "The Last of Us Parte II", "kind": "inspiration" },
+  { "id": "backrooms", "label": "Backrooms", "kind": "inspiration" }
+]
