@@ -23,7 +23,7 @@
  * `etichetta="…"` replaces the accessible name «Chat della diretta».
  *
  * The output is the DS markup (`ct-chat` classes). Its styles arrive with
- * the story page (PR 5), in app.css › components.
+ * the story page (PR 4), in app.css › components.
  */
 import { formatCount } from "@/shared/lib/plural";
 import { storiesCopy } from "../copy";

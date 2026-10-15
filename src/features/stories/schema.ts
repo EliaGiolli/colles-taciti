@@ -72,7 +72,7 @@ export const storySchema = z
     status: z.enum(STORY_STATUSES),
     /** Ongoing stories only: how many chapters are out. */
     chapterReached: z.number().int().positive().optional(),
-    /** Name of the series the story belongs to (JSON-LD CreativeWorkSeries, PR 10). */
+    /** Name of the series the story belongs to (JSON-LD CreativeWorkSeries, PR 8). */
     series: z.string().trim().min(1).optional(),
     wattpadUrl: z.url({ hostname: /^(www\.)?wattpad\.com$/ }).optional(),
     seo: z.object({

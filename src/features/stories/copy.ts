@@ -2,7 +2,7 @@
  * UI text of the stories feature (Italian).
  *
  * For now only the fixed words the chat and log blocks add around the
- * author's text; the story page (PR 5) adds its own strings here.
+ * author's text; the story page (PR 4) adds its own strings here.
  */
 export const storiesCopy = {
   chat: {

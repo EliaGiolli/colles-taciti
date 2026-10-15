@@ -129,7 +129,7 @@ Content Collections ([`src/content.config.ts`](src/content.config.ts)):
 | `stories` | `src/core/content/stories/<slug>.md` | One file per story; the file name is the URL slug |
 | `fears` | `src/core/content/fears.json` | The five categories (`/body-horror`, `/slasher`…) |
 | `tags` | `src/core/content/tags.json` | Controlled vocabulary: places, themes, inspirations |
-| `books` | `src/core/content/books.json` | Empty until `libri:sync` (PR 12) |
+| `books` | `src/core/content/books.json` | Empty until `libri:sync` (PR 10) |
 
 - **Validation**: every entry is checked by a zod schema when `astro check` or the build runs. A
   missing field, a misspelt tag or a fear note outside 80–150 words stops the build with the file
@@ -232,13 +232,13 @@ No commits on `main`, no skipped hooks.
 
 ## <img src="https://api.iconify.design/lucide/list-checks.svg?color=%23888888" width="22" align="top" alt="" /> Project status
 
-The project is built in 14 pull requests, from `chore/bootstrap` to `chore/launch`.
+The project is built in 12 pull requests, from `chore/bootstrap` to `chore/launch`.
 See [ROADMAP.md](ROADMAP.md) for the live checklist.
 
 ## <img src="https://api.iconify.design/lucide/link.svg?color=%23888888" width="22" align="top" alt="" /> UTM conventions
 
 Links from social profiles carry UTM parameters, so GA4 can tell where readers come from.
-*Proposed convention, to be confirmed in PR 11.*
+*Proposed convention, to be confirmed in PR 9.*
 
 | Source | `utm_source` | `utm_medium` | `utm_campaign` |
 |---|---|---|---|

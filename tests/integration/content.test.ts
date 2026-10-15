@@ -5,7 +5,7 @@
  * directly instead of through `getCollection`).
  *
  * `astro check` already validates each entry against its schema; what only
- * runs here (until the pages use the queries, PR 5) is the integrity check
+ * runs here (until the pages use the queries, PR 4) is the integrity check
  * across entries: tags in the right group, related stories that exist…
  * Plus the schema rules themselves, tested on small variations.
  */

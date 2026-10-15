@@ -4,7 +4,7 @@
  * The site is fully static: every page is prerendered at build time, so readers
  * (and Google) get plain HTML with no framework runtime. The Vercel adapter is
  * still installed because one feature is on demand: the feedback Astro Action
- * (PR 9) runs as a serverless function. Without an adapter, Astro could not
+ * (PR 7) runs as a serverless function. Without an adapter, Astro could not
  * build that function at all.
  *
  * @see https://docs.astro.build/en/reference/configuration-reference/
@@ -40,7 +40,7 @@ export default defineConfig({
   integrations: [
     /**
      * Vue is used for exactly one interactive island (search and filters,
-     * PR 8). Vue components rendered without a `client:` directive ship zero
+     * PR 6). Vue components rendered without a `client:` directive ship zero
      * JavaScript, which is how the shared story cards are reused on static
      * pages.
      */
