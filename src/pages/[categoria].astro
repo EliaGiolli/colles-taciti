@@ -10,13 +10,15 @@
  * and only the five fear ids are ever generated, so any other address is
  * still a 404.
  *
- * Title and description come from fears.json (`seo`); canonical URL and
- * the `CollectionPage` JSON-LD arrive with Seo.astro in PR 8.
+ * Title and description come from fears.json (`seo`); the JSON-LD is a
+ * `CollectionPage` listing the stories, the preview image the newest one's cover.
  */
 import type { GetStaticPaths } from "astro";
 import BaseLayout from "@/core/layout/BaseLayout.astro";
+import { collectionPageJsonLd } from "@/core/seo/jsonld";
 import CategoryPage from "@/features/categories/CategoryPage.astro";
 import {
+  coverImageHref,
   type FearWithCount,
   getFearsWithCounts,
   getStoriesByFear,
@@ -38,13 +40,25 @@ interface Props {
 }
 
 const { fear, others } = Astro.props;
+const fearStories = await getStoriesByFear(fear.id);
+const site = (Astro.site ?? Astro.url).origin;
+const jsonLd = collectionPageJsonLd(
+  { url: new URL(fear.href, site).href, name: fear.name, description: fear.seo.description },
+  fearStories.map((story) => ({ url: new URL(story.href, site).href, title: story.data.title })),
+);
+const image = fearStories[0] ? coverImageHref(fearStories[0].id) : undefined;
 const stories = await Promise.all(
-  (await getStoriesByFear(fear.id)).map(async (story) =>
+  fearStories.map(async (story) =>
     storyCard(story, { withSetting: true, cover: await getStoryThumbnail(story) }),
   ),
 );
 ---
 
-<BaseLayout title={fear.seo.title} description={fear.seo.description}>
+<BaseLayout
+  title={fear.seo.title}
+  description={fear.seo.description}
+  image={image}
+  jsonLd={[jsonLd]}
+>
   <CategoryPage fear={fear} stories={stories} others={others} />
 </BaseLayout>

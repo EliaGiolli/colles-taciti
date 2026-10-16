@@ -11,6 +11,7 @@
  */
 import { satteri } from "@astrojs/markdown-satteri";
 import node from "@astrojs/node";
+import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
 import vue from "@astrojs/vue";
 import tailwindcss from "@tailwindcss/vite";
@@ -57,6 +58,14 @@ export default defineConfig({
      * pages.
      */
     vue(),
+    /**
+     * sitemap-index.xml with every prerendered page, minus the ones kept out
+     * of search engines: /design-system (noindex) and /feedback (a result
+     * page, rendered on demand). Linked from robots.txt.
+     */
+    sitemap({
+      filter: (page) => !/\/(design-system|feedback)$/.test(new URL(page).pathname),
+    }),
   ],
 
   /**

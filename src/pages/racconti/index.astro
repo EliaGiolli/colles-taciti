@@ -12,8 +12,8 @@
  *
  * Filtered views (`/racconti?luogo=mugello`) are the same static page:
  * the island reads the query string in the browser. Only /racconti itself
- * is meant for search engines; its canonical URL, without parameters,
- * arrives with Seo.astro in PR 8.
+ * is meant for search engines: Seo.astro gives every view the canonical
+ * URL without parameters.
  */
 import BaseLayout from "@/core/layout/BaseLayout.astro";
 import { getArchive, SEARCH_INDEX_PATH, searchCopy as copy } from "@/features/search";

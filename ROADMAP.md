@@ -137,7 +137,10 @@ island; `features/stories/client.ts` as browser-safe API; vue-tsc `fallthroughAt
 
 ## PR 7 · `feat/feedback`
 
-PR: – · Merged: – · Notes: –
+PR: [#9](https://github.com/EliaGiolli/colles-taciti/pull/9) · Merged: 2026-10-16 · Notes: no-JS
+submissions go to the on-demand `/feedback` page; Vercel function in `dub1` next to the database;
+e2e built with the Node adapter on a throwaway `e2e.db`; database MCP not needed for now. See
+`docs/PLAN.md` › change log.
 
 - [x] Turso database (created by Elia, `aws-eu-west-1`) + Drizzle `feedback` table + migrations (applied)
 - [x] Evaluate a database MCP (e.g. read-only libSQL) and propose it to Elia (proposed in the PR: not needed for now)
@@ -150,10 +153,10 @@ PR: – · Merged: – · Notes: –
 
 PR: – · Merged: – · Notes: –
 
-- [ ] `Seo.astro` (title, meta, canonical, og:image)
-- [ ] JSON-LD: `WebSite` + `Person`, `ShortStory` (+ `CreativeWorkSeries`), `CollectionPage`
-- [ ] `@astrojs/sitemap`, `robots.txt`
-- [ ] README updated
+- [x] `Seo.astro` (title, meta, canonical, og:image)
+- [x] JSON-LD: `WebSite` + `Person`, `ShortStory` (+ `CreativeWorkSeries`), `CollectionPage`
+- [x] `@astrojs/sitemap`, `robots.txt`
+- [x] README updated
 
 ## PR 9 · `feat/consent-analytics`
 

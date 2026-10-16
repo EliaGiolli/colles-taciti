@@ -215,6 +215,16 @@ stories, a link to the archive and the other four fears. Title and description c
   but not e-mailed.
 - The function runs in Dublin (`vercel.json`), next to the database (`aws-eu-west-1`).
 
+### SEO
+
+Every page's `<head>` comes from [`src/core/seo/Seo.astro`](src/core/seo/Seo.astro): title, meta
+description, canonical URL (never with a query string, so filtered archive views point to
+`/racconti`), Open Graph with the story's 1200×630 cover, and JSON-LD: `WebSite` + `Person` on the
+homepage, `ShortStory` (with `CreativeWorkSeries` and `Incomplete` where they apply) on stories,
+`CollectionPage` on the fear pages. `@astrojs/sitemap` writes `sitemap-index.xml` (without
+`/design-system` and `/feedback`), and `/robots.txt` points to it. Both follow `site` in
+`astro.config.ts`, which is provisional until the domain exists.
+
 ### Story pages
 
 Each story is one page, `/racconti/<slug>`, prerendered at build time
