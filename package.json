@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "0.4.3",
+    "@astrojs/sitemap": "3.7.4",
     "@astrojs/vercel": "11.0.14",
     "@astrojs/vue": "7.0.3",
     "@libsql/client": "0.18.0",

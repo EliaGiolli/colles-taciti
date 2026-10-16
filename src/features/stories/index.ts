@@ -12,7 +12,7 @@
 export { cardMeta, readingSummary, type StoryCardData } from "./card";
 export { type Chapter, chapterId, chaptersFromMarkdown } from "./chapters";
 export { storiesCopy } from "./copy";
-export { FILTER_PARAMS, fearHref, STORIES_PATH, tagFilterHref } from "./links";
+export { coverImageHref, FILTER_PARAMS, fearHref, STORIES_PATH, tagFilterHref } from "./links";
 export {
   type FearWithCount,
   getFearsWithCounts,

@@ -32,6 +32,7 @@ import type { TagKind } from "@/features/stories/vocabulary";
 import { readJsonEntries, readStoryFiles } from "../../scripts/lib/content-files";
 import CategoryPage from "../../src/pages/[categoria].astro";
 import StoriesPage from "../../src/pages/racconti/index.astro";
+import { GET as GET_ROBOTS } from "../../src/pages/robots.txt";
 import { GET } from "../../src/pages/search-index.json";
 
 describe("/racconti", () => {
@@ -157,5 +158,17 @@ describe("the archive of the real stories", () => {
       const scores = searchScores(index, source.title);
       expect([...(scores?.keys() ?? [])][0], source.title).toBe(source.id);
     }
+  });
+});
+
+describe("/robots.txt", () => {
+  it("opens the site, closes /feedback and points to the sitemap", async () => {
+    const response = await GET_ROBOTS({
+      site: new URL("https://colles-taciti.vercel.app"),
+    } as Parameters<typeof GET_ROBOTS>[0]);
+
+    expect(await response.text()).toBe(
+      "User-agent: *\nAllow: /\nDisallow: /feedback\n\nSitemap: https://colles-taciti.vercel.app/sitemap-index.xml\n",
+    );
   });
 });

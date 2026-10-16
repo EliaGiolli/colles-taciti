@@ -10,8 +10,8 @@
  *    (see ThemeScript.astro), and it is tiny and blocks nothing.
  * 3. Then title, meta, favicon and the stylesheet with the fonts.
  *
- * Title and description are passed as they are. The SEO component (PR 8)
- * will take over canonical URL, Open Graph and structured data.
+ * Title, description, canonical URL, Open Graph and structured data are
+ * written by Seo.astro (core/seo) from the props below.
  *
  * `<body>` is a full-height column, so on a short page the footer still sits
  * at the bottom of the screen instead of floating in the middle.
@@ -24,6 +24,8 @@
  *   <h1>…</h1>
  * </BaseLayout>
  */
+import Seo from "@/core/seo/Seo.astro";
+import type { JsonLd } from "@/core/seo/jsonld";
 import ThemeScript from "@/core/theme/ThemeScript.astro";
 import { layoutCopy as copy } from "./copy";
 import Footer from "./Footer.astro";
@@ -37,9 +39,15 @@ export interface Props {
   description: string;
   /** Keeps the page out of search engines (e.g. /design-system). */
   noindex?: boolean;
+  /** Link-preview image (1200×630), as a path. */
+  image?: string | undefined;
+  /** `article` for a story. */
+  type?: "website" | "article";
+  /** Structured data for search engines (core/seo/jsonld.ts). */
+  jsonLd?: readonly JsonLd[];
 }
 
-const { title, description, noindex = false } = Astro.props;
+const { title, description, noindex = false, image, type = "website", jsonLd = [] } = Astro.props;
 
 /** Id of `<main>`, the skip link's target. */
 const MAIN_ID = "contenuto";
@@ -50,9 +58,14 @@ const MAIN_ID = "contenuto";
     <meta charset="utf-8" />
     <ThemeScript />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex" />}
+    <Seo
+      title={title}
+      description={description}
+      image={image}
+      type={type}
+      noindex={noindex}
+      jsonLd={jsonLd}
+    />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="generator" content={Astro.generator} />
     <GlobalHead />

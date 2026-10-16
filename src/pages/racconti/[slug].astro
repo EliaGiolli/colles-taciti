@@ -17,11 +17,13 @@
  * Vue: the story cards are Vue components rendered to HTML on the server.
  *
  * Title and description come from the SEO brief through the frontmatter;
- * canonical URL, Open Graph and JSON-LD arrive with Seo.astro in PR 8.
+ * the link preview is the story's 1200×630 cover, and the JSON-LD a
+ * `ShortStory` (core/seo).
  */
 import { render } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import BaseLayout from "@/core/layout/BaseLayout.astro";
+import { shortStoryJsonLd } from "@/core/seo/jsonld";
 import Cover from "@/features/covers/Cover.astro";
 import FeedbackForm from "@/features/feedback/FeedbackForm.astro";
 import { coversCopy } from "@/features/covers";
@@ -38,6 +40,7 @@ import {
   getRelatedStories,
   getStories,
   getStoryCover,
+  coverImageHref,
   getStoryLinks,
   type Story,
   storiesCopy as copy,
@@ -64,9 +67,28 @@ const [cover, links, related] = await Promise.all([
   getRelatedStories(story),
 ]);
 const reading = storyReadingSummary(story);
+const site = (Astro.site ?? Astro.url).origin;
+const image = coverImageHref(story.id);
+const jsonLd = shortStoryJsonLd(site, {
+  url: new URL(story.href, site).href,
+  title: data.title,
+  description: data.seo.description,
+  genre: data.label,
+  image: new URL(image, site).href,
+  datePublished: data.publishedAt,
+  dateModified: data.updatedAt,
+  ongoing: data.status === "ongoing",
+  series: data.series,
+});
 ---
 
-<BaseLayout title={data.seo.title} description={data.seo.description}>
+<BaseLayout
+  title={data.seo.title}
+  description={data.seo.description}
+  image={image}
+  type="article"
+  jsonLd={[jsonLd]}
+>
   <div class="mx-auto flex max-w-pagina flex-col gap-7 px-4 py-6 md:px-6 md:py-7">
     <StoryHero
       title={data.title}

@@ -34,6 +34,14 @@ export function fearHref(fearId: string): string {
   return `/${fearId}`;
 }
 
+/**
+ * The 1200×630 cover of a story (`bun run copertine`), used as its link
+ * preview image (Open Graph).
+ */
+export function coverImageHref(storyId: string): string {
+  return `/copertine/${storyId}-anteprima.png`;
+}
+
 /** The archive filtered by one tag: `/racconti?luogo=mugello`. */
 export function tagFilterHref(kind: TagKind, tagId: string): string {
   const query = new URLSearchParams({ [FILTER_PARAMS[kind]]: tagId });

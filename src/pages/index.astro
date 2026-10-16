@@ -18,6 +18,7 @@
  * switch, «Stai leggendo» and the feedback form.
  */
 import BaseLayout from "@/core/layout/BaseLayout.astro";
+import { websiteJsonLd } from "@/core/seo/jsonld";
 import FearPicker from "@/features/categories/FearPicker.astro";
 import { categoriesCopy } from "@/features/categories/copy";
 import { brandArtSvg, coversCopy } from "@/features/covers";
@@ -27,6 +28,7 @@ import HomeHero from "@/features/home/HomeHero.astro";
 import HomeSection from "@/features/home/HomeSection.astro";
 import WhyCollesTaciti from "@/features/home/WhyCollesTaciti.astro";
 import {
+  coverImageHref,
   getFearsWithCounts,
   getLatestStories,
   getOngoingStories,
@@ -65,9 +67,12 @@ const latestCards = await Promise.all(
 const [current] = ongoing;
 const firstStory = starters[0]?.href ?? latest[0]?.href ?? STORIES_PATH;
 const grid = "grid gap-x-6 lg:grid-cols-3";
+// Link preview: the cover of the story picked for newcomers.
+const image = starters[0] ? coverImageHref(starters[0].id) : undefined;
+const jsonLd = websiteJsonLd((Astro.site ?? Astro.url).origin, copy.siteName, copy.metaDescription);
 ---
 
-<BaseLayout title={copy.title} description={copy.metaDescription}>
+<BaseLayout title={copy.title} description={copy.metaDescription} image={image} jsonLd={jsonLd}>
   <div class="mx-auto flex max-w-pagina flex-col gap-8 px-4 py-7 md:gap-9 md:px-6 md:py-8">
     <HomeHero href={firstStory}>
       <Fragment slot="media" set:html={brandArtSvg(coversCopy.brandArtLabel)} />
