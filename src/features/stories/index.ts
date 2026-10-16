@@ -35,5 +35,5 @@ export {
   storyHref,
   storyReadingSummary,
 } from "./queries";
-export { STORY_STATUSES, TAG_KINDS, type TagKind } from "./schema";
 export { readingMinutes } from "./story-list";
+export { STORY_STATUSES, type StoryStatus, TAG_KINDS, type TagKind } from "./vocabulary";

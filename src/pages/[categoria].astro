@@ -1,0 +1,50 @@
+---
+/**
+ * /<fear>: one page per fear, five in all (/body-horror,
+ * /horror-psicologico, /slasher, /liminale, /esperimenti; PLAN › Pagine ›
+ * 4). `getStaticPaths` lists them from the `fears` collection, so adding a
+ * fear to fears.json adds its page.
+ *
+ * A dynamic segment at the root of the site is safe here: Astro gives
+ * static routes (/racconti, /design-system…) priority over `[categoria]`,
+ * and only the five fear ids are ever generated, so any other address is
+ * still a 404.
+ *
+ * Title and description come from fears.json (`seo`); canonical URL and
+ * the `CollectionPage` JSON-LD arrive with Seo.astro in PR 8.
+ */
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "@/core/layout/BaseLayout.astro";
+import CategoryPage from "@/features/categories/CategoryPage.astro";
+import {
+  type FearWithCount,
+  getFearsWithCounts,
+  getStoriesByFear,
+  getStoryThumbnail,
+  storyCard,
+} from "@/features/stories";
+
+export const getStaticPaths = (async () => {
+  const fears = await getFearsWithCounts();
+  return fears.map((fear) => ({
+    params: { categoria: fear.id },
+    props: { fear, others: fears.filter((other) => other.id !== fear.id) },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  fear: FearWithCount;
+  others: FearWithCount[];
+}
+
+const { fear, others } = Astro.props;
+const stories = await Promise.all(
+  (await getStoriesByFear(fear.id)).map(async (story) =>
+    storyCard(story, { withSetting: true, cover: await getStoryThumbnail(story) }),
+  ),
+);
+---
+
+<BaseLayout title={fear.seo.title} description={fear.seo.description}>
+  <CategoryPage fear={fear} stories={stories} others={others} />
+</BaseLayout>

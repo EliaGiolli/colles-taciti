@@ -1,11 +1,11 @@
 /**
  * What a story card shows (DS › SchedaRacconto), as a plain object.
  *
- * `StoryCard.vue` renders cards on static pages («Se ti è piaciuto» now,
- * the archive and the homepage later) and inside the search island (PR 6),
- * which receives its data as JSON from the search index. A card therefore
+ * `StoryCard.vue` renders cards on static pages («Se ti è piaciuto», the
+ * homepage, the fear pages) and inside the search island of /racconti,
+ * which receives its data as JSON props. A card therefore
  * takes plain, serialisable props, never a collection entry: this file
- * turns a story into them, and the search index will do the same.
+ * turns a story into them (`storyCard()` in queries.ts).
  */
 import { storiesCopy } from "./copy";
 

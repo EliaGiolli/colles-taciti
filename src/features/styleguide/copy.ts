@@ -15,6 +15,7 @@ export const styleguideCopy = {
     type: "Tipografia",
     buttons: "Pulsanti",
     labels: "Etichette",
+    filters: "Filtri",
     form: "Modulo",
     covers: "Copertine",
     story: "Racconto",
@@ -40,6 +41,15 @@ export const styleguideCopy = {
     rust: "Body horror",
     muted: "Ultimi racconti",
     onFlesh: "In corso",
+  },
+  /** FacetChip in its three looks: off with a count, on, and without a count. */
+  filters: {
+    group: "Luogo",
+    chips: [
+      { label: "Mugello", pressed: false, count: 2, countLabel: "2 racconti" },
+      { label: "Pisa", pressed: true, count: 1, countLabel: "1 racconto" },
+      { label: "Appennino", pressed: false },
+    ],
   },
   form: {
     title: "Ti è rimasto addosso qualcosa?",

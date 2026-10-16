@@ -11,6 +11,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/vue";
 import { afterEach, describe, expect, it } from "vitest";
 import { buttonVariants } from "@/shared/variants/button";
 import BaseButton from "./BaseButton.vue";
+import BaseFacetChip from "./BaseFacetChip.vue";
 import BaseInput from "./BaseInput.vue";
 
 afterEach(() => {
@@ -72,5 +73,33 @@ describe("BaseInput.vue", () => {
     expect(input.id).toBe("cerca");
     expect(input.getAttribute("aria-invalid")).toBe("true");
     expect(input.className).toContain("border-ferita");
+  });
+});
+
+describe("BaseFacetChip.vue", () => {
+  it("is a toggle button whose state is aria-pressed", async () => {
+    const { emitted, rerender } = render(BaseFacetChip, {
+      props: { label: "Mugello", pressed: false },
+    });
+    const chip = screen.getByRole("button", { name: "Mugello" });
+
+    expect(chip.getAttribute("type")).toBe("button");
+    expect(chip.getAttribute("aria-pressed")).toBe("false");
+    await fireEvent.click(chip);
+    expect(emitted()["click"]).toHaveLength(1);
+
+    await rerender({ label: "Mugello", pressed: true });
+    expect(chip.getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("draws the count as a number and names it in words, starting with what is drawn", () => {
+    render(BaseFacetChip, {
+      props: { label: "Slasher", pressed: false, count: 2, countLabel: "2 racconti" },
+    });
+    const chip = screen.getByRole("button", { name: "Slasher 2 racconti" });
+
+    // WCAG 2.5.3: the visible text («Slasher 2») is where the name begins.
+    expect(chip.textContent).toBe("Slasher2");
+    expect(chip.getAttribute("aria-label")?.startsWith("Slasher 2")).toBe(true);
   });
 });

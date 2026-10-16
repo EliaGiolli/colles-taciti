@@ -9,7 +9,7 @@
  * 3. apostrophes used as accents («citta'») and other punctuation become spaces;
  * 4. letters are lowercased with Italian rules, spaces collapsed and trimmed.
  *
- * The search index (PR 6) normalises both the indexed text and the query
+ * The search index normalises both the indexed text and the query
  * with this same function, so they always agree.
  */
 

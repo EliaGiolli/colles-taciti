@@ -32,6 +32,17 @@
  */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+/*
+ * `no-js:` applies when JavaScript did not run. The anti-flash theme script
+ * (core/theme/ThemeScript.astro) is the first script of every page and
+ * always sets `data-theme` on <html>; if the attribute is missing, no
+ * script ran, so neither will any control. `no-js:hidden` hides a control
+ * that would do nothing, such as the archive's search box. The theme
+ * toggle and the reading controls use the same test in their own <style>
+ * blocks, written before this variant existed.
+ */
+@custom-variant no-js (&:where(:root:not([data-theme]) *));
+
 /* ─── 2. Raw theme tokens ───────────────────────────────────────────────── */
 
 @layer base {

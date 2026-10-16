@@ -4,7 +4,8 @@
  *   shared   ← imports from nobody
  *   core     ← may import shared
  *   features ← may import core and shared, and another feature only
- *              through that feature's index.ts (its public API)
+ *              through that feature's index.ts (its public API) or
+ *              client.ts (the part of it that may run in the browser)
  *   pages    ← wire everything together; nobody imports a page
  *
  * Run by `bun run lint` (`depcruise src tests`). A violation fails the lint
@@ -49,13 +50,24 @@ export default {
       name: "features-use-public-api",
       severity: "error",
       comment:
-        "A feature may use another feature only through its index.ts, so each feature can " +
-        "reorganise its internals freely. `$1` is the importing feature's own folder.",
+        "A feature may use another feature only through its public API, so each feature can " +
+        "reorganise its internals freely: index.ts, or client.ts for the browser-safe part " +
+        "(see the next rule). `$1` is the importing feature's own folder.",
       from: { path: "^src/features/([^/]+)/" },
       to: {
         path: "^src/features/[^/]+/",
-        pathNot: ["^src/features/$1/", "^src/features/[^/]+/index\\.ts$"],
+        pathNot: ["^src/features/$1/", "^src/features/[^/]+/(index|client)\\.ts$"],
       },
+    },
+    {
+      name: "browser-code-stays-off-the-content-layer",
+      severity: "error",
+      comment:
+        "Vue components and client.ts entry points end up in the browser, where `astro:content` " +
+        "does not exist (Astro stops the build with ServerOnlyModule). Checked transitively, " +
+        "because the usual way in is a re-export: importing a feature's index.ts loads its queries.",
+      from: { path: "(\\.vue|^src/features/[^/]+/client\\.ts)$" },
+      to: { path: "^astro:content$", reachable: true },
     },
     {
       name: "nobody-imports-pages",

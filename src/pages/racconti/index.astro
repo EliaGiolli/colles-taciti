@@ -1,0 +1,34 @@
+---
+/**
+ * /racconti: every story, with search, filters and sort order (PLAN ›
+ * Pagine › 2, Ricerca, filtri e tag).
+ *
+ * The page itself is a heading and an introduction; the rest is the
+ * SearchBrowser island. Astro renders the island to HTML at build time, so
+ * the complete list is in the page for search engines and for readers
+ * without JavaScript; `client:idle` hydrates it once the browser is idle,
+ * which keeps the first paint free of Vue. This is one of the two pages
+ * that ship Vue (the other will be /libri).
+ *
+ * Filtered views (`/racconti?luogo=mugello`) are the same static page:
+ * the island reads the query string in the browser. Only /racconti itself
+ * is meant for search engines; its canonical URL, without parameters,
+ * arrives with Seo.astro in PR 8.
+ */
+import BaseLayout from "@/core/layout/BaseLayout.astro";
+import { getArchive, SEARCH_INDEX_PATH, searchCopy as copy } from "@/features/search";
+import SearchBrowser from "@/features/search/SearchBrowser.vue";
+
+const { items, facets } = await getArchive();
+---
+
+<BaseLayout title={copy.page.title} description={copy.page.metaDescription}>
+  <div class="mx-auto flex max-w-pagina flex-col gap-7 px-4 py-7 md:px-6 md:py-8">
+    <header class="flex flex-col gap-4">
+      <h1 class="font-display text-titolo-1 md:text-display">{copy.page.heading}</h1>
+      <p class="max-w-misura text-corpo">{copy.page.intro}</p>
+    </header>
+
+    <SearchBrowser client:idle items={items} facets={facets} indexUrl={SEARCH_INDEX_PATH} />
+  </div>
+</BaseLayout>

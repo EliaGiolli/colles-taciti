@@ -2,27 +2,32 @@
  * The URLs a story links to: its fears and its tags (PLAN › Pagine:
  * «SchedaTecnica, tag come link ai filtri»).
  *
- * - A **fear** has its own indexable page (`/slasher`, PR 6).
+ * - A **fear** has its own indexable page (`/slasher`).
  * - A **tag** opens the archive filtered by it (`/racconti?luogo=mugello`).
  *   Tags get no page of their own until a place has two stories (PLAN ›
  *   Ricerca, filtri e tag), so the filter is the honest destination.
  *
  * The query parameter names are Italian because readers see them in the
- * address bar. They are defined here, before the search island exists, so
- * that PR 6's `useUrlState` reads the same names the story pages already
- * link to: one list, no drift.
+ * address bar. They were defined here before the search island existed, and
+ * the island's URL schema (features/search) is built from them, so the
+ * story pages and the archive can never disagree on a name.
  */
-import type { TagKind } from "./schema";
+import type { TagKind } from "./vocabulary";
 
-/** Story archive (the search island lives there from PR 6). */
+/** Story archive, where the search island lives. */
 export const STORIES_PATH = "/racconti";
 
-/** Query parameter of each tag family on /racconti. */
-export const FILTER_PARAMS: Readonly<Record<TagKind, string>> = {
+/**
+ * Query parameter of each tag family on /racconti. `as const` keeps the
+ * literal names as types («luogo», not just `string`), so the search
+ * island's URL schema is checked against them at compile time; `satisfies`
+ * still makes sure every tag family has one.
+ */
+export const FILTER_PARAMS = {
   place: "luogo",
   theme: "tema",
   inspiration: "ispirazione",
-};
+} as const satisfies Readonly<Record<TagKind, string>>;
 
 /** The page of a fear: `/body-horror`. */
 export function fearHref(fearId: string): string {

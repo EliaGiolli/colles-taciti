@@ -23,7 +23,12 @@
   // Options read by vue-tsc only (TypeScript ignores them).
   "vueCompilerOptions": {
     // Type-check component props, events and slots in templates as strictly as TS code.
-    "strictTemplates": true
+    "strictTemplates": true,
+    // ...which includes rejecting attributes a component does not declare as
+    // props. This lets a component accept the attributes of the element they
+    // fall through to (`<BaseButton aria-expanded @click>` → its <button>),
+    // and still rejects anything that element would not take.
+    "fallthroughAttributes": true
   },
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist", ".vercel", "coverage", "playwright-report", "test-results"]

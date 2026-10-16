@@ -7,7 +7,7 @@
  * `queries.ts` feeds them the real collections.
  */
 import { chaptersFromMarkdown } from "./chapters";
-import type { TagKind } from "./schema";
+import type { TagKind } from "./vocabulary";
 
 /** A `reference()` after parsing: the id of the referenced entry. */
 export interface Ref {

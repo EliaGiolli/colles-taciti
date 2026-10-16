@@ -3,30 +3,50 @@
     "id": "body-horror",
     "name": "Body horror",
     "definition": "Quando il corpo smette di essere tuo.",
-    "order": 1
+    "order": 1,
+    "seo": {
+      "title": "Racconti body horror – Colles Taciti",
+      "description": "Racconti body horror da leggere online, gratis: quando il corpo smette di essere tuo. Storie brevi nate in Toscana da paure vere."
+    }
   },
   {
     "id": "horror-psicologico",
     "name": "Horror psicologico",
     "definition": "Quando il pericolo è dentro la testa.",
-    "order": 2
+    "order": 2,
+    "seo": {
+      "title": "Racconti di horror psicologico – Colles Taciti",
+      "description": "Racconti di horror psicologico da leggere online, gratis: quando il pericolo è dentro la testa. Storie brevi nate in Toscana da paure vere."
+    }
   },
   {
     "id": "slasher",
     "name": "Slasher",
     "definition": "Quando qualcuno ha deciso che tocca a te.",
-    "order": 3
+    "order": 3,
+    "seo": {
+      "title": "Racconti slasher – Colles Taciti",
+      "description": "Racconti slasher da leggere online, gratis: quando qualcuno ha deciso che tocca a te. Storie brevi tra le colline della Toscana."
+    }
   },
   {
     "id": "liminale",
     "name": "Liminale",
     "definition": "Quando un luogo familiare non finisce più.",
-    "order": 4
+    "order": 4,
+    "seo": {
+      "title": "Racconti di horror liminale – Colles Taciti",
+      "description": "Racconti di horror liminale da leggere online, gratis: quando un luogo familiare non finisce più. Corridoi, uffici e aeroporti in Toscana."
+    }
   },
   {
     "id": "esperimenti",
     "name": "Esperimenti",
     "definition": "Racconti brevi, prove, frammenti. Il laboratorio.",
-    "order": 5
+    "order": 5,
+    "seo": {
+      "title": "Esperimenti: racconti horror brevi – Colles Taciti",
+      "description": "Racconti horror brevi, prove e frammenti: il laboratorio di Colles Taciti, da leggere online e gratis."
+    }
   }
 ]
