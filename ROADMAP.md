@@ -199,7 +199,7 @@ PR: – · Merged: – · Notes: –
 - [ ] SEO title and description of /racconti (`features/search/copy.ts`) and of the five fear pages (`seo` in `fears.json`): written in PR 6 on the SEO brief's pattern, to be checked by Elia against the brief
 - [ ] Real texts, fear notes, warnings, dates and tags for each story (placeholders marked `[Segnaposto]` in `src/core/content/stories`)
 - [ ] Wattpad addresses of Le vibrazioni and Senza Rimorso (`wattpadUrl` in their frontmatter)
-- [ ] Photo `abat-jour-notte.jpg` (the homepage Hero shows the DS brand illustration until it arrives)
+- [x] Photo `abat-jour-notte.jpg` in the homepage Hero (`src/assets/foto`, optimised by `astro:assets`)
 - [ ] Books list
 - [x] Portfolio and Wattpad URLs (`core/layout/nav.ts`)
 - [ ] Instagram profile: when it exists, add its link to `EXTERNAL_LINKS` and the footer

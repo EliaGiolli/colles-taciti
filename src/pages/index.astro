@@ -18,10 +18,11 @@
  * switch, «Stai leggendo» and the feedback form.
  */
 import BaseLayout from "@/core/layout/BaseLayout.astro";
+import heroPhoto from "../assets/foto/abat-jour-notte.jpg";
 import { websiteJsonLd } from "@/core/seo/jsonld";
 import FearPicker from "@/features/categories/FearPicker.astro";
 import { categoriesCopy } from "@/features/categories/copy";
-import { brandArtSvg, coversCopy } from "@/features/covers";
+import { Picture } from "astro:assets";
 import FeedbackForm from "@/features/feedback/FeedbackForm.astro";
 import { homeCopy as copy } from "@/features/home/copy";
 import HomeHero from "@/features/home/HomeHero.astro";
@@ -75,7 +76,17 @@ const jsonLd = websiteJsonLd((Astro.site ?? Astro.url).origin, copy.siteName, co
 <BaseLayout title={copy.title} description={copy.metaDescription} image={image} jsonLd={jsonLd}>
   <div class="mx-auto flex max-w-pagina flex-col gap-8 px-4 py-7 md:gap-9 md:px-6 md:py-8">
     <HomeHero href={firstStory}>
-      <Fragment slot="media" set:html={brandArtSvg(coversCopy.brandArtLabel)} />
+      <Picture
+        slot="media"
+        src={heroPhoto}
+        alt={copy.hero.photoAlt}
+        formats={["avif", "webp"]}
+        widths={[480, 800, 1200, 1600]}
+        sizes="(min-width: 768px) 58vw, 100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="absolute inset-0 h-full w-full object-cover object-[50%_64%]"
+      />
     </HomeHero>
 
     <ContinueReading />

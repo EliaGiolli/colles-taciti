@@ -21,6 +21,9 @@ export const homeCopy = {
     title: "Racconti horror dalla Toscana che tace",
     tagline: "La carne ricorda ciò che le colline tacciono.",
     action: "Inizia a leggere",
+    /** The Hero photo (`src/assets/foto/abat-jour-notte.jpg`). */
+    photoAlt:
+      "Un abat-jour di vetro acceso nel buio, con rami fioriti in controluce, su un mobile.",
   },
   intro:
     "Colles Taciti raccoglie racconti horror brevi, da leggere online e gratuitamente. Body horror, slasher e orrore psicologico nati in Toscana: tra case di campagna, aeroporti di provincia, uffici svuotati e strade che salgono verso l'Appennino. Ogni storia nasce da una paura vera, la mia. Alla fine di ogni racconto ti dico quale.",
