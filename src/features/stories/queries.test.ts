@@ -28,10 +28,11 @@ const {
   storyReadingSummary,
 } = await import("./queries");
 
+const seo = (id: string) => ({ title: `Racconti ${id}`, description: `Racconti ${id}, gratis.` });
 const fear = (id: string, order: number) => ({
   id,
   collection: "fears",
-  data: { name: id, definition: `Quando ${id}.`, order },
+  data: { name: id, definition: `Quando ${id}.`, order, seo: seo(id) },
 });
 
 function story(id: string, day: number, extra: Record<string, unknown> = {}) {
@@ -109,13 +110,21 @@ describe("helpers", () => {
 
   it("lists the fears in their order, with counts and URLs", async () => {
     expect(await getFearsWithCounts()).toEqual([
-      { id: "slasher", href: "/slasher", name: "slasher", definition: "Quando slasher.", count: 2 },
+      {
+        id: "slasher",
+        href: "/slasher",
+        name: "slasher",
+        definition: "Quando slasher.",
+        count: 2,
+        seo: seo("slasher"),
+      },
       {
         id: "liminale",
         href: "/liminale",
         name: "liminale",
         definition: "Quando liminale.",
         count: 0,
+        seo: seo("liminale"),
       },
     ]);
   });

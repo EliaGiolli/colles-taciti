@@ -17,7 +17,6 @@ import { type CoverInput, coverSvg, coversCopy, storyCover } from "@/features/co
 import { cardMeta, readingSummary, type StoryCardData } from "./card";
 import { type Chapter, chaptersFromMarkdown } from "./chapters";
 import { fearHref, tagFilterHref } from "./links";
-import type { TagKind } from "./schema";
 import {
   countByFear,
   filterByFear,
@@ -28,6 +27,7 @@ import {
   selectStarters,
   sortByPublished,
 } from "./story-list";
+import type { TagKind } from "./vocabulary";
 
 /** A story as stored in the `stories` collection. */
 export type StoryEntry = CollectionEntry<"stories">;
@@ -54,6 +54,8 @@ export interface FearWithCount {
   name: string;
   definition: string;
   count: number;
+  /** Title and meta description of the fear's page. */
+  seo: { title: string; description: string };
 }
 
 /** The URL of a story page. */
@@ -127,7 +129,7 @@ export async function getRelatedStories(story: Story): Promise<Story[]> {
   return story.data.related.flatMap(({ id }) => stories.find((other) => other.id === id) ?? []);
 }
 
-/** The five fears in their set order, each with its story count (DS › SceltaPaura). */
+/** The five fears in their set order, each with its story count (DS › SceltaPaura, fear pages). */
 export async function getFearsWithCounts(): Promise<FearWithCount[]> {
   const [stories, fears] = await Promise.all([getStories(), getCollection("fears")]);
   const sorted = [...fears].sort((a, b) => a.data.order - b.data.order);
@@ -142,6 +144,7 @@ export async function getFearsWithCounts(): Promise<FearWithCount[]> {
     name: fear.data.name,
     definition: fear.data.definition,
     count: counts.get(fear.id) ?? 0,
+    seo: fear.data.seo,
   }));
 }
 

@@ -11,6 +11,15 @@
  * `inheritAttrs: false` turns off Vue's automatic forwarding so that `class`
  * can go through `cn()` first: a caller's `class="px-4"` then replaces the
  * default `px-5` instead of both ending up on the element.
+ *
+ * The element still binds `$attrs` as a whole (`v-bind="$attrs"`), class
+ * included. Vue then merges the caller's raw `px-4` with the `cn()` result,
+ * which has already dropped `px-5`, so the outcome is the same. Binding
+ * `$attrs` directly, rather than a copy without `class`, is what lets
+ * vue-tsc know which attributes the component accepts
+ * (`fallthroughAttributes` in tsconfig.json): with `strictTemplates` on,
+ * `<BaseButton aria-expanded="true" @click="…">` would otherwise not
+ * type-check.
  */
 import type { ClassValue } from "clsx";
 import { computed, useAttrs } from "vue";
@@ -36,18 +45,14 @@ const attrs = useAttrs();
 const classes = computed(() =>
   cn(buttonVariants({ variant: props.variant }), attrs["class"] as ClassValue),
 );
-const forwarded = computed(() => {
-  const { class: _class, ...rest } = attrs;
-  return rest;
-});
 </script>
 
 <template>
-  <a v-if="props.href !== undefined" v-bind="forwarded" :href="props.href" :class="classes">
+  <a v-if="props.href !== undefined" v-bind="$attrs" :href="props.href" :class="classes">
     <slot />
     <span v-if="props.variant === 'link'" aria-hidden="true">&nbsp;→</span>
   </a>
-  <button v-else v-bind="forwarded" :type="props.type" :class="classes">
+  <button v-else v-bind="$attrs" :type="props.type" :class="classes">
     <slot />
     <span v-if="props.variant === 'link'" aria-hidden="true">&nbsp;→</span>
   </button>

@@ -37,7 +37,8 @@ Planned for launch (track progress in [ROADMAP.md](ROADMAP.md)):
 
 - **Single-page stories** with a chapter index, reading controls and «resume where you left off».
 - **Two themes**: *Notte* (dark, default) and *Nebbia* (light), with no flash on load.
-- **Search and facets** (fear, place, theme, form) on stories and books, fully reflected in the URL.
+- **Search and facets** (fear, place, theme, inspiration, form) on stories, and later books, fully
+  reflected in the URL.
 - **Feedback form** that works with and without JavaScript.
 - **Privacy-first analytics**: GA4 with Consent Mode v2, denied by default.
 - **Zero JavaScript by default**: story pages ship only a few tiny TypeScript controllers.
@@ -92,7 +93,9 @@ Dependency rules, enforced by dependency-cruiser:
 
 - `shared` imports from nobody.
 - `core` imports only from `shared`.
-- `features/*` import from `core` and `shared`, and from another feature only through its `index.ts`.
+- `features/*` import from `core` and `shared`, and from another feature only through its `index.ts`
+  (or its `client.ts`, the browser-safe part: no `astro:content`, checked transitively from every
+  `.vue` file).
 
 The full design rationale lives in [docs/PLAN.md](docs/PLAN.md) (Italian).
 
@@ -170,6 +173,31 @@ racconti» (the newest stories with their covers, ongoing ones left out), the In
 the story still coming out, «Scegli la tua paura» with story counts, and «Perché Colles Taciti».
 Like the story pages it ships no framework: only the theme switch and the «Stai leggendo»
 controller.
+
+### Archive and fear pages
+
+`/racconti` ([`src/pages/racconti/index.astro`](src/pages/racconti/index.astro)) lists every story
+with its cover. The list is a Vue island, `SearchBrowser.vue`
+([`src/features/search`](src/features/search)), rendered to HTML at build time and hydrated with
+`client:idle`, so the full list is in the page even without JavaScript (the controls are then
+hidden).
+
+- **Search**: MiniSearch over title, sub-genre, logline, setting, fears, tags and the opening of
+  each story, with prefix matching, one typo forgiven in longer words and accents ignored. The index
+  is built at build time by the [`/search-index.json`](src/pages/search-index.json.ts) endpoint
+  and downloaded, together with MiniSearch itself, only when a reader goes to search.
+- **Filters**: fear, place, theme, inspiration and form (short, in chapters, ongoing). Values of
+  one filter add up, different filters narrow each other; values that would leave nothing are
+  hidden. On phones they fold under a «Filtri» button.
+- **Everything in the URL**: `/racconti?q=nebbia&luogo=mugello&ordine=titolo`, validated with a
+  zod schema (`zod/mini`), so a filtered list can be shared and the back button undoes a filter.
+  The story pages link straight to it.
+- The count is announced to screen readers; the empty state reads «Nessun racconto qui, per ora.».
+
+Each fear has its own indexable page, `/body-horror`, `/horror-psicologico`, `/slasher`,
+`/liminale`, `/esperimenti` ([`src/pages/[categoria].astro`](src/pages/[categoria].astro)): its
+stories, a link to the archive and the other four fears. Title and description come from
+`fears.json` (`seo`). These pages are static: no Vue reaches the browser.
 
 ### Story pages
 

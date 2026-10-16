@@ -7,10 +7,10 @@
  *
  * A Vue component, although it ships no JavaScript where it is used today:
  * Astro renders a Vue component without a `client:` directive to plain HTML
- * on the server. The search island (PR 6) will render the very same
+ * on the server. The search island of /racconti renders the very same
  * component in the browser, so the card's markup has one source (PLAN ›
  * Schede condivise). Its props are plain data (`StoryCardData`, card.ts),
- * because the island will get them as JSON, not as collection entries.
+ * because the island gets them as JSON, not as collection entries.
  *
  * The cover arrives as an SVG string (`coverSvg()` in features/covers) and
  * is inserted with `v-html`. That is safe only because every piece of text

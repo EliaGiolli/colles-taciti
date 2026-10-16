@@ -34,6 +34,8 @@ export const storiesCopy = {
   minutes: (minutes: number) => `${minutes} min`,
   /** After the label of a story still coming out (DS › SchedaRacconto). */
   ongoing: "in corso",
+  /** A list with no stories: the archive with nothing matching, an empty fear (PLAN › Ricerca). */
+  empty: "Nessun racconto qui, per ora.",
   facts: {
     /** Accessible name of the list (DS › SchedaTecnica). */
     label: "Scheda del racconto",

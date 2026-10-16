@@ -18,18 +18,9 @@
 import { reference } from "astro:content";
 import { z } from "astro/zod";
 import { publicCopy } from "@/core/content/public-copy";
+import { seoFields } from "@/core/content/seo";
 import { MAX_LINES, MOTIFS } from "@/features/covers";
-
-/** A story is either finished or still coming out in chapters (Senza Rimorso). */
-export const STORY_STATUSES = ["complete", "ongoing"] as const;
-
-/** The three families of the controlled tag vocabulary (`src/core/content/tags.json`). */
-export const TAG_KINDS = ["place", "theme", "inspiration"] as const;
-export type TagKind = (typeof TAG_KINDS)[number];
-
-/** SEO brief v2 › §5: title at most ~60 characters, description ~155. */
-export const SEO_TITLE_MAX = 60;
-export const SEO_DESCRIPTION_MAX = 160;
+import { STORY_STATUSES, TAG_KINDS } from "./vocabulary";
 
 /** DS › NotaPaura: «80–150 parole». */
 export const FEAR_NOTE_WORDS = { min: 80, max: 150 } as const;
@@ -76,10 +67,8 @@ export const storySchema = z
     /** Name of the series the story belongs to (JSON-LD CreativeWorkSeries, PR 8). */
     series: z.string().trim().min(1).optional(),
     wattpadUrl: z.url({ hostname: /^(www\.)?wattpad\.com$/ }).optional(),
-    seo: z.object({
-      title: publicCopy(z.string().trim().min(1).max(SEO_TITLE_MAX)),
-      description: publicCopy(z.string().trim().min(1).max(SEO_DESCRIPTION_MAX)),
-    }),
+    /** Title and meta description of the story page (SEO brief v2 › §5). */
+    seo: seoFields(),
     /** «Da dove cominciare» on the homepage: position and lead-in («Se cerchi lo smarrimento»). */
     starter: z
       .object({

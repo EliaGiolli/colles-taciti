@@ -4,6 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { buttonVariants } from "./button";
+import { chipVariants } from "./chip";
 import { fieldControl, fieldMessage } from "./field";
 import { labelVariants } from "./label";
 
@@ -43,6 +44,21 @@ describe("buttonVariants", () => {
     for (const variant of ["primary", "secondary", "onFlesh", "link"] as const) {
       expect(buttonVariants({ variant })).not.toMatch(/\b(rounded|shadow)-(?!none)/);
     }
+  });
+});
+
+describe("chipVariants", () => {
+  it("is a 48px touch target whose pressed look follows aria-pressed", () => {
+    const chip = classes(chipVariants());
+    expect(chip).toEqual(
+      expect.arrayContaining([
+        "min-h-tocco",
+        "border-linea-forte",
+        "aria-pressed:bg-osso",
+        "aria-pressed:text-terra",
+      ]),
+    );
+    expect(chip.some((name) => /rounded|shadow|carne|ferita/.test(name))).toBe(false);
   });
 });
 

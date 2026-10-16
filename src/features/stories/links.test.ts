@@ -1,7 +1,7 @@
 /** Tests for the links of the SchedaTecnica: fear pages and tag filters. */
 import { describe, expect, it } from "vitest";
 import { FILTER_PARAMS, fearHref, tagFilterHref } from "./links";
-import { TAG_KINDS } from "./schema";
+import { TAG_KINDS } from "./vocabulary";
 
 describe("links", () => {
   it("links a fear to its page", () => {

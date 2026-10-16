@@ -110,7 +110,10 @@ Reading progress
 
 ## PR 5 · `feat/home`
 
-PR: – · Merged: – · Notes: –
+PR: [#7](https://github.com/EliaGiolli/colles-taciti/pull/7) · Merged: 2026-10-15 · Notes: Hero with
+the DS brand illustration until the photo arrives; «Inizia a leggere» opens the first starter story;
+«Ultimi racconti» leaves ongoing stories out (they have the InCorso banner); cover variant of
+`StoryCard.vue` brought forward from PR 6; «Chi sono →» dropped. See `docs/PLAN.md` › change log.
 
 - [x] Hero, «Stai leggendo…» (`ContinueReading`, built in PR 4), intro, «Da dove cominciare», «Ultimi racconti», InCorso
 - [x] SceltaPaura with counts, «Perché Colles Taciti», form slot
@@ -121,12 +124,13 @@ PR: – · Merged: – · Notes: –
 
 PR: – · Merged: – · Notes: –
 
-- [ ] Prerendered `search-index.json` endpoint (`buildIndex`)
-- [ ] `SearchBrowser.vue` island (`client:idle`, MiniSearch, facets, `TransitionGroup`, `aria-live`)
-- [ ] `useUrlState` composable (zod ↔ URLSearchParams), back button works
-- [ ] `/racconti` (static list + island) and the 5 `/[categoria]` pages
-- [ ] `StoryCard.vue` (created in PR 4, cover variant in PR 5) used in the archive and in the island
-- [ ] README updated
+- [x] Prerendered `search-index.json` endpoint (`buildIndex`): MiniSearch's serialised index of metadata and incipit, loaded in the browser with MiniSearch itself on first use
+- [x] `SearchBrowser.vue` island (`client:idle`, MiniSearch, facets incl. «ispirazione», `TransitionGroup`, `aria-live` count), `BaseFacetChip.vue` on /design-system
+- [x] `useUrlState` composable (`zod/mini` ↔ URLSearchParams), back button works
+- [x] `/racconti` (the island rendered on the server is the static list) and the 5 `/[categoria]` pages, with `seo` texts in `fears.json`
+- [x] `StoryCard.vue` (created in PR 4, cover variant in PR 5) used in the archive, the island and the fear pages
+- [x] `features/stories/client.ts`: browser-safe public API, guarded by a dependency-cruiser rule
+- [x] README updated
 
 ## PR 7 · `feat/feedback`
 
@@ -186,6 +190,7 @@ PR: – · Merged: – · Notes: –
 - [x] Vercel link (project `colles-taciti`, linked with the CLI, previews on every PR)
 - [ ] Turso account
 - [ ] Domain
+- [ ] SEO title and description of /racconti (`features/search/copy.ts`) and of the five fear pages (`seo` in `fears.json`): written in PR 6 on the SEO brief's pattern, to be checked by Elia against the brief
 - [ ] Real texts, fear notes, warnings, dates and tags for each story (placeholders marked `[Segnaposto]` in `src/core/content/stories`)
 - [ ] Wattpad addresses of Le vibrazioni and Senza Rimorso (`wattpadUrl` in their frontmatter)
 - [ ] Photo `abat-jour-notte.jpg` (the homepage Hero shows the DS brand illustration until it arrives)
