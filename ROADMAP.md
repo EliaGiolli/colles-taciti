@@ -122,7 +122,10 @@ the DS brand illustration until the photo arrives; «Inizia a leggere» opens th
 
 ## PR 6 · `feat/search-filters`
 
-PR: – · Merged: – · Notes: –
+PR: [#8](https://github.com/EliaGiolli/colles-taciti/pull/8) · Merged: 2026-10-16 · Notes: «ispirazione»
+facet added (story pages already linked to it); relevance sort while searching; `zod/mini` in the
+island; `features/stories/client.ts` as browser-safe API; vue-tsc `fallthroughAttributes`. See
+`docs/PLAN.md` › change log.
 
 - [x] Prerendered `search-index.json` endpoint (`buildIndex`): MiniSearch's serialised index of metadata and incipit, loaded in the browser with MiniSearch itself on first use
 - [x] `SearchBrowser.vue` island (`client:idle`, MiniSearch, facets incl. «ispirazione», `TransitionGroup`, `aria-live` count), `BaseFacetChip.vue` on /design-system
@@ -136,12 +139,12 @@ PR: – · Merged: – · Notes: –
 
 PR: – · Merged: – · Notes: –
 
-- [ ] Turso database (with Elia's confirmation) + Drizzle `feedback` table + migrations
-- [ ] Evaluate a database MCP (e.g. read-only libSQL) and propose it to Elia
-- [ ] Astro Action (`accept: "form"`, zod), honeypot, Resend, `delivered` update
-- [ ] `FeedbackForm.astro` + controller (works without JS)
-- [ ] DB tests on libSQL `:memory:`; MSW for Resend
-- [ ] README updated
+- [x] Turso database (created by Elia, `aws-eu-west-1`) + Drizzle `feedback` table + migrations (applied)
+- [x] Evaluate a database MCP (e.g. read-only libSQL) and propose it to Elia (proposed in the PR: not needed for now)
+- [x] Astro Action (`accept: "form"`, zod), honeypot, Resend, `delivered` update
+- [x] `FeedbackForm.astro` + controller (works without JS, through the on-demand `/feedback` page)
+- [x] DB tests on libSQL `:memory:`; MSW for Resend; e2e on a throwaway `e2e.db` (Node adapter)
+- [x] README updated
 
 ## PR 8 · `feat/seo`
 
@@ -188,7 +191,7 @@ PR: – · Merged: – · Notes: –
 
 - [x] GitHub repository name and visibility (`colles-taciti`, private)
 - [x] Vercel link (project `colles-taciti`, linked with the CLI, previews on every PR)
-- [ ] Turso account
+- [x] Turso account
 - [ ] Domain
 - [ ] SEO title and description of /racconti (`features/search/copy.ts`) and of the five fear pages (`seo` in `fears.json`): written in PR 6 on the SEO brief's pattern, to be checked by Elia against the brief
 - [ ] Real texts, fear notes, warnings, dates and tags for each story (placeholders marked `[Segnaposto]` in `src/core/content/stories`)

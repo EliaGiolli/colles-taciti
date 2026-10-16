@@ -39,7 +39,11 @@ describe("home page", () => {
     const { body } = await renderAstro(HomePage);
     const headings = getAllByRole(body, "heading", { level: 2 }).map((h) => h.textContent?.trim());
 
-    expect(headings).toEqual(["Scegli la tua paura", "Perché «Colles Taciti»"]);
+    expect(headings).toEqual([
+      "Scegli la tua paura",
+      "Perché «Colles Taciti»",
+      "Ti è rimasto addosso qualcosa?",
+    ]);
     expect(body.textContent).toContain(homeCopy.intro);
     expect(body.querySelector('[data-controller="continue-reading"]')?.hasAttribute("hidden")).toBe(
       true,

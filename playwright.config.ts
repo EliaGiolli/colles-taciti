@@ -18,6 +18,9 @@ const PORT = 4321;
 const BASE_URL = `http://localhost:${PORT}`;
 const isCI = Boolean(process.env["CI"]);
 
+/** The throwaway database of the e2e run (read back by feedback.spec.ts). */
+export const E2E_DATABASE_URL = "file:e2e.db";
+
 export default defineConfig({
   testDir: "tests/e2e",
   // Playwright files end in .spec.ts, Vitest files in .test.ts: the two
@@ -60,8 +63,15 @@ export default defineConfig({
     },
   ],
 
+  /**
+   * The build is made with `E2E=1` (Node adapter, see astro.config.ts), so
+   * `astro preview` can run the feedback action. Its database is a local
+   * file (e2e.db, gitignored like every *.db), migrated first: the tests
+   * never touch the real one, whatever .env.local says.
+   */
   webServer: {
-    command: `bun run preview --port ${PORT}`,
+    command: `bun run db:migrate && bun run preview --port ${PORT}`,
+    env: { E2E: "1", TURSO_DATABASE_URL: E2E_DATABASE_URL, TURSO_AUTH_TOKEN: "" },
     url: BASE_URL,
     // Locally, reuse a preview server that is already running.
     reuseExistingServer: !isCI,

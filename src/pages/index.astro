@@ -4,8 +4,7 @@
  *
  * Order: Hero · «Stai leggendo» (only for a reader with a story left
  * half-way) · introduction · «Da dove cominciare» · «Ultimi racconti» ·
- * InCorso · «Scegli la tua paura» · «Perché Colles Taciti» · feedback form
- * (PR 7).
+ * InCorso · «Scegli la tua paura» · «Perché Colles Taciti» · feedback form.
  *
  * Its job is to convert, not to rank (SEO brief › §1: traffic arrives on the
  * story pages): get a second story read, get feedback written. Hence the one
@@ -16,12 +15,13 @@
  * Sections are 72px apart on phones and 112px on desktop (DS › Spazio:
  * «il vuoto è parte del racconto»). The page ships no Vue: the cards are Vue
  * components rendered to HTML on the server. Its only scripts are the theme
- * switch and «Stai leggendo».
+ * switch, «Stai leggendo» and the feedback form.
  */
 import BaseLayout from "@/core/layout/BaseLayout.astro";
 import FearPicker from "@/features/categories/FearPicker.astro";
 import { categoriesCopy } from "@/features/categories/copy";
 import { brandArtSvg, coversCopy } from "@/features/covers";
+import FeedbackForm from "@/features/feedback/FeedbackForm.astro";
 import { homeCopy as copy } from "@/features/home/copy";
 import HomeHero from "@/features/home/HomeHero.astro";
 import HomeSection from "@/features/home/HomeSection.astro";
@@ -121,6 +121,6 @@ const grid = "grid gap-x-6 lg:grid-cols-3";
 
     <WhyCollesTaciti />
 
-    <!-- The feedback form («Ti è rimasto addosso qualcosa?») goes here in PR 7. -->
+    <FeedbackForm />
   </div>
 </BaseLayout>

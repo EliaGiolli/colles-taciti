@@ -5,7 +5,7 @@
  *
  * Order, from the PLAN and the mockup: Hero (cover band, sub-genre, title,
  * byline) · SchedaTecnica · ResumeLine · chapter index and reading controls
- * · Prosa · InCorso (ongoing stories) · NotaPaura · feedback form (PR 7) ·
+ * · Prosa · InCorso (ongoing stories) · NotaPaura · feedback form ·
  * «Se ti è piaciuto» · Wattpad link.
  *
  * Every story is prerendered at build time: `getStaticPaths` lists them,
@@ -13,7 +13,7 @@
  * reference stops the build instead of publishing a broken page.
  *
  * JavaScript on this page: only the controllers it names (theme switch,
- * reading controls, reading progress), loaded lazily by the registry. No
+ * reading controls, reading progress, feedback form), loaded lazily by the registry. No
  * Vue: the story cards are Vue components rendered to HTML on the server.
  *
  * Title and description come from the SEO brief through the frontmatter;
@@ -23,6 +23,7 @@ import { render } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import BaseLayout from "@/core/layout/BaseLayout.astro";
 import Cover from "@/features/covers/Cover.astro";
+import FeedbackForm from "@/features/feedback/FeedbackForm.astro";
 import { coversCopy } from "@/features/covers";
 import ChapterIndex from "@/features/stories/ChapterIndex.astro";
 import FearNote from "@/features/stories/FearNote.astro";
@@ -107,7 +108,7 @@ const reading = storyReadingSummary(story);
       <FearNote note={data.fearNote} />
     </div>
 
-    <!-- The feedback form («Ti è rimasto addosso qualcosa?») goes here in PR 7. -->
+    <FeedbackForm story={story.id} />
 
     <RelatedStories stories={related.map((story) => storyCard(story))} />
 

@@ -36,8 +36,11 @@ interface Common {
   note?: string;
   /** Help text under the control. */
   help?: string;
-  /** Error message: switches the field to the error state and replaces `help`. */
-  error?: string;
+  /**
+   * Error message: switches the field to the error state and replaces `help`.
+   * `undefined` is accepted explicitly, so a form can pass «the error, if any».
+   */
+  error?: string | undefined;
   /** Extra classes for the wrapper. */
   class?: string;
 }

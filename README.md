@@ -199,6 +199,22 @@ Each fear has its own indexable page, `/body-horror`, `/horror-psicologico`, `/s
 stories, a link to the archive and the other four fears. Title and description come from
 `fears.json` (`seo`). These pages are static: no Vue reaches the browser.
 
+### Feedback form
+
+«Ti è rimasto addosso qualcosa?» closes every story and the homepage
+([`src/features/feedback`](src/features/feedback)). Only the message is required.
+
+- With JavaScript, a small controller sends it to the `feedback` Astro Action and answers with one
+  line. Without, the form posts to `/feedback`, the one page rendered on demand, which runs the same
+  action and shows the result.
+- The action saves the row in Turso (libSQL, through Drizzle), then e-mails it to Elia with Resend
+  and marks it `delivered`. A failed e-mail never loses a message. A filled honeypot field is
+  answered as a success and not saved.
+- Environment: `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, `RESEND_API_KEY`, `FEEDBACK_TO` (see
+  `.env.example`; typed in `src/core/config/env.ts`). Without the Resend ones, messages are saved
+  but not e-mailed.
+- The function runs in Dublin (`vercel.json`), next to the database (`aws-eu-west-1`).
+
 ### Story pages
 
 Each story is one page, `/racconti/<slug>`, prerendered at build time
@@ -284,7 +300,7 @@ format on save with the right tool for each file type.
 |---|---|
 | `bun run dev` | Start the dev server |
 | `bun run build` | Build the static site |
-| `bun run preview` | Preview the production build |
+| `bun run preview` | Preview a build made with `E2E=1` (Node adapter: the Vercel adapter has no preview) |
 | `bun run typecheck` | `astro check` (`.ts`, `.astro`) + `vue-tsc` (`.vue`) |
 | `bun run lint` | Biome + Prettier check (`.astro`/`.vue`) + dependency-cruiser |
 | `bun run format` | Apply Biome and Prettier fixes |
@@ -293,10 +309,11 @@ format on save with the right tool for each file type.
 | `bun run test:coverage` | Unit + integration tests with v8 coverage |
 | `bun run test:e2e` | Build, then end-to-end tests (Playwright + axe) |
 | `bun run check` | Everything except e2e |
+| `bun run db:generate` | Generate a SQL migration in `drizzle/` from `src/features/feedback/table.ts` |
+| `bun run db:migrate` | Apply pending migrations to `TURSO_DATABASE_URL` (reads `.env.local`) |
 | `bun run copertine` | Render every story cover to PNG in `public/copertine` (see [Covers](#covers)) |
 
-Coming with later features: `db:generate` / `db:migrate` (Drizzle migrations), `libri:sync`
-(book data from Open Library).
+Coming with later features: `libri:sync` (book data from Open Library).
 
 **Git hooks** (lefthook): every commit runs typecheck, lint and unit tests; every push runs
 `check` and the end-to-end tests.
