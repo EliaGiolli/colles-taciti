@@ -1,0 +1,66 @@
+---
+/**
+ * /feedback: where the feedback form lands when JavaScript is off.
+ *
+ * Rendered on demand (`prerender = false`), the one page of the site that
+ * is: Astro runs the `feedback` action on the POST, and this page shows
+ * the result. Success: «Ricevuto…» and a link back to where the reader was
+ * (the Referer, if it is this site). Failure: the form again, with the
+ * reader's text and the errors. A plain visit (GET) goes to the homepage.
+ *
+ * `noindex`: a result page, not content.
+ */
+export const prerender = false;
+
+import { actions, isInputError } from "astro:actions";
+import BaseLayout from "@/core/layout/BaseLayout.astro";
+import { FIELDS, feedbackCopy as copy } from "@/features/feedback";
+import FeedbackForm from "@/features/feedback/FeedbackForm.astro";
+import Button from "@/shared/components/Button.astro";
+
+const result = Astro.getActionResult(actions.feedback);
+if (result === undefined) return Astro.redirect("/");
+
+// Back to the page the form was on, only if it is on this site.
+const referer = Astro.request.headers.get("referer");
+const back = referer !== null && new URL(referer).origin === Astro.url.origin ? referer : "/";
+const backLabel = new URL(back, Astro.url).pathname.startsWith("/racconti/")
+  ? copy.page.back
+  : copy.page.home;
+
+// The text the reader sent, to give it back after a failure.
+const sent = await Astro.request.formData().catch(() => undefined);
+const field = (name: string) => {
+  const value = sent?.get(name);
+  return typeof value === "string" ? value : undefined;
+};
+const fieldErrors = result.error && isInputError(result.error) ? result.error.fields : {};
+const firstError = (name: string) =>
+  (fieldErrors as Record<string, string[] | undefined>)[name]?.[0];
+---
+
+<BaseLayout title={copy.page.title} description={copy.page.description} noindex>
+  <div class="mx-auto flex max-w-pagina flex-col gap-6 px-4 py-7 md:px-6 md:py-8">
+    {result.error ? (
+      <FeedbackForm
+        story={field(FIELDS.story)}
+        values={{
+          message: field(FIELDS.message) ?? "",
+          name: field(FIELDS.name) ?? "",
+          email: field(FIELDS.email) ?? "",
+        }}
+        errors={{ message: firstError(FIELDS.message), email: firstError(FIELDS.email) }}
+        failed={!isInputError(result.error)}
+      />
+    ) : (
+      <>
+        <h1 class="font-display text-titolo-corsivo italic">{copy.success}</h1>
+        <p>
+          <Button variant="link" href={back}>
+            {backLabel}
+          </Button>
+        </p>
+      </>
+    )}
+  </div>
+</BaseLayout>

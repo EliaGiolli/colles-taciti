@@ -39,6 +39,7 @@ test("the sections come in the planned order, with the real stories", async ({ p
     "Senza Rimorso",
     "Scegli la tua paura",
     "Perché «Colles Taciti»",
+    "Ti è rimasto addosso qualcosa?",
   ]);
 
   // «Inizia a leggere» opens the first story picked for newcomers.
@@ -64,7 +65,9 @@ test("the sections come in the planned order, with the real stories", async ({ p
   await expect(fears.first()).toHaveAttribute("href", "/body-horror");
 });
 
-test("ships no framework: only the theme switch and «Stai leggendo»", async ({ page }) => {
+test("ships no framework: only the theme switch, «Stai leggendo» and the form", async ({
+  page,
+}) => {
   const scripts: string[] = [];
   page.on("request", (request) => {
     if (request.resourceType() === "script") scripts.push(new URL(request.url()).pathname);
@@ -76,6 +79,7 @@ test("ships no framework: only the theme switch and «Stai leggendo»", async ({
   expect(scripts.some((path) => /vue|client\./i.test(path))).toBe(false);
   expect(scripts.filter((path) => path.includes(".controller.")).sort()).toEqual([
     expect.stringContaining("continue-reading.controller."),
+    expect.stringContaining("feedback-form.controller."),
     expect.stringContaining("theme-toggle.controller."),
   ]);
 });

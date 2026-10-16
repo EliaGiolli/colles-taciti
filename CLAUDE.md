@@ -35,7 +35,10 @@ No React, no shadcn, no Motion, no Sentry (for now).
 | `bun run check` | Everything except e2e. Must be green before every commit |
 | `bun run copertine` | Render the story covers to PNG (`public/copertine`) and update `scripts/copertine.json`; run after adding a story or changing its title, label, status or main fear |
 
-Added by later PRs: `db:generate` / `db:migrate` (PR 7), `libri:sync` (PR 10).
+| `bun run db:generate` / `db:migrate` | Drizzle: create a migration from the table / apply it to `TURSO_DATABASE_URL` |
+
+Added by later PRs: `libri:sync` (PR 10). `bun run preview` needs a build made with `E2E=1`
+(Node adapter); `test:e2e` does that itself, on a throwaway `e2e.db`.
 
 Hooks (lefthook): pre-commit runs typecheck + lint + unit; pre-push runs `check` + e2e.
 

@@ -10,10 +10,12 @@
  * @see https://docs.astro.build/en/reference/configuration-reference/
  */
 import { satteri } from "@astrojs/markdown-satteri";
+import node from "@astrojs/node";
 import vercel from "@astrojs/vercel";
 import vue from "@astrojs/vue";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
+import { envSchema } from "./src/core/config/env";
 import { ctBlocks } from "./src/features/stories/blocks/plugin";
 import { ctChapters } from "./src/features/stories/chapters-plugin";
 
@@ -33,10 +35,19 @@ export default defineConfig({
    */
   trailingSlash: "never",
 
-  // Prerender everything by default. Individual routes (only the Action
-  // endpoint, for now) opt out with `export const prerender = false`.
+  // Prerender everything by default. Individual routes (the feedback Action
+  // and /feedback) opt out with `export const prerender = false`.
   output: "static",
-  adapter: vercel(),
+  /**
+   * Vercel in production. The end-to-end tests set `E2E=1` and build with
+   * the Node adapter instead: `astro preview` cannot serve the Vercel
+   * adapter's functions, and the tests need the feedback action to run.
+   * Everything else in the build is identical.
+   */
+  adapter: process.env["E2E"] ? node({ mode: "standalone" }) : vercel(),
+
+  /** Typed environment variables (src/core/config/env.ts). */
+  env: { schema: envSchema },
 
   integrations: [
     /**

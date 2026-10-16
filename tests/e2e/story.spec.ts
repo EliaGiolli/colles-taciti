@@ -70,6 +70,7 @@ test("the story is in the HTML, with its chapters, and ships no framework", asyn
   // Only the registry and the controllers this page names: no Vue, no island.
   expect(scripts.some((path) => /vue|client\./i.test(path))).toBe(false);
   expect(scripts.filter((path) => path.includes(".controller.")).sort()).toEqual([
+    expect.stringContaining("feedback-form.controller."),
     expect.stringContaining("reading-controls.controller."),
     expect.stringContaining("reading-progress.controller."),
     expect.stringContaining("theme-toggle.controller."),
