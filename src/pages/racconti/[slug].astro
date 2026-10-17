@@ -136,7 +136,12 @@ const jsonLd = shortStoryJsonLd(site, {
 
     {data.wattpadUrl && (
       <p>
-        <Button variant="link" href={data.wattpadUrl}>
+        <Button
+          variant="link"
+          href={data.wattpadUrl}
+          data-track="wattpad_click"
+          data-track-story={story.id}
+        >
           {copy.wattpad}
         </Button>
       </p>

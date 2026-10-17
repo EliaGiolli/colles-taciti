@@ -151,7 +151,9 @@ e2e built with the Node adapter on a throwaway `e2e.db`; database MCP not needed
 
 ## PR 8 · `feat/seo`
 
-PR: – · Merged: – · Notes: –
+PR: [#10](https://github.com/EliaGiolli/colles-taciti/pull/10) · Merged: 2026-10-16 · Notes: canonical
+without query string; preview image = story cover; robots.txt and sitemap generated at build. The
+homepage Hero photo landed afterwards directly on `main` (Elia's request). See `docs/PLAN.md`.
 
 - [x] `Seo.astro` (title, meta, canonical, og:image)
 - [x] JSON-LD: `WebSite` + `Person`, `ShortStory` (+ `CreativeWorkSeries`), `CollectionPage`
@@ -162,11 +164,11 @@ PR: – · Merged: – · Notes: –
 
 PR: – · Merged: – · Notes: –
 
-- [ ] Consent Mode v2 (default denied), gtag loader, `ConsentBanner` + controller
-- [ ] `track()` with typed events: `story_start`, `story_finish`, `feedback_submit`, `wattpad_click`, `resume_reading`
-- [ ] No GA request before consent (e2e)
-- [ ] UTM conventions in README
-- [ ] README updated
+- [x] Consent Mode v2 (default denied), gtag loader, `ConsentBanner` + controller, «Preferenze cookie» in the footer
+- [x] `track()` with typed events: `story_start`, `story_finish`, `feedback_submit`, `wattpad_click`, `resume_reading`
+- [x] No GA request before consent (e2e)
+- [x] UTM conventions in README
+- [x] README updated
 
 ## PR 10 · `feat/books`
 

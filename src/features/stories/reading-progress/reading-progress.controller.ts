@@ -23,6 +23,8 @@
  * The arithmetic (fractions, the reading line, the current chapter) is in
  * position.ts, tested without a browser; this file only measures and wires.
  */
+
+import { track } from "@/core/analytics/track";
 import type { Connect } from "@/core/controllers/registry";
 import { storiesCopy } from "../copy";
 import {
@@ -69,6 +71,7 @@ export const connect: Connect = (element) => {
   let chapter = 1;
   let percent = 0;
   let finished = false;
+  let started = false;
   let lastSave = 0;
   let pendingSave: ReturnType<typeof setTimeout> | undefined;
   let frame: number | undefined;
@@ -114,7 +117,14 @@ export const connect: Connect = (element) => {
       chapter = nextChapter;
       markChapter();
     }
-    if (percent >= MIN_PERCENT) scheduleSave();
+    if (percent >= MIN_PERCENT) {
+      scheduleSave();
+      // Past the first lines: the visit counts as a reading (once per page view).
+      if (!started) {
+        started = true;
+        track("story_start", { story_id: storyId });
+      }
+    }
   };
 
   // Scroll events fire many times per frame on some devices: measure at
@@ -140,6 +150,7 @@ export const connect: Connect = (element) => {
     // Move keyboard and screen-reader focus to the text, without a second jump.
     prose.focus({ preventScroll: true });
     if (resume) resume.hidden = true;
+    track("resume_reading", { story_id: storyId, source: "story" });
   };
 
   if (isResumable(saved) && resume && resumeLink) {
@@ -170,6 +181,7 @@ export const connect: Connect = (element) => {
             if (entries.some((entry) => entry.isIntersecting) && !finished) {
               finished = true;
               save();
+              track("story_finish", { story_id: storyId });
             }
           },
           { rootMargin: `0px 0px -${Math.round((1 - READING_LINE) * 100)}% 0px` },

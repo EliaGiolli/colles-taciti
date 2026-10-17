@@ -28,6 +28,9 @@ const links = [
 ];
 const pathname = Astro.url.pathname;
 const year = formatYear(new Date());
+import { PUBLIC_GA_ID } from "astro:env/client";
+import { consentCopy } from "@/core/consent/copy";
+import { cn } from "@/shared/lib/cn";
 ---
 
 <footer class="border-t border-linea">
@@ -50,6 +53,13 @@ const year = formatYear(new Date());
         ))}
       </ul>
     </nav>
+    {PUBLIC_GA_ID && (
+      <p class="no-js:hidden">
+        <button type="button" data-consent-open class={cn(NAV_LINK_CLASSES, "cursor-pointer")}>
+          {consentCopy.preferences}
+        </button>
+      </p>
+    )}
     <p class="font-mono text-meta text-osso-muto">{`${copy.footerSignature} · ${year}`}</p>
   </div>
 </footer>

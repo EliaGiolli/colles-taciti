@@ -14,6 +14,8 @@
  * Markup contract: `[data-continue-link]`, `[data-continue-title]`,
  * `[data-continue-detail]` inside the element.
  */
+
+import { track } from "@/core/analytics/track";
 import type { Connect } from "@/core/controllers/registry";
 import { chapterId } from "../chapters";
 import { storiesCopy } from "../copy";
@@ -40,5 +42,7 @@ export const connect: Connect = (element) => {
   }
   element.hidden = false;
 
-  return () => {};
+  const onClick = () => track("resume_reading", { story_id: latest.id, source: "home" });
+  link.addEventListener("click", onClick);
+  return () => link.removeEventListener("click", onClick);
 };

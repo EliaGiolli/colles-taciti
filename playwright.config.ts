@@ -44,6 +44,10 @@ export default defineConfig({
     trace: "on-first-retry",
     locale: "it-IT",
     timezoneId: "Europe/Rome",
+    // Every test starts with analytics already declined, so the consent
+    // banner (fixed at the bottom of the screen) never covers what a test
+    // clicks. consent.spec.ts starts from an empty storage instead.
+    storageState: "tests/fixtures/consent-denied.json",
   },
 
   projects: [

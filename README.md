@@ -215,6 +215,19 @@ stories, a link to the archive and the other four fears. Title and description c
   but not e-mailed.
 - The function runs in Dublin (`vercel.json`), next to the database (`aws-eu-west-1`).
 
+### Consent and analytics
+
+GA4 runs only after the reader accepts it in the consent banner
+([`src/core/consent`](src/core/consent)): before that, no request reaches Google, and gtag.js is not
+even loaded. On a yes, Consent Mode v2 starts with everything denied, then grants analytics only
+(no ads). The choice is kept in `localStorage` (`colles-taciti:consenso`); «Preferenze cookie» in
+the footer reopens the banner, and a later no deletes the `_ga` cookies. Without `PUBLIC_GA_ID`
+there is no banner and no analytics.
+
+Events, typed in [`src/core/analytics/track.ts`](src/core/analytics/track.ts): `story_start` (past
+the first 2% of a story), `story_finish` (the fear note reached), `feedback_submit`,
+`wattpad_click`, `resume_reading` (story page or homepage).
+
 ### SEO
 
 Every page's `<head>` comes from [`src/core/seo/Seo.astro`](src/core/seo/Seo.astro): title, meta
