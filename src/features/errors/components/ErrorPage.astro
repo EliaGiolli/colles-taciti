@@ -1,0 +1,60 @@
+---
+/**
+ * The body of an error page (404, 500). DS: no dedicated template; built
+ * like the homepage Hero (Hero / home, `.ct-hero--home`): text on the left
+ * (5/12), the image on the right (7/12, 16:9), the image below on a phone.
+ *
+ * The image is the brand illustration of the DS (`brandArtSvg`: the slab
+ * of flesh, half buried by two hills), which filled the homepage Hero
+ * before the lamp photo. It is an SVG string drawn in code: nothing to
+ * download, no credit, and it follows the theme like the covers. That also
+ * makes it safe on the 500 page, which must not depend on anything that
+ * could fail in turn.
+ *
+ * Inside the text column: the etichetta that names the error, the H1 in
+ * Bodoni, the plain sentence, one primary button and a few links. A slot
+ * after the Hero takes whatever the page adds (the 404 adds «Scegli la tua
+ * paura»).
+ *
+ * @example <ErrorPage copy={errorsCopy.notFound}><FearPicker … /></ErrorPage>
+ */
+import { brandArtSvg, coversCopy } from "@/features/covers";
+import Button from "@/shared/components/Button.astro";
+import Label from "@/shared/components/Label.astro";
+import type { ErrorCopy } from "../copy";
+
+export interface Props {
+  copy: ErrorCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<div class="mx-auto flex max-w-pagina flex-col gap-8 px-4 py-7 md:gap-9 md:px-6 md:py-8">
+  <section class="grid items-end gap-6 md:grid-cols-[5fr_7fr]">
+    <div class="flex flex-col items-start gap-4">
+      <Label tone="muted" as="p">
+        {copy.eyebrow}
+      </Label>
+      <h1 class="font-display text-display">{copy.heading}</h1>
+      <p class="max-w-misura text-corpo">{copy.text}</p>
+      <Button variant="primary" href={copy.action.href}>
+        {copy.action.label}
+      </Button>
+      <ul class="flex flex-wrap gap-x-5 gap-y-2">
+        {copy.links.map((link) => (
+          <li>
+            <Button variant="link" href={link.href}>
+              {link.label}
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div
+      class="relative aspect-hero overflow-hidden [&>svg]:absolute [&>svg]:inset-0 [&>svg]:h-full"
+      set:html={brandArtSvg(coversCopy.brandArtLabel)}
+    />
+  </section>
+  <slot />
+</div>

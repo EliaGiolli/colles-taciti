@@ -194,7 +194,10 @@ The Horror Scriptorium videos on the fear pages folded in here.
 
 ## PR 11 · `refactor/src-structure`
 
-PR: – · Merged: – · Notes: –
+PR: [#13](https://github.com/EliaGiolli/colles-taciti/pull/13) · Merged: 2026-10-17 · Notes: moves
+only, imports rewritten with the TypeScript parser; `core/analytics`, `core/config`, `core/db` stay
+flat; Markdown plugins in `features/stories/markdown/`; the structure test cannot tell constants from
+helpers, so that part is left to review. See `docs/PLAN.md` › change log.
 
 Added with Elia on 2026-10-17: every feature and `core` module groups its files by kind, so
 constants and helpers no longer sit scattered next to components. Moves only, no behaviour change.
@@ -210,13 +213,13 @@ constants and helpers no longer sit scattered next to components. Moves only, no
 
 PR: – · Merged: – · Notes: –
 
-- [ ] Error pages: static `404.astro` (no JS, heading in the site's voice, «Scegli la tua paura») and `500.astro` for what runs on demand (`/feedback`, the Action; the error is never shown), with the DS brand illustration (`brandArtSvg`) as image
+- [x] Error pages: static `404.astro` (no JS, heading in the site's voice, «Scegli la tua paura») and `500.astro` for what runs on demand (`/feedback`, the Action; the error is never shown), with the DS brand illustration (`brandArtSvg`) as image
 - [x] Environment variables on Vercel (added by Elia on 2026-10-17: Turso, Resend, GA4, Production only)
-- [ ] Lighthouse mobile (home + one story): SEO, a11y, performance
-- [ ] CSP: hashes for Astro's inlined scripts, or `assetsInlineLimit: 0` (see PLAN change log)
-- [ ] Decide whether `/design-system` stays public (it is `noindex`)
+- [ ] Lighthouse mobile (home + one story): SEO, a11y, performance. Done locally on the production build: accessibility, best practices and SEO at 100 (one label-in-name fix). Performance still to measure on production after the merge: Vercel previews are behind Vercel Authentication, and the local Node preview does not compress text
+- [x] CSP: Astro's `security.csp` (hashes of every inline script and style, no `'unsafe-inline'`), GA4 hosts only; `frame-ancestors` and other headers in `vercel.json`; e2e on CSP violations
+- [x] `/design-system` out of production (Elia's decision, 2026-10-17): route injected only with `astro dev` and in the e2e build
 - [ ] Final touches
-- [ ] README updated
+- [x] README updated (error pages, security headers, `/design-system` in dev and e2e only)
 
 ---
 

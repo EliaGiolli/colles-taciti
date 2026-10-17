@@ -94,7 +94,9 @@ Hooks (lefthook): pre-commit runs typecheck + lint + unit; pre-push runs `check`
 - Vue components shared with the island are named `Base*` (`BaseButton.vue`), never one word.
 - Astro drops the line break between two `{expressions}` or between `<slot />` and an element:
   write the space explicitly (`{" "}`, or `&nbsp;` inside the element).
-- Every new shared component also goes on `/design-system` (e2e runs axe there in both themes).
+- Every new shared component also goes on `/design-system` (e2e runs axe there in both themes). The
+  page is `src/features/styleguide/components/DesignSystemPage.astro`, added as a route only with
+  `astro dev` and in the e2e build: it is not in production.
 - Content lives in `src/core/content/` (stories, `tags.json`, `fears.json`, `books.json`), next to the brand-tone check. Any field readers
   or search engines see uses `publicCopy()` from `@/core/content/public-copy` in its schema (brand-tone
   check). Markdown runs through Sätteri (Astro 7 default), not remark: plugins are Sätteri mdast plugins.

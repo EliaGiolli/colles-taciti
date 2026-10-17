@@ -124,8 +124,10 @@ describe("ReadingControls", () => {
     const group = getByRole(body, "group", { name: "Dimensione del testo" });
 
     expect(group.dataset["controller"]).toBe("reading-controls");
-    expect(getByRole(group, "button", { name: "Testo più piccolo" }).dataset["step"]).toBe("-1");
-    expect(getByRole(group, "button", { name: "Testo più grande" }).dataset["step"]).toBe("1");
+    expect(getByRole(group, "button", { name: "A−, testo più piccolo" }).dataset["step"]).toBe(
+      "-1",
+    );
+    expect(getByRole(group, "button", { name: "A+, testo più grande" }).dataset["step"]).toBe("1");
   });
 });
 

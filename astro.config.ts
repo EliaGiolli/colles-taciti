@@ -15,10 +15,38 @@ import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
 import vue from "@astrojs/vue";
 import tailwindcss from "@tailwindcss/vite";
+import type { AstroIntegration } from "astro";
 import { defineConfig, fontProviders } from "astro/config";
 import { envSchema } from "./src/core/config/env";
 import { ctBlocks } from "./src/features/stories/markdown/blocks-plugin";
 import { ctChapters } from "./src/features/stories/markdown/chapters-plugin";
+
+/**
+ * /design-system, only where it is useful: with `astro dev` and in the
+ * end-to-end build (`E2E=1`), never in production (decided with Elia,
+ * 2026-10-17). The page shows every shared component in both themes: the
+ * reference for visual checks while developing, and the page where the
+ * e2e tests run axe on the whole palette. Readers have no use for it.
+ *
+ * A file in src/pages would be published by every build, so the page lives
+ * in features/styleguide and is added as a route by this small integration
+ * (`injectRoute`) only when wanted. In production the address is a 404 like
+ * any other.
+ */
+function designSystemRoute(): AstroIntegration {
+  return {
+    name: "colles-taciti:design-system",
+    hooks: {
+      "astro:config:setup": ({ command, injectRoute }) => {
+        if (command !== "dev" && !process.env["E2E"]) return;
+        injectRoute({
+          pattern: "/design-system",
+          entrypoint: "./src/features/styleguide/components/DesignSystemPage.astro",
+        });
+      },
+    },
+  };
+}
 
 export default defineConfig({
   /**
@@ -50,6 +78,45 @@ export default defineConfig({
   /** Typed environment variables (src/core/config/env.ts). */
   env: { schema: envSchema },
 
+  /**
+   * Content Security Policy: the browser runs only the scripts and styles
+   * this site emits, so injected markup (a story text gone wrong, a
+   * compromised dependency writing a `<script>`) cannot execute.
+   *
+   * Astro computes a hash of every script and style it puts in a page,
+   * inline ones included (the anti-flash theme script, the island loader,
+   * the small CSS Vite inlines), and writes them into a
+   * `<meta http-equiv="content-security-policy">` of that page. No
+   * `'unsafe-inline'` anywhere. That is why the PLAN asked for hashes or
+   * `assetsInlineLimit: 0` (change log, PR 9): Astro's own support makes the
+   * second option unnecessary.
+   *
+   * The only third party is Google Analytics, and only after consent
+   * (core/analytics/gtag.ts). The hosts are the ones Google lists for GA4
+   * with a CSP: the loader on googletagmanager.com, the hits on
+   * google-analytics.com. Everything else is `'self'`: fonts, images and
+   * covers are served by the site, `data:` only for the grain texture in
+   * app.css. A `<meta>` cannot carry `frame-ancestors`; vercel.json sends
+   * that as a header.
+   *
+   * @see https://docs.astro.build/en/reference/configuration-reference/#securitycsp
+   * @see https://developers.google.com/tag-platform/security/guides/csp
+   */
+  security: {
+    csp: {
+      directives: [
+        "default-src 'self'",
+        "img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com",
+        "font-src 'self'",
+        "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+      ],
+      scriptDirective: { resources: ["'self'", "https://*.googletagmanager.com"] },
+    },
+  },
+
   integrations: [
     /**
      * Vue is used for exactly one interactive island (search and filters,
@@ -58,13 +125,15 @@ export default defineConfig({
      * pages.
      */
     vue(),
+    designSystemRoute(),
     /**
      * sitemap-index.xml with every prerendered page, minus the ones kept out
-     * of search engines: /design-system (noindex) and /feedback (a result
-     * page, rendered on demand). Linked from robots.txt.
+     * of search engines: /feedback (a result page, rendered on demand), the
+     * error pages (/404, /500), and /design-system in the e2e build (it is
+     * not built for production at all). Linked from robots.txt.
      */
     sitemap({
-      filter: (page) => !/\/(design-system|feedback)$/.test(new URL(page).pathname),
+      filter: (page) => !/\/(design-system|feedback|404|500)$/.test(new URL(page).pathname),
     }),
   ],
 
@@ -130,9 +199,14 @@ export default defineConfig({
    * GitHub-flavoured Markdown and
    * smart punctuation («...» → «…», straight quotes → curly) stay on, as by
    * default.
+   *
+   * Syntax highlighting is off: the stories have no code, only the chat and
+   * log blocks the plugin draws, and Shiki (the default highlighter) colours
+   * code with inline `style` attributes that the CSP above would block.
    */
   markdown: {
     processor: satteri({ mdastPlugins: [ctBlocks, ctChapters] }),
+    syntaxHighlight: false,
   },
 
   vite: {
