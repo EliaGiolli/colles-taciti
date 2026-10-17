@@ -37,8 +37,10 @@ Planned for launch (track progress in [ROADMAP.md](ROADMAP.md)):
 
 - **Single-page stories** with a chapter index, reading controls and «resume where you left off».
 - **Two themes**: *Notte* (dark, default) and *Nebbia* (light), with no flash on load.
-- **Search and facets** (fear, place, theme, inspiration, form) on stories, and later books, fully
-  reflected in the URL.
+- **Search and facets** on stories (fear, place, theme, inspiration, form) and books (section,
+  author, decade), with one Vue island, fully reflected in the URL.
+- **A reading list** at `/libri`: the books behind the stories, with data and covers from
+  Open Library, served by the site itself.
 - **Feedback form** that works with and without JavaScript.
 - **Privacy-first analytics**: GA4 with Consent Mode v2, denied by default.
 - **Zero JavaScript by default**: story pages ship only a few tiny TypeScript controllers.
@@ -132,7 +134,7 @@ Content Collections ([`src/content.config.ts`](src/content.config.ts)):
 | `stories` | `src/core/content/stories/<slug>.md` | One file per story; the file name is the URL slug |
 | `fears` | `src/core/content/fears.json` | The five categories (`/body-horror`, `/slasher`…) |
 | `tags` | `src/core/content/tags.json` | Controlled vocabulary: places, themes, inspirations |
-| `books` | `src/core/content/books.json` | Empty until `libri:sync` (PR 10) |
+| `books` | `src/core/content/books.json` | Elia's reading list, completed by `libri:sync` (see [Books](#books)) |
 
 - **Validation**: every entry is checked by a zod schema when `astro check` or the build runs. A
   missing field, a misspelt tag or a fear note outside 80–150 words stops the build with the file
@@ -197,7 +199,33 @@ hidden).
 Each fear has its own indexable page, `/body-horror`, `/horror-psicologico`, `/slasher`,
 `/liminale`, `/esperimenti` ([`src/pages/[categoria].astro`](src/pages/[categoria].astro)): its
 stories, a link to the archive and the other four fears. Title and description come from
-`fears.json` (`seo`). These pages are static: no Vue reaches the browser.
+`fears.json` (`seo`), and so do the two optional fields of a subgenre: `intro`, one paragraph
+(60–120 words) between the definition and the stories, and `watch`, the subgenre's video on
+The Horror Scriptorium (a YouTube channel), linked without
+`nofollow` (YouTube addresses only). The intros are drafts marked `[Segnaposto]`: rewrite the text
+and delete the marker to make one final. These pages are static: no Vue reaches the browser.
+
+### Books
+
+`/libri` ([`src/pages/libri.astro`](src/pages/libri.astro)): the horror Elia has read and the books
+on writing that taught him the craft. A shelf of covers on top (decorative), then the same search
+island as `/racconti` with `kind="books"`: filters by section, author and decade, sort by author
+(the default), title or year, and a prefix search on titles and authors (no MiniSearch index: two
+dozen books do not need one). Each book links to its work on Open Library.
+
+The books live in [`books.json`](src/core/content/books.json). Write by hand `title`, `authors`,
+`section` (`horror` or `scrittura`), and optionally `originalTitle` (the title Open Library knows,
+when yours is a translation) and `note`. Then run:
+
+```sh
+bun run libri:sync
+```
+
+It fills only what is missing, from [Open Library](https://openlibrary.org): the work id, the year
+of first publication, and the cover, saved to `public/libri/<id>.jpg`. A field that already has a
+value is never overwritten, so a correction made by hand stays. Open Library is edited by its
+users: check the years in the diff before committing `books.json` with the new covers. A book Open
+Library does not have keeps the typographic cover of the design system.
 
 ### Feedback form
 
@@ -335,8 +363,7 @@ format on save with the right tool for each file type.
 | `bun run db:generate` | Generate a SQL migration in `drizzle/` from `src/features/feedback/table.ts` |
 | `bun run db:migrate` | Apply pending migrations to `TURSO_DATABASE_URL` (reads `.env.local`) |
 | `bun run copertine` | Render every story cover to PNG in `public/copertine` (see [Covers](#covers)) |
-
-Coming with later features: `libri:sync` (book data from Open Library).
+| `bun run libri:sync` | Complete `books.json` and download the covers from Open Library (see [Books](#books)) |
 
 **Git hooks** (lefthook): every commit runs typecheck, lint and unit tests; every push runs
 `check` and the end-to-end tests.

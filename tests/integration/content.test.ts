@@ -11,6 +11,8 @@
  * Plus the schema rules themselves, tested on small variations.
  */
 
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { bookSchema } from "@/features/books/schema";
 import { fearSchema } from "@/features/categories/schema";
@@ -31,6 +33,7 @@ function parseAll<T>(entries: { id: string }[], parse: (data: unknown) => T) {
 }
 
 const tags = parseAll(readJsonEntries("tags"), (data) => tagSchema.parse(data));
+const books = parseAll(readJsonEntries("books"), (data) => bookSchema.parse(data));
 const fears = parseAll(readJsonEntries("fears"), (data) => fearSchema.parse(data));
 const stories: StoryLike[] = readStoryFiles().map(({ id, frontmatter, body }) => ({
   id,
@@ -49,7 +52,7 @@ describe("content files", () => {
       "liminale",
       "esperimenti",
     ]);
-    expect(readJsonEntries("books").map((book) => bookSchema.parse(book))).toEqual([]);
+    expect(books).toHaveLength(24);
   });
 
   it("are consistent with each other", () => {
@@ -176,5 +179,73 @@ describe("story schema", () => {
   it("accepts Wattpad links only for wattpad.com", () => {
     expect(messages({ ...valid, wattpadUrl: "https://www.wattpad.com/story/123" })).toEqual([]);
     expect(messages({ ...valid, wattpadUrl: "https://example.com/story" })).toHaveLength(1);
+  });
+});
+
+describe("books", () => {
+  it("hold Elia's list: 20 horror books and 4 on writing", () => {
+    const bySection = Object.groupBy(books, (book) => book.data.section);
+    expect(bySection.horror).toHaveLength(20);
+    expect(bySection.scrittura).toHaveLength(4);
+  });
+
+  it("point to covers that exist in public/", () => {
+    const missing = books.filter(
+      ({ data }) => data.cover !== undefined && !existsSync(join("public", data.cover)),
+    );
+    expect(missing.map((book) => book.id)).toEqual([]);
+  });
+
+  it("are all matched on Open Library except the one it does not have", () => {
+    const unmatched = books.filter((book) => book.data.openLibraryId === undefined);
+    expect(unmatched.map((book) => book.id)).toEqual(["the-art-and-business-of-online-writing"]);
+    // Every book has a year, from the sync or written by hand.
+    expect(books.filter((book) => book.data.year === undefined)).toEqual([]);
+  });
+});
+
+describe("book schema", () => {
+  const valid = { title: "Misery", authors: ["Stephen King"], section: "horror" };
+
+  it("makes the note optional and checks the synced fields", () => {
+    expect(bookSchema.safeParse(valid).success).toBe(true);
+    expect(bookSchema.safeParse({ ...valid, openLibraryId: "OL81634M" }).success).toBe(false);
+    expect(bookSchema.safeParse({ ...valid, cover: "/copertine/misery.jpg" }).success).toBe(false);
+    expect(bookSchema.safeParse({ ...valid, section: "fantasy" }).success).toBe(false);
+  });
+
+  it("applies the brand-tone check to titles and authors", () => {
+    expect(bookSchema.safeParse({ ...valid, title: "MISERY" }).success).toBe(false);
+    expect(bookSchema.safeParse({ ...valid, authors: ["Stephen King!"] }).success).toBe(false);
+  });
+});
+
+describe("fear pages", () => {
+  it("introduce every subgenre, and only the subgenres", () => {
+    const withIntro = fears.filter((fear) => fear.data.intro !== undefined).map((fear) => fear.id);
+    expect(withIntro).toEqual(["body-horror", "horror-psicologico", "slasher", "liminale"]);
+  });
+
+  it("link The Horror Scriptorium's videos, liminal still missing", () => {
+    expect(fears.map((fear) => [fear.id, fear.data.watch?.title])).toEqual([
+      ["body-horror", "How to Write Body Horror"],
+      ["horror-psicologico", "How to Write Psychological Horror"],
+      ["slasher", "How to Write Slasher Horror"],
+      ["liminale", undefined],
+      ["esperimenti", undefined],
+    ]);
+  });
+
+  it("accept only YouTube addresses and intros of one paragraph", () => {
+    const fear = fears[0]?.data;
+    if (fear === undefined) throw new Error("no fears");
+    const watch = (url: string) =>
+      fearSchema.safeParse({ ...fear, watch: { title: "Video", url } }).success;
+
+    expect(watch("https://youtu.be/2uGA34GwJSA")).toBe(true);
+    expect(watch("https://www.youtube.com/watch?v=2uGA34GwJSA")).toBe(true);
+    expect(watch("https://example.com/watch?v=2uGA34GwJSA")).toBe(false);
+    expect(watch("http://www.youtube.com/watch?v=2uGA34GwJSA")).toBe(false);
+    expect(fearSchema.safeParse({ ...fear, intro: "Troppo corta." }).success).toBe(false);
   });
 });

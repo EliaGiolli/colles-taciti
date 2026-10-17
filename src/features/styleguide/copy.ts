@@ -19,6 +19,7 @@ export const styleguideCopy = {
     form: "Modulo",
     covers: "Copertine",
     story: "Racconto",
+    books: "Libri",
   },
   type: {
     display: "Colles Taciti",
@@ -120,4 +121,35 @@ export const styleguideCopy = {
       meta: "Capitolo 3 · 12 min",
     },
   },
+  /**
+   * DS › Libro preview: one book per look. With a cover and a link, with
+   * the typographic stand-in, and a book on writing with its own lead-in.
+   * The notes are the preview's.
+   */
+  books: [
+    {
+      title: "Misery",
+      byline: "Stephen King · 1987",
+      shortAuthor: "King",
+      section: "horror",
+      href: "#sg-libri",
+      cover: "/libri/misery.jpg",
+    },
+    {
+      title: "La casa degli invasati",
+      byline: "Shirley Jackson · 1959",
+      shortAuthor: "Jackson",
+      section: "horror",
+      note: "perché la casa non fa niente, e basta.",
+    },
+    {
+      title: "On Writing",
+      byline: "Stephen King · 2000",
+      shortAuthor: "King",
+      section: "scrittura",
+      href: "#sg-libri",
+      cover: "/libri/on-writing.jpg",
+      note: "tagliare il dieci per cento. Sempre.",
+    },
+  ],
 } as const;

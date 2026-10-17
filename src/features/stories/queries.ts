@@ -54,6 +54,10 @@ export interface FearWithCount {
   name: string;
   definition: string;
   count: number;
+  /** The paragraph between the definition and the stories, on the fear's page. */
+  intro?: string | undefined;
+  /** The subgenre's video on The Horror Scriptorium, linked from the fear's page. */
+  watch?: { title: string; url: string } | undefined;
   /** Title and meta description of the fear's page. */
   seo: { title: string; description: string };
 }
@@ -144,6 +148,8 @@ export async function getFearsWithCounts(): Promise<FearWithCount[]> {
     name: fear.data.name,
     definition: fear.data.definition,
     count: counts.get(fear.id) ?? 0,
+    intro: fear.data.intro,
+    watch: fear.data.watch,
     seo: fear.data.seo,
   }));
 }

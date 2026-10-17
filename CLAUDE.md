@@ -34,10 +34,11 @@ No React, no shadcn, no Motion, no Sentry (for now).
 | `bun run test:e2e` | Build, then Playwright + axe in `tests/e2e` against `astro preview` |
 | `bun run check` | Everything except e2e. Must be green before every commit |
 | `bun run copertine` | Render the story covers to PNG (`public/copertine`) and update `scripts/copertine.json`; run after adding a story or changing its title, label, status or main fear |
+| `bun run libri:sync` | Fill the missing `openLibraryId`, `year` and `cover` of `books.json` from Open Library (covers to `public/libri`); never overwrites a field. Check the years in the diff |
 
 | `bun run db:generate` / `db:migrate` | Drizzle: create a migration from the table / apply it to `TURSO_DATABASE_URL` |
 
-Added by later PRs: `libri:sync` (PR 10). `bun run preview` needs a build made with `E2E=1`
+`bun run preview` needs a build made with `E2E=1`
 (Node adapter); `test:e2e` does that itself, on a throwaway `e2e.db`.
 
 Hooks (lefthook): pre-commit runs typecheck + lint + unit; pre-push runs `check` + e2e.
@@ -57,7 +58,8 @@ Hooks (lefthook): pre-commit runs typecheck + lint + unit; pre-push runs `check`
 - No test files inside `src/pages`: any `.ts` there becomes a route.
 - Controllers are discovered by `import.meta.glob` in `src/core/controllers/start.ts`; names must be
   unique across `src/`.
-- Story pages must not ship Vue: only the planned controllers. Vue appears only on /racconti and /libri.
+- Story pages must not ship Vue: only the planned controllers. Vue appears only on /racconti and /libri,
+  both the same `SearchBrowser.vue` island (`kind="stories" | "books"`).
 
 ## Conventions
 

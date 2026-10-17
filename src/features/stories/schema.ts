@@ -20,15 +20,11 @@ import { z } from "astro/zod";
 import { publicCopy } from "@/core/content/public-copy";
 import { seoFields } from "@/core/content/seo";
 import { MAX_LINES, MOTIFS } from "@/features/covers";
+import { countWords } from "@/shared/lib/count-words";
 import { STORY_STATUSES, TAG_KINDS } from "./vocabulary";
 
 /** DS › NotaPaura: «80–150 parole». */
 export const FEAR_NOTE_WORDS = { min: 80, max: 150 } as const;
-
-/** Words in a piece of plain text (anything between spaces counts as one). */
-export function countWords(text: string): number {
-  return text.split(/\s+/).filter((word) => word !== "").length;
-}
 
 /** Content warnings are lowercase nouns, no icons (DS › SchedaTecnica). */
 const warning = z

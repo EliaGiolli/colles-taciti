@@ -15,6 +15,8 @@
  * after launch is decided in PR 11 (see ROADMAP).
  */
 import BaseLayout from "@/core/layout/BaseLayout.astro";
+import BookItem from "@/features/books/BookItem.vue";
+import BookShelf from "@/features/books/BookShelf.astro";
 import Brand from "@/core/layout/Brand.astro";
 import Cover from "@/features/covers/Cover.astro";
 import { coversCopy } from "@/features/covers";
@@ -250,6 +252,20 @@ const heading = "font-display text-titolo-2";
         </li>
       </ul>
       <ContinueReading preview={{ href: "#sg-racconto", ...story.continueReading }} />
+    </section>
+
+    <section class={section} aria-labelledby="sg-libri">
+      <h2 id="sg-libri" class={heading}>
+        {copy.sections.books}
+      </h2>
+      <BookShelf books={[...copy.books, ...copy.books]} />
+      <ul class="flex max-w-[40rem] flex-col">
+        {copy.books.map((book) => (
+          <li>
+            <BookItem book={book} />
+          </li>
+        ))}
+      </ul>
     </section>
   </div>
 </BaseLayout>

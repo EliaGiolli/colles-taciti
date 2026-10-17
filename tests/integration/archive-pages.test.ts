@@ -18,9 +18,10 @@ import { fearSchema } from "@/features/categories/schema";
 import {
   type ArchiveSource,
   type ArchiveVocabulary,
-  buildFacets,
+  buildStoryArchive,
   toSearchDocument,
 } from "@/features/search/archive-build";
+import { urlOrders } from "@/features/search/archive-kinds";
 import { archiveUrlSchema, selectionOf } from "@/features/search/archive-url";
 import { searchCopy } from "@/features/search/copy";
 import { buildIndex, loadIndex, searchScores } from "@/features/search/search-index";
@@ -133,7 +134,8 @@ describe("the archive of the real stories", () => {
   it("accepts every tag link of the story pages as a filter", () => {
     // A SchedaTecnica link (`/racconti?luogo=mugello`) must land on a
     // filtered archive, never on a parameter the island drops.
-    const schema = archiveUrlSchema(buildFacets(sources, vocabulary));
+    const { facets } = buildStoryArchive(sources, vocabulary);
+    const schema = archiveUrlSchema(facets, urlOrders("stories"));
     const groups: [keyof (typeof stories)[number]["data"]["tags"], TagKind][] = [
       ["places", "place"],
       ["themes", "theme"],
@@ -144,7 +146,8 @@ describe("the archive of the real stories", () => {
       for (const [group, kind] of groups) {
         for (const { id } of data.tags[group]) {
           const query = tagFilterHref(kind, id).split("?")[1] ?? "";
-          const selection = Object.values(selectionOf(readParams(schema, query))).flat();
+          const state = readParams(schema, query);
+          const selection = Object.values(selectionOf(state, facets)).flat();
           expect(selection, `${tagFilterHref(kind, id)}`).toEqual([id]);
         }
       }

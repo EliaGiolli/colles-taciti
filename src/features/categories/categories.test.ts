@@ -73,6 +73,43 @@ describe("CategoryPage", () => {
     ]);
   });
 
+  it("introduces the subgenre and links its video, as a followed link", async () => {
+    const { body } = await renderAstro(CategoryPage, {
+      props: {
+        fear: {
+          ...fear("body-horror", 1),
+          intro: "Il corpo cambia, e tu puoi solo guardarlo fare.",
+          watch: {
+            title: "How to Write Body Horror",
+            url: "https://www.youtube.com/watch?v=2uGA34GwJSA",
+          },
+        },
+        stories: [card],
+        others: [],
+      },
+    });
+
+    expect(body.textContent).toContain("Il corpo cambia, e tu puoi solo guardarlo fare.");
+    expect(body.textContent).toContain("Per approfondire, in inglese:");
+    const video = getByRole(body, "link", {
+      name: "How to Write Body Horror su The Horror Scriptorium",
+    });
+    expect(video.getAttribute("href")).toBe("https://www.youtube.com/watch?v=2uGA34GwJSA");
+    // A real backlink: no nofollow, and no new tab (DS).
+    expect(video.getAttribute("rel")).toBeNull();
+    expect(video.getAttribute("target")).toBeNull();
+    expect(video.querySelector('[lang="en"]')?.textContent).toBe("How to Write Body Horror");
+  });
+
+  it("has no intro and no video link when the fear has none", async () => {
+    const { body } = await renderAstro(CategoryPage, {
+      props: { fear: fear("body-horror", 1), stories: [card], others: [] },
+    });
+
+    expect(body.textContent).not.toContain("Per approfondire");
+    expect(body.querySelector('a[href*="youtube"]')).toBeNull();
+  });
+
   it("says plainly when a fear has no stories yet", async () => {
     const { body } = await renderAstro(CategoryPage, {
       props: { fear: fear("esperimenti", 0), stories: [], others: [] },

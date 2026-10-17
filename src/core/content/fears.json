@@ -4,6 +4,11 @@
     "name": "Body horror",
     "definition": "Quando il corpo smette di essere tuo.",
     "order": 1,
+    "intro": "[Segnaposto] Il body horror è la paura più vicina che conosco: non viene da fuori, abita già qui. Il corpo cambia, si ammala, smette di rispondere, e tu puoi solo guardarlo fare. Nei racconti che trovi qui la trasformazione è lenta, quasi educata, e proprio per questo non si riesce a distogliere lo sguardo. Non cerco il disgusto fine a se stesso: mi interessa il momento in cui una persona si accorge che la propria pelle non è più una casa, ma un posto in cui è ospite. E che il padrone di casa sta per tornare.",
+    "watch": {
+      "title": "How to Write Body Horror",
+      "url": "https://www.youtube.com/watch?v=2uGA34GwJSA"
+    },
     "seo": {
       "title": "Racconti body horror – Colles Taciti",
       "description": "Racconti body horror da leggere online, gratis: quando il corpo smette di essere tuo. Storie brevi nate in Toscana da paure vere."
@@ -14,6 +19,11 @@
     "name": "Horror psicologico",
     "definition": "Quando il pericolo è dentro la testa.",
     "order": 2,
+    "intro": "[Segnaposto] Nell'horror psicologico il mostro non ha bisogno di entrare dalla porta: è già seduto in salotto, e ha la tua voce. Sono le storie che preferisco scrivere, perché nascono da paure che ho provato davvero: l'isolamento, il dubbio, la sensazione che qualcosa non torni e che nessuno se ne accorga tranne te. Qui la tensione cresce piano, attraverso dettagli quotidiani che si spostano di un millimetro. Alla fine non sai più se il pericolo sia reale o se stia succedendo solo nella testa di chi racconta. Spesso la risposta più spaventosa è: tutte e due.",
+    "watch": {
+      "title": "How to Write Psychological Horror",
+      "url": "https://www.youtube.com/watch?v=61V31ndWpfg"
+    },
     "seo": {
       "title": "Racconti di horror psicologico – Colles Taciti",
       "description": "Racconti di horror psicologico da leggere online, gratis: quando il pericolo è dentro la testa. Storie brevi nate in Toscana da paure vere."
@@ -24,6 +34,11 @@
     "name": "Slasher",
     "definition": "Quando qualcuno ha deciso che tocca a te.",
     "order": 3,
+    "intro": "[Segnaposto] Lo slasher è il sottogenere più onesto: qualcuno ha deciso che tocca a te, e il racconto è il tempo che ti resta. Sono cresciuto con i film degli anni Ottanta, ma le mie storie si svolgono tra le colline toscane, nelle strade di provincia, nei paesi dove tutti si conoscono e nessuno parla. Mi interessa meno il sangue e più l'attesa: il rumore di una macchina che rallenta, una luce accesa dove non dovrebbe, una diretta che nessuno interrompe. Chi uccide ha quasi sempre un motivo. Chi guarda, a volte, ne ha uno peggiore.",
+    "watch": {
+      "title": "How to Write Slasher Horror",
+      "url": "https://www.youtube.com/watch?v=9_0pG9CDTdI"
+    },
     "seo": {
       "title": "Racconti slasher – Colles Taciti",
       "description": "Racconti slasher da leggere online, gratis: quando qualcuno ha deciso che tocca a te. Storie brevi tra le colline della Toscana."
@@ -34,6 +49,7 @@
     "name": "Liminale",
     "definition": "Quando un luogo familiare non finisce più.",
     "order": 4,
+    "intro": "[Segnaposto] L'horror liminale vive nei luoghi di passaggio: corridoi, uffici dopo la chiusura, aeroporti vuoti, parcheggi alle tre di notte. Posti fatti per essere attraversati, non abitati, che diventano inquietanti quando ci resti troppo a lungo. Non c'è un mostro da cui scappare, spesso non c'è nemmeno un pericolo visibile: c'è solo la sensazione che lo spazio continui oltre il punto in cui dovrebbe finire. I racconti che trovi qui partono da luoghi che conosco bene e li allungano di un corridoio, di una porta, di un turno che non finisce più.",
     "seo": {
       "title": "Racconti di horror liminale – Colles Taciti",
       "description": "Racconti di horror liminale da leggere online, gratis: quando un luogo familiare non finisce più. Corridoi, uffici e aeroporti in Toscana."

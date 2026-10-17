@@ -11,8 +11,8 @@ import type { ArchiveItem, Facet } from "@/features/search/archive";
 import {
   type ArchiveSource,
   type ArchiveVocabulary,
-  buildFacets,
-  toArchiveItem,
+  buildStoryArchive,
+  type StoryFacet,
   toSearchDocument,
 } from "@/features/search/archive-build";
 import type { SearchDocument } from "@/features/search/search-index";
@@ -115,11 +115,13 @@ export const sources: ArchiveSource[] = [
   }),
 ];
 
+const archive = buildStoryArchive(sources, vocabulary);
+
 /** The island's items, newest first (as `getStories()` orders them). */
-export const items: ArchiveItem[] = sources.map((s) => toArchiveItem(s, vocabulary));
+export const items: ArchiveItem<StoryFacet>[] = archive.items;
 
 /** The facets those items use. */
-export const facets: Facet[] = buildFacets(sources, vocabulary);
+export const facets: Facet<StoryFacet>[] = archive.facets;
 
 /** The index documents of the same stories. */
 export const documents: SearchDocument[] = sources.map((s) => toSearchDocument(s, vocabulary));

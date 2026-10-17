@@ -1,27 +1,56 @@
 /**
- * Schema of the `books` collection (`src/core/content/books.json`).
+ * Schema of the `books` collection (`src/core/content/books.json`): the
+ * books on /libri, the horror Elia has read and the books on writing that
+ * taught him the craft.
  *
- * Provisional: the file is empty until Elia's list arrives, and PR 10
- * (`feat/books`) generates it with `libri:sync` from Open Library. The
- * collection exists now so the content pipeline is complete and its types
- * are stable for the pages that will use it.
+ * Two kinds of fields live side by side in each entry:
+ * - **written by hand**: `title`, `authors`, `section`, and the optional
+ *   `originalTitle` and `note`;
+ * - **filled by `bun run libri:sync`** from Open Library, only when they
+ *   are missing: `openLibraryId`, `year` and `cover`. Each one can also be
+ *   written (or corrected) by hand, and the sync never overwrites a value
+ *   that is already there. That is how a wrong match gets fixed: set the
+ *   right `openLibraryId`, or the right `year`, and the sync leaves it.
  *
- * The personal note is mandatory: without it, the page would only repeat
- * public catalogue data, which Google ignores as duplicate content (SEO
- * brief v2 › §3.4). It is what makes /libri worth indexing.
+ * The personal note is optional (Elia's decision, 2026-10-17): /libri has
+ * no SEO goal, it is there so readers can take ideas from what he read.
+ * When a note exists, the page shows it after «Perché te lo consiglio —»
+ * or «Cosa mi ha insegnato —» (DS › Libro).
  */
 import { z } from "astro/zod";
+import { publicCopy } from "@/core/content/public-copy";
+import { BOOK_COVERS_PATH, BOOK_SECTIONS } from "./vocabulary";
 
-/** The two shelves of /libri: horror reading, and books about writing. */
-export const BOOK_SECTIONS = ["horror", "scrittura"] as const;
+/** An Open Library work id: `OL81613W` (works end in W, editions in M). */
+const OPEN_LIBRARY_WORK = /^OL\d+W$/;
 
 export const bookSchema = z.object({
-  title: z.string().trim().min(1),
-  authors: z.array(z.string().trim().min(1)).min(1),
-  year: z.number().int().optional(),
+  /** As Elia calls it: the Italian title when he read it in Italian («Il miglio verde»). */
+  title: publicCopy(),
+  /**
+   * The title Open Library knows the work by, when it differs from
+   * `title`: usually the original one («The Green Mile»). Only `libri:sync`
+   * reads it, to search; the page always shows `title`. Open Library files
+   * most Italian editions as separate, sparse works (wrong year, no cover),
+   * so searching for the original finds the real one.
+   */
+  originalTitle: z.string().trim().min(1).optional(),
+  authors: z.array(publicCopy()).min(1),
   section: z.enum(BOOK_SECTIONS),
-  /** «Perché te lo consiglio» / «Cosa mi ha insegnato» (DS › Libro). */
-  note: z.string().trim().min(1),
-  /** Open Library work id (`OL…W`), used by `libri:sync` for data and cover. */
-  openLibraryId: z.string().trim().min(1).optional(),
+  /** «Perché te lo consiglio» / «Cosa mi ha insegnato» (DS › Libro); starts lowercase. */
+  note: publicCopy().optional(),
+  /** Open Library work id, for the link to its page and for the sync. */
+  openLibraryId: z.string().regex(OPEN_LIBRARY_WORK).optional(),
+  /** Year of first publication (of the original, not of Elia's edition). */
+  year: z.number().int().min(1000).max(2100).optional(),
+  /** Path of the cover under {@link BOOK_COVERS_PATH}: `/libri/it.jpg`. */
+  cover: z
+    .string()
+    .refine((path) => path.startsWith(`${BOOK_COVERS_PATH}/`), {
+      message: `La copertina deve stare in ${BOOK_COVERS_PATH}/`,
+    })
+    .optional(),
 });
+
+/** A book as written in books.json (without its `id`). */
+export type BookData = z.infer<typeof bookSchema>;

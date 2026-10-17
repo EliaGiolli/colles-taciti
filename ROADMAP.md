@@ -162,7 +162,10 @@ homepage Hero photo landed afterwards directly on `main` (Elia's request). See `
 
 ## PR 9 · `feat/consent-analytics`
 
-PR: – · Merged: – · Notes: –
+PR: [#11](https://github.com/EliaGiolli/colles-taciti/pull/11) · Merged: 2026-10-17 · Notes: gtag.js is
+not loaded before consent (stricter than the standard snippet); Consent Mode v2 default denied,
+analytics only; «Preferenze cookie» in the footer; fake GA ID and intercepted Google requests in e2e.
+Banner and feedback e-mail confirmed working in production by Elia. See `docs/PLAN.md` › change log.
 
 - [x] Consent Mode v2 (default denied), gtag loader, `ConsentBanner` + controller, «Preferenze cookie» in the footer
 - [x] `track()` with typed events: `story_start`, `story_finish`, `feedback_submit`, `wattpad_click`, `resume_reading`
@@ -174,16 +177,23 @@ PR: – · Merged: – · Notes: –
 
 PR: – · Merged: – · Notes: –
 
-- [ ] Open Library / Google Books client + `libri:sync`
-- [ ] `/libri`: Shelf, `BookItem.vue`, island with section/author/decade/tag facets, mandatory note
-- [ ] Test data until Elia's list arrives
-- [ ] README updated
+Changed with Elia on 2026-10-17: his real list instead of test data; the personal note becomes
+optional (no SEO goal for /libri); no «tag» facet; films postponed to after launch; intros and
+The Horror Scriptorium videos on the fear pages folded in here.
+
+- [x] `books.json` with Elia's 24 books (20 horror, 4 on writing: the list counted 23 and 19); `note` optional in the schema; `originalTitle` for the search
+- [x] Open Library client + `libri:sync`: year, work link and cover in `public/libri`, never overwriting hand-written fields (wrong years fixed by hand after the run)
+- [x] Generic search island (`kind: stories | books`): book facets section/author/decade, sort by author (default), title or year; prefix search without a MiniSearch index
+- [x] `BookItem.vue` (DS Libro with cover, black and white to colour on hover) and `/libri` with the DS shelf as Hero
+- [x] Fear pages: one intro paragraph (draft marked `[Segnaposto]`) and a link to the subgenre's video on The Horror Scriptorium (no `nofollow`; not on Esperimenti)
+- [x] Tests: MSW for Open Library, e2e /libri (axe, facets, URL, back button)
+- [x] README updated
 
 ## PR 11 · `chore/launch`
 
 PR: – · Merged: – · Notes: –
 
-- [ ] Environment variables on Vercel (with Elia's confirmation)
+- [x] Environment variables on Vercel (added by Elia on 2026-10-17: Turso, Resend, GA4, Production only)
 - [ ] Lighthouse mobile (home + one story): SEO, a11y, performance
 - [ ] CSP: hashes for Astro's inlined scripts, or `assetsInlineLimit: 0` (see PLAN change log)
 - [ ] Decide whether `/design-system` stays public (it is `noindex`)
@@ -202,10 +212,14 @@ PR: – · Merged: – · Notes: –
 - [ ] Real texts, fear notes, warnings, dates and tags for each story (placeholders marked `[Segnaposto]` in `src/core/content/stories`)
 - [ ] Wattpad addresses of Le vibrazioni and Senza Rimorso (`wattpadUrl` in their frontmatter)
 - [x] Photo `abat-jour-notte.jpg` in the homepage Hero (`src/assets/foto`, optimised by `astro:assets`)
-- [ ] Books list
+- [x] Books list (sent by Elia on 2026-10-17)
 - [x] Portfolio and Wattpad URLs (`core/layout/nav.ts`)
 - [ ] Instagram profile: when it exists, add its link to `EXTERNAL_LINKS` and the footer
-- [ ] Resend and GA4 keys
+- [x] Resend and GA4 keys
+- [ ] Rewrite the intros of the four fear pages (remove `[Segnaposto]` in `fears.json`)
+- [ ] The Horror Scriptorium video on liminal horror (body horror, psychological and slasher received): `watch` in `fears.json`
+- [ ] Confirm «Chtulu (Lovecraft)» as *Il richiamo di Cthulhu* in `books.json` (or name the right book)
+- [ ] Optional personal notes on the books (`note` in `books.json`)
 
 ## After launch
 
@@ -214,3 +228,4 @@ PR: – · Merged: – · Notes: –
 - [ ] Newsletter
 - [ ] Sentry
 - [ ] Pagefind
+- [ ] Horror films (decided with Elia: not at launch)

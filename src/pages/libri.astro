@@ -1,0 +1,49 @@
+---
+/**
+ * /libri: the books Elia has read, horror and books on writing, with the
+ * same search island as /racconti (PLAN › Pagine › 5).
+ *
+ * Top to bottom (DS › Hero › `ct-hero--libri`): the title and one
+ * sentence, then the shelf of covers, then the island, which Astro renders
+ * to HTML at build time (the full list is in the page without JavaScript)
+ * and `client:idle` hydrates. No `indexUrl`: the books are searched by
+ * prefix on the data already in the page. Last, the credit Open Library
+ * asks for its data and covers.
+ *
+ * Indexable like any page, with no JSON-LD: the page has no SEO goal
+ * (Elia's decision, 2026-10-17), and a list of other people's books is
+ * not something to mark up as the site's own work.
+ */
+import BaseLayout from "@/core/layout/BaseLayout.astro";
+import BookShelf from "@/features/books/BookShelf.astro";
+import { booksCopy as copy, getBooks } from "@/features/books";
+import { getBookArchive } from "@/features/search";
+import SearchBrowser from "@/features/search/SearchBrowser.vue";
+
+const [books, { items, facets }] = await Promise.all([getBooks(), getBookArchive()]);
+---
+
+<BaseLayout title={copy.page.title} description={copy.page.metaDescription}>
+  <div class="mx-auto flex max-w-pagina flex-col gap-7 px-4 py-7 md:px-6 md:py-8">
+    <header class="flex flex-col gap-6">
+      <div class="flex flex-col gap-4">
+        <h1 class="font-display text-titolo-1 md:text-display">{copy.page.heading}</h1>
+        <p class="max-w-misura text-corpo">{copy.page.intro}</p>
+      </div>
+      <BookShelf books={books.map((book) => book.card)} />
+    </header>
+
+    <SearchBrowser client:idle kind="books" items={items} facets={facets} />
+
+    <p class="font-mono text-meta text-osso-muto">
+      {copy.page.credit}&nbsp;
+      <a
+        href="https://openlibrary.org"
+        class="text-osso underline decoration-linea-forte underline-offset-4 hover:text-ferita hover:decoration-ferita"
+      >
+        {copy.page.creditLink}
+      </a>
+      .
+    </p>
+  </div>
+</BaseLayout>

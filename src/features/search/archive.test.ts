@@ -1,5 +1,6 @@
 /** Tests for the archive's filtering, counting and sorting (pure functions, Node). */
 import { facets, items } from "@tests/fixtures/archive";
+import { bookItems } from "@tests/fixtures/books";
 import { describe, expect, it } from "vitest";
 import {
   type ArchiveItem,
@@ -10,30 +11,32 @@ import {
   facetCounts,
   matchesFacets,
   matchesText,
+  RELEVANCE,
   type Selection,
+  selectedIn,
   sortItems,
-  storyForm,
   toggleOption,
   visibleOptions,
 } from "./archive";
+import { STORY_FACETS, type StoryFacet } from "./archive-build";
+import { orderDefaults } from "./archive-kinds";
+import { BOOK_FACETS } from "./book-archive";
 
 const ids = (list: readonly ArchiveItem[]) => list.map((item) => item.id);
-const select = (patch: Partial<Selection>): Selection => ({ ...emptySelection(), ...patch });
-const filter = (selection: Selection) => items.filter((item) => matchesFacets(item, selection));
-
-describe("storyForm", () => {
-  it("tells one-piece, chaptered and ongoing stories apart", () => {
-    expect(storyForm("complete", 1)).toBe("breve");
-    expect(storyForm("complete", 5)).toBe("capitoli");
-    expect(storyForm("ongoing", 3)).toBe("in-corso");
-    // An ongoing story is «in corso» even with a single chapter out.
-    expect(storyForm("ongoing", 1)).toBe("in-corso");
-  });
+const select = (patch: Partial<Selection<StoryFacet>>): Selection<StoryFacet> => ({
+  ...emptySelection(STORY_FACETS),
+  ...patch,
 });
+const filter = (selection: Selection<StoryFacet>) =>
+  items.filter((item) => matchesFacets(item, selection));
 
 describe("selection helpers", () => {
+  it("starts with every facet empty", () => {
+    expect(emptySelection(BOOK_FACETS)).toEqual({ sezione: [], autore: [], decennio: [] });
+  });
+
   it("toggles a value on and off, without touching the original", () => {
-    const empty = emptySelection();
+    const empty = emptySelection(STORY_FACETS);
     const on = toggleOption(empty, "luogo", "pisa");
     const two = toggleOption(on, "luogo", "mugello");
 
@@ -44,14 +47,19 @@ describe("selection helpers", () => {
   });
 
   it("counts the values switched on across facets", () => {
-    expect(countSelected(emptySelection())).toBe(0);
+    expect(countSelected(emptySelection(STORY_FACETS))).toBe(0);
     expect(countSelected(select({ luogo: ["pisa", "mugello"], paura: ["slasher"] }))).toBe(3);
+  });
+
+  it("reads a facet the selection lacks as empty", () => {
+    const partial: Selection = { luogo: ["pisa"] };
+    expect(selectedIn(partial, "paura")).toEqual([]);
   });
 });
 
 describe("matchesFacets", () => {
   it("lets everything through when nothing is selected", () => {
-    expect(filter(emptySelection())).toHaveLength(items.length);
+    expect(filter(emptySelection(STORY_FACETS))).toHaveLength(items.length);
   });
 
   it("treats values of the same facet as alternatives (OR)", () => {
@@ -76,11 +84,20 @@ describe("matchesFacets", () => {
     expect(matchesFacets(ongoing, selection)).toBe(false);
     expect(matchesFacets(ongoing, selection, "luogo")).toBe(true);
   });
+
+  it("filters the books with the same rules", () => {
+    const selection = { ...emptySelection(BOOK_FACETS), autore: ["stephen-king"] };
+    expect(ids(bookItems.filter((item) => matchesFacets(item, selection)))).toEqual([
+      "misery",
+      "il-miglio-verde",
+      "on-writing",
+    ]);
+  });
 });
 
 describe("facetCounts", () => {
   it("counts each value with nothing selected", () => {
-    const counts = facetCounts(items, emptySelection());
+    const counts = facetCounts(items, emptySelection(STORY_FACETS));
 
     expect(counts.paura.get("horror-psicologico")).toBe(3);
     expect(counts.paura.get("slasher")).toBe(2);
@@ -102,7 +119,7 @@ describe("facetCounts", () => {
 describe("visibleOptions", () => {
   const facet = facets.find((f) => f.key === "luogo") as Facet;
 
-  it("hides values that would leave no story, but never a selected one", () => {
+  it("hides values that would leave no item, but never a selected one", () => {
     const counts = new Map([["pisa", 1]]);
 
     expect(visibleOptions(facet, counts, []).map((o) => o.id)).toEqual(["pisa"]);
@@ -110,11 +127,13 @@ describe("visibleOptions", () => {
       "mugello",
       "pisa",
     ]);
+    expect(visibleOptions(facet, undefined, [])).toEqual([]);
   });
 });
 
-describe("matchesText (before the index arrives)", () => {
+describe("matchesText (prefix search)", () => {
   const search = (query: string) => ids(items.filter((item) => matchesText(item, query)));
+  const searchBooks = (query: string) => ids(bookItems.filter((item) => matchesText(item, query)));
 
   it("matches word prefixes in title, logline, setting, fears and tags", () => {
     expect(search("vibraz")).toEqual(["le-vibrazioni"]);
@@ -132,17 +151,36 @@ describe("matchesText (before the index arrives)", () => {
   it("does not look inside words, only at their start", () => {
     expect(search("razioni")).toEqual([]);
   });
+
+  it("finds a book by author, original title, section or year", () => {
+    expect(searchBooks("stoker")).toEqual(["dracula"]);
+    expect(searchBooks("green mile")).toEqual(["il-miglio-verde"]);
+    expect(searchBooks("scrittura")).toEqual([
+      "the-art-and-business-of-online-writing",
+      "on-writing",
+    ]);
+    expect(searchBooks("189")).toEqual(["dracula"]);
+  });
 });
 
 describe("effectiveOrder", () => {
-  it("defaults to relevance with a query and newest first without", () => {
-    expect(effectiveOrder(undefined, true)).toBe("pertinenza");
-    expect(effectiveOrder(undefined, false)).toBe("recenti");
+  const stories = orderDefaults("stories");
+  const books = orderDefaults("books");
+
+  it("defaults to relevance with a query and to the archive's order without", () => {
+    expect(effectiveOrder(undefined, true, stories)).toBe(RELEVANCE);
+    expect(effectiveOrder(undefined, false, stories)).toBe("recenti");
+    expect(effectiveOrder(undefined, false, books)).toBe("autore");
   });
 
   it("keeps the reader's choice, except relevance without a query", () => {
-    expect(effectiveOrder("titolo", true)).toBe("titolo");
-    expect(effectiveOrder("pertinenza", false)).toBe("recenti");
+    expect(effectiveOrder("titolo", true, stories)).toBe("titolo");
+    expect(effectiveOrder(RELEVANCE, false, stories)).toBe("recenti");
+  });
+
+  it("never ranks by relevance without an index", () => {
+    expect(effectiveOrder(undefined, true, books)).toBe("autore");
+    expect(effectiveOrder(RELEVANCE, true, books)).toBe("autore");
   });
 });
 
@@ -150,8 +188,8 @@ describe("sortItems", () => {
   it("sorts newest first, by title, or by relevance", () => {
     const shuffled = [...items].reverse();
 
-    expect(ids(sortItems(shuffled, "recenti"))).toEqual(ids(items));
-    expect(ids(sortItems(items, "titolo"))).toEqual([
+    expect(ids(sortItems(shuffled, "recenti", "recenti"))).toEqual(ids(items));
+    expect(ids(sortItems(items, "titolo", "recenti"))).toEqual([
       "il-limbo-dei-processi",
       "le-vibrazioni",
       "se-ni-mondo",
@@ -161,7 +199,7 @@ describe("sortItems", () => {
       ["le-vibrazioni", 9],
       ["se-ni-mondo", 4],
     ]);
-    expect(ids(sortItems(items, "pertinenza", scores))).toEqual([
+    expect(ids(sortItems(items, RELEVANCE, "recenti", scores))).toEqual([
       "le-vibrazioni",
       "se-ni-mondo",
       "senza-rimorso",
@@ -169,7 +207,22 @@ describe("sortItems", () => {
     ]);
   });
 
+  it("sorts books by author, title or year", () => {
+    const shuffled = [...bookItems].reverse();
+
+    expect(ids(sortItems(shuffled, "autore", "autore"))).toEqual(ids(bookItems));
+    expect(ids(sortItems(shuffled, "anno", "autore"))).toEqual([
+      "dracula",
+      "misery",
+      "il-miglio-verde",
+      "on-writing",
+      // No year: last.
+      "the-art-and-business-of-online-writing",
+    ]);
+    expect(ids(sortItems(shuffled, "titolo", "autore"))[0]).toBe("dracula");
+  });
+
   it("returns a new array", () => {
-    expect(sortItems(items, "recenti")).not.toBe(items);
+    expect(sortItems(items, "recenti", "recenti")).not.toBe(items);
   });
 });

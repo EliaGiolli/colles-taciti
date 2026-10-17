@@ -12,9 +12,17 @@
  * to narrow further follow «Tutti i racconti» to the archive.
  *
  * The definition is the fear's own sentence («Quando il corpo smette di
- * essere tuo.»), set as the page's tagline in Bodoni italic. An empty fear
- * (Esperimenti, at launch) says so with the PLAN's empty state instead of
- * a count of zero.
+ * essere tuo.»), set as the page's tagline in Bodoni italic. Under it, when
+ * the fear has them (all but Esperimenti, which is not a subgenre), one
+ * paragraph on the subgenre and the link to its video on The Horror
+ * Scriptorium. That link is a plain one, without `rel="nofollow"`: it is a
+ * tribute to the channel, and a backlink only counts if search engines may
+ * follow it. Same tab, as for every external link (DS). The video's title
+ * is English, so it is marked `lang="en"` for screen readers' pronunciation,
+ * and the lead-in says the video is in English before anyone clicks.
+ *
+ * An empty fear (Esperimenti, at launch) says so with the PLAN's empty
+ * state instead of a count of zero.
  *
  * @example <CategoryPage fear={fear} stories={cards} others={otherFears} />
  */
@@ -52,6 +60,15 @@ const othersId = "le-altre-paure";
       <p class="max-w-misura font-display text-titolo-corsivo text-osso-muto italic">
         {fear.definition}
       </p>
+      {fear.intro && <p class="max-w-misura text-corpo">{fear.intro}</p>}
+      {fear.watch && (
+        <p class="flex flex-col items-start gap-1">
+          <span class="font-mono text-meta text-osso-muto">{copy.page.watchLead}</span>
+          <Button variant="link" href={fear.watch.url}>
+            <span lang="en">{fear.watch.title}</span> {copy.page.watchChannel}
+          </Button>
+        </p>
+      )}
       {stories.length > 0 && (
         <p class="font-mono text-meta text-osso-muto">{copy.count(fear.count)}</p>
       )}

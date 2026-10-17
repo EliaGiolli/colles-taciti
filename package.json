@@ -23,6 +23,7 @@
     "check": "bun run typecheck && bun run lint && bun run test && bun run test:integration",
     "prepare": "lefthook install",
     "copertine": "bun scripts/copertine.ts",
+    "libri:sync": "bun scripts/libri-sync.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate"
   },

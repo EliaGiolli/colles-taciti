@@ -8,7 +8,7 @@
  * the complete list is in the page for search engines and for readers
  * without JavaScript; `client:idle` hydrates it once the browser is idle,
  * which keeps the first paint free of Vue. This is one of the two pages
- * that ship Vue (the other will be /libri).
+ * that ship Vue (the other is /libri, with the same island).
  *
  * Filtered views (`/racconti?luogo=mugello`) are the same static page:
  * the island reads the query string in the browser. Only /racconti itself
@@ -29,6 +29,12 @@ const { items, facets } = await getArchive();
       <p class="max-w-misura text-corpo">{copy.page.intro}</p>
     </header>
 
-    <SearchBrowser client:idle items={items} facets={facets} indexUrl={SEARCH_INDEX_PATH} />
+    <SearchBrowser
+      client:idle
+      kind="stories"
+      items={items}
+      facets={facets}
+      indexUrl={SEARCH_INDEX_PATH}
+    />
   </div>
 </BaseLayout>
