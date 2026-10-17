@@ -419,7 +419,7 @@
   }
 
   /* A paragraph that opens a chapter or follows a break or a block is not indented. */
-  .ct-prosa :is(h2, hr, blockquote, .ct-chat, .ct-log) + p {
+  .ct-prosa :is(h2, hr, blockquote, .ct-chat, .ct-log, .ct-segnale) + p {
     text-indent: 0;
   }
 
@@ -621,6 +621,63 @@
     .ct-glitch--vivo {
       animation: ct-scatto 4s steps(1) infinite;
     }
+  }
+
+  /*
+   * Segnale: a message a character hears inside their head, written as code
+   * in the story (markdown/helpers/signal.ts). The machine's voice of
+   * RigheDiLog (mono, neon on terra-fonda), but a single message: on its own
+   * line, centred in the reading column, without line numbers. `.ct-prosa`
+   * in front, so these rules beat `.ct-prosa p` and `p + p` (margins, indent).
+   */
+  .ct-prosa .ct-segnale {
+    width: fit-content;
+    max-width: 100%;
+    margin: var(--spacing-6) auto;
+    padding: var(--spacing-3) var(--spacing-5);
+    background: var(--terra-fonda);
+    color: var(--neon);
+    font-family: var(--font-mono);
+    font-size: var(--text-log);
+    line-height: var(--text-log--line-height);
+    font-weight: var(--peso-mono);
+    text-align: center;
+    text-indent: 0;
+    /* A multi-line message keeps its lines; a long one wraps on a phone. */
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    hyphens: manual;
+  }
+
+  /*
+   * The signal's glitch: the RGB shift of .ct-glitch and the twitch of
+   * .ct-glitch--vivo (the same keyframes), together. Unlike a log line's
+   * static glitch, all of it is left out with reduced motion: the message
+   * is then plain neon text. The shift is 1px on a fixed, high-contrast
+   * colour, so the text stays as readable as a log line.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    .ct-prosa .ct-segnale {
+      text-shadow:
+        1px 0 var(--ferita),
+        -1px 0 var(--neon);
+      animation: ct-scatto 4s steps(1) infinite;
+    }
+  }
+
+  /*
+   * Inline code inside a sentence («`git merge SaraGiacomo?` chiese Sara»):
+   * the same voice, without the glitch, so the sentence still reads at the
+   * pace of the prose. The size follows the text (and A−/A+).
+   */
+  .ct-prosa code {
+    padding-inline: var(--spacing-1);
+    background: var(--terra-fonda);
+    color: var(--neon);
+    font-family: var(--font-mono);
+    font-weight: var(--peso-mono);
+    hyphens: manual;
+    overflow-wrap: anywhere;
   }
 
   /*

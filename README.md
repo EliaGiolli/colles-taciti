@@ -215,10 +215,22 @@ Content Collections ([`src/content.config.ts`](src/content.config.ts)):
 
   In a chat, `--` marks a system line and `!!` the line that breaks the scene. In a log, `ERR`
   lines are errors, `~ ` adds a static glitch and `~~ ` the live one (at most one per block).
+- **Signals**: any other code in a story is a message a character hears inside their head, never
+  technical code. A fenced block (any language, or none) and a paragraph made of one inline code
+  span become a *signal*: its own line, centred, in the machine's voice (mono, neon on
+  terra-fonda) with a light RGB glitch that reduced motion turns off. Inline code inside a
+  sentence keeps the same voice without the glitch. No copy button, no line numbers: it is a
+  plain paragraph for screen readers.
+
+  ````md
+  `Error 404: friendship not found.`
+
+  `git merge SaraGiacomo?` chiese Sara attraverso il segnale.
+  ````
 - The four launch stories are **placeholders**: their metadata comes from the SEO brief, but the
   text and the fear notes are marked `[Segnaposto]` until the real ones arrive (*Le vibrazioni*
-  already has its real fear note). *Al cuore non si comanda*, in Esperimenti, is the first real
-  story.
+  already has its real fear note). *Al cuore non si comanda* (Esperimenti) and *Il sistema
+  ereditario* (body horror) are real stories.
 
 ### Homepage
 
