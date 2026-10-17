@@ -211,11 +211,14 @@ constants and helpers no longer sit scattered next to components. Moves only, no
 
 ## PR 12 · `chore/launch`
 
-PR: – · Merged: – · Notes: –
+PR: [#14](https://github.com/EliaGiolli/colles-taciti/pull/14) · Merged: 2026-10-17 · Notes: CSP through
+Astro's `security.csp` instead of `assetsInlineLimit: 0`; markdown highlighting off; `/design-system`
+injected only in dev and e2e; Vitest down to 2 local workers. Lighthouse performance measured on
+production after the merge (previews are behind Vercel Authentication). See `docs/PLAN.md` › change log.
 
 - [x] Error pages: static `404.astro` (no JS, heading in the site's voice, «Scegli la tua paura») and `500.astro` for what runs on demand (`/feedback`, the Action; the error is never shown), with the DS brand illustration (`brandArtSvg`) as image
 - [x] Environment variables on Vercel (added by Elia on 2026-10-17: Turso, Resend, GA4, Production only)
-- [ ] Lighthouse mobile (home + one story): SEO, a11y, performance. Done locally on the production build: accessibility, best practices and SEO at 100 (one label-in-name fix). Performance still to measure on production after the merge: Vercel previews are behind Vercel Authentication, and the local Node preview does not compress text
+- [x] Lighthouse mobile on production (2026-10-17): home 94 / 100 / 100 / 100, *Il limbo dei processi* 91 / 100 / 100 / 100 (performance, accessibility, best practices, SEO); LCP 1.6 s and 2.6 s, CLS 0. Speed Index 6.4 s, probably the consent banner appearing after load. One label-in-name fix along the way
 - [x] CSP: Astro's `security.csp` (hashes of every inline script and style, no `'unsafe-inline'`), GA4 hosts only; `frame-ancestors` and other headers in `vercel.json`; e2e on CSP violations
 - [x] `/design-system` out of production (Elia's decision, 2026-10-17): route injected only with `astro dev` and in the e2e build
 - [ ] Final touches

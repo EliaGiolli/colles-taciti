@@ -14,10 +14,6 @@
   <img alt="License" src="https://img.shields.io/badge/license-all%20rights%20reserved-555555?style=flat-square" />
 </p>
 
-<p>
-  <img alt="Status" src="https://img.shields.io/badge/status-bootstrap-8A1C1C?style=flat-square" />
-</p>
-
 </div>
 
 ---
@@ -33,7 +29,7 @@ The site is in Italian. The code, comments and documentation are in English.
 
 ## <img src="https://api.iconify.design/lucide/sparkles.svg?color=%23888888" width="22" align="top" alt="" /> Features
 
-Planned for launch (track progress in [ROADMAP.md](ROADMAP.md)):
+Live at [colles-taciti.vercel.app](https://colles-taciti.vercel.app) (progress in [ROADMAP.md](ROADMAP.md)):
 
 - **Single-page stories** with a chapter index, reading controls and «resume where you left off».
 - **Two themes**: *Notte* (dark, default) and *Nebbia* (light), with no flash on load.
@@ -47,6 +43,45 @@ Planned for launch (track progress in [ROADMAP.md](ROADMAP.md)):
 - **Generated covers** and social images for every story.
 - **Self-hosted fonts** (Bodoni Moda, Literata, IBM Plex Mono) through Astro's Fonts API: no
   request to third-party font services.
+
+## <img src="https://api.iconify.design/lucide/gauge.svg?color=%23888888" width="22" align="top" alt="" /> Performance and quality
+
+Lighthouse 12.8.2, **mobile** profile (simulated mid-range phone on a slow 4G connection), on the
+production site, 17 October 2026, the day of the launch:
+
+| Page | Performance | Accessibility | Best practices | SEO |
+|---|:-:|:-:|:-:|:-:|
+| [Homepage](https://colles-taciti.vercel.app/) | **94** | **100** | **100** | **100** |
+| [A story page](https://colles-taciti.vercel.app/racconti/il-limbo-dei-processi) | **91** | **100** | **100** | **100** |
+
+| Metric | Homepage | Story page |
+|---|:-:|:-:|
+| First Contentful Paint | 1.1 s | 1.3 s |
+| Largest Contentful Paint | 1.6 s | 2.6 s |
+| Total Blocking Time | 50 ms | 0 ms |
+| Cumulative Layout Shift | 0 | 0 |
+
+What gets it there:
+- **Static HTML**: every page is prerendered, and story pages ship no framework, only a few
+  TypeScript controllers.
+- **Assets served by the site**:
+  - fonts are self-hosted, Latin subset only;
+  - the homepage photo is AVIF/WebP at four widths;
+  - story covers are inline SVG;
+  - book covers are small files served by the site.
+- **Accessibility checked on every pull request**: the end-to-end tests run axe at 375px and on
+  desktop, in both themes.
+- **A strict Content Security Policy**: hashes only, no `'unsafe-inline'`, checked by an
+  end-to-end test.
+
+At launch, the suite counted 430 unit, 45 integration and 113 end-to-end tests, run on every pull
+request.
+
+To measure again (needs Chrome; the Vercel previews sit behind a login, so measure production):
+
+```sh
+bunx lighthouse https://colles-taciti.vercel.app/ --only-categories=performance,accessibility,best-practices,seo --view
+```
 
 ## <img src="https://api.iconify.design/lucide/layers.svg?color=%23888888" width="22" align="top" alt="" /> Tech stack
 
