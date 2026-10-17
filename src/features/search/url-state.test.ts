@@ -3,9 +3,11 @@
  * archive's schema (archive-url.ts). Pure functions, Node environment.
  */
 import { facets } from "@tests/fixtures/archive";
+import { bookFacets } from "@tests/fixtures/books";
 import { describe, expect, it } from "vitest";
 import * as z from "zod/mini";
-import { archiveUrlSchema, selectionOf } from "./archive-url";
+import { urlOrders } from "./archive-kinds";
+import { archiveUrlSchema, selectionOf, selectionPatch } from "./archive-url";
 import { defaultParams, param, readParams, writeParams } from "./url-state";
 
 const schema = z.object({
@@ -64,14 +66,14 @@ describe("writeParams", () => {
 });
 
 describe("archiveUrlSchema", () => {
-  const archive = archiveUrlSchema(facets);
+  const archive = archiveUrlSchema(facets, urlOrders("stories"));
 
   it("accepts the facet values the archive has, by their Italian names", () => {
     const state = readParams(
       archive,
       "?paura=slasher&luogo=mugello&tema=lavoro&ispirazione=backrooms&forma=in-corso",
     );
-    expect(selectionOf(state)).toEqual({
+    expect(selectionOf(state, facets)).toEqual({
       paura: ["slasher"],
       luogo: ["mugello"],
       tema: ["lavoro"],
@@ -82,7 +84,7 @@ describe("archiveUrlSchema", () => {
 
   it("drops values the archive does not have (a stale link shows everything)", () => {
     const state = readParams(archive, "?luogo=grosseto&paura=esperimenti&forma=romanzo");
-    expect(selectionOf(state)).toEqual({
+    expect(selectionOf(state, facets)).toEqual({
       paura: [],
       luogo: [],
       tema: [],
@@ -94,5 +96,24 @@ describe("archiveUrlSchema", () => {
   it("knows the sort orders", () => {
     expect(readParams(archive, "?ordine=pertinenza").ordine).toBe("pertinenza");
     expect(readParams(archive, "?ordine=caso").ordine).toBeUndefined();
+  });
+
+  it("writes a selection back as one parameter per facet", () => {
+    const state = { ...readParams(archive, ""), ...selectionPatch({ luogo: ["pisa"] }) };
+    expect(writeParams(archive, state).toString()).toBe("luogo=pisa");
+  });
+
+  it("builds the books' schema from their own facets and orders", () => {
+    const books = archiveUrlSchema(bookFacets, urlOrders("books"));
+    const state = readParams(books, "?autore=stephen-king&decennio=1980&ordine=anno&luogo=pisa");
+
+    expect(selectionOf(state, bookFacets)).toEqual({
+      sezione: [],
+      autore: ["stephen-king"],
+      decennio: ["1980"],
+    });
+    expect(state.ordine).toBe("anno");
+    // No relevance without an index.
+    expect(readParams(books, "?ordine=pertinenza").ordine).toBeUndefined();
   });
 });

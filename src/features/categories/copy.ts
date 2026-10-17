@@ -15,6 +15,13 @@ export const categoriesCopy = {
     all: "Tutti i racconti",
     /** The other four fears, under the list. */
     others: "Le altre paure",
+    /**
+     * Before the link to the subgenre's video on The Horror Scriptorium.
+     * The videos are in English, so the reader knows before clicking.
+     */
+    watchLead: "Per approfondire, in inglese:",
+    /** After the video's title, inside the link: «How to Write Body Horror su The Horror Scriptorium». */
+    watchChannel: "su The Horror Scriptorium",
   },
   /**
    * How many stories a fear has (DS › SceltaPaura, `ct-paure__conta`). An

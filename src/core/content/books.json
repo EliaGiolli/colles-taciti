@@ -1,1 +1,223 @@
-[]
+[
+  {
+    "id": "it",
+    "title": "It",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL81613W",
+    "year": 1986,
+    "cover": "/libri/it.jpg"
+  },
+  {
+    "id": "shining",
+    "title": "Shining",
+    "originalTitle": "The Shining",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL81633W",
+    "year": 1977,
+    "cover": "/libri/shining.jpg"
+  },
+  {
+    "id": "doctor-sleep",
+    "title": "Doctor Sleep",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL16806877W",
+    "year": 2013,
+    "cover": "/libri/doctor-sleep.jpg"
+  },
+  {
+    "id": "pet-sematary",
+    "title": "Pet Sematary",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL81631W",
+    "year": 1983,
+    "cover": "/libri/pet-sematary.jpg"
+  },
+  {
+    "id": "salems-lot",
+    "title": "Salem's Lot",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL81632W",
+    "year": 1975,
+    "cover": "/libri/salems-lot.jpg"
+  },
+  {
+    "id": "22-11-63",
+    "title": "22/11/63",
+    "originalTitle": "11/22/63",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL16002468W",
+    "year": 2011,
+    "cover": "/libri/22-11-63.jpg"
+  },
+  {
+    "id": "fairy-tale",
+    "title": "Fairy Tale",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL27589863W",
+    "year": 2022,
+    "cover": "/libri/fairy-tale.jpg"
+  },
+  {
+    "id": "billy-summers",
+    "title": "Billy Summers",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL24229351W",
+    "year": 2021,
+    "cover": "/libri/billy-summers.jpg"
+  },
+  {
+    "id": "just-after-sunset",
+    "title": "Just After Sunset",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL81588W",
+    "year": 2008,
+    "cover": "/libri/just-after-sunset.jpg"
+  },
+  {
+    "id": "insomnia",
+    "title": "Insomnia",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL81603W",
+    "year": 1994,
+    "cover": "/libri/insomnia.jpg"
+  },
+  {
+    "id": "la-zona-morta",
+    "title": "La zona morta",
+    "originalTitle": "The Dead Zone",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL81630W",
+    "year": 1979,
+    "cover": "/libri/la-zona-morta.jpg"
+  },
+  {
+    "id": "the-outsider",
+    "title": "The Outsider",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL17937105W",
+    "year": 2018,
+    "cover": "/libri/the-outsider.jpg"
+  },
+  {
+    "id": "l-ombra-dello-scorpione",
+    "title": "L'ombra dello scorpione",
+    "originalTitle": "The Stand",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL81618W",
+    "year": 1978,
+    "cover": "/libri/l-ombra-dello-scorpione.jpg"
+  },
+  {
+    "id": "misery",
+    "title": "Misery",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL81634W",
+    "year": 1987,
+    "cover": "/libri/misery.jpg"
+  },
+  {
+    "id": "il-miglio-verde",
+    "title": "Il miglio verde",
+    "originalTitle": "The Green Mile",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL81629W",
+    "year": 1996,
+    "cover": "/libri/il-miglio-verde.jpg"
+  },
+  {
+    "id": "cell",
+    "title": "Cell",
+    "authors": ["Stephen King"],
+    "section": "horror",
+    "openLibraryId": "OL81597W",
+    "year": 2006,
+    "cover": "/libri/cell.jpg"
+  },
+  {
+    "id": "il-richiamo-di-cthulhu",
+    "title": "Il richiamo di Cthulhu",
+    "originalTitle": "The Call of Cthulhu",
+    "authors": ["H. P. Lovecraft"],
+    "section": "horror",
+    "openLibraryId": "OL24600016W",
+    "year": 1928,
+    "cover": "/libri/il-richiamo-di-cthulhu.jpg"
+  },
+  {
+    "id": "the-hellbound-heart",
+    "title": "The Hellbound Heart",
+    "authors": ["Clive Barker"],
+    "section": "horror",
+    "openLibraryId": "OL257785W",
+    "year": 1986,
+    "cover": "/libri/the-hellbound-heart.jpg"
+  },
+  {
+    "id": "books-of-blood-1-3",
+    "title": "Books of Blood, voll. 1–3",
+    "originalTitle": "Books of Blood Volumes One to Three",
+    "authors": ["Clive Barker"],
+    "section": "horror",
+    "openLibraryId": "OL457864W",
+    "year": 1984,
+    "cover": "/libri/books-of-blood-1-3.jpg"
+  },
+  {
+    "id": "dracula",
+    "title": "Dracula",
+    "authors": ["Bram Stoker"],
+    "section": "horror",
+    "openLibraryId": "OL85892W",
+    "year": 1897,
+    "cover": "/libri/dracula.jpg"
+  },
+  {
+    "id": "on-writing",
+    "title": "On Writing",
+    "authors": ["Stephen King"],
+    "section": "scrittura",
+    "openLibraryId": "OL81601W",
+    "year": 2000,
+    "cover": "/libri/on-writing.jpg"
+  },
+  {
+    "id": "danse-macabre",
+    "title": "Danse Macabre",
+    "authors": ["Stephen King"],
+    "section": "scrittura",
+    "openLibraryId": "OL81605W",
+    "year": 1981,
+    "cover": "/libri/danse-macabre.jpg"
+  },
+  {
+    "id": "the-science-of-storytelling",
+    "title": "The Science of Storytelling",
+    "authors": ["Will Storr"],
+    "section": "scrittura",
+    "openLibraryId": "OL20652355W",
+    "year": 2019,
+    "cover": "/libri/the-science-of-storytelling.jpg"
+  },
+  {
+    "id": "the-art-and-business-of-online-writing",
+    "title": "The Art and Business of Online Writing",
+    "authors": ["Nicolas Cole"],
+    "section": "scrittura",
+    "year": 2020
+  }
+]

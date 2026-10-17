@@ -3,7 +3,8 @@
  * Tests for the search island, rendered in jsdom with Vue Testing Library
  * on the fixture archive. They go through the reader's path: the list, a
  * filter, the URL, «back», a search before and after the index arrives,
- * the empty state, the sort order and the phone layout.
+ * the empty state, the sort order and the phone layout. Then the same
+ * island on the books, where only the data and the `kind` change.
  *
  * `fetch` is replaced per test: the index is served from the fixture
  * documents, or refused, to exercise the fallback. Vue Test Utils stubs
@@ -12,6 +13,7 @@
  */
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/vue";
 import { documents, facets, items } from "@tests/fixtures/archive";
+import { bookFacets, bookItems } from "@tests/fixtures/books";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
 import SearchBrowser from "./SearchBrowser.vue";
@@ -27,7 +29,9 @@ function serveIndex() {
 }
 
 function renderBrowser() {
-  return render(SearchBrowser, { props: { items, facets, indexUrl: INDEX_URL } });
+  return render(SearchBrowser, {
+    props: { kind: "stories", items, facets, indexUrl: INDEX_URL },
+  });
 }
 
 const titles = () =>
@@ -203,5 +207,85 @@ describe("SearchBrowser", () => {
 
     await fireEvent.click(screen.getByRole("button", { name: "Azzera i filtri" }));
     expect(window.location.search).toBe("");
+  });
+});
+
+describe("SearchBrowser on the books", () => {
+  function renderBooks() {
+    window.history.replaceState(null, "", "/libri");
+    return render(SearchBrowser, {
+      props: { kind: "books", items: bookItems, facets: bookFacets },
+    });
+  }
+  const bookTitles = () =>
+    screen.getAllByRole("listitem").flatMap((item) => {
+      const title = item.querySelector("p.italic")?.textContent?.trim();
+      return title === undefined ? [] : [title];
+    });
+
+  it("lists every book by author, counting books", () => {
+    renderBooks();
+
+    expect(bookTitles()).toEqual([
+      "The Art and Business of Online Writing",
+      "Misery",
+      "Il miglio verde",
+      "On Writing",
+      "Dracula",
+    ]);
+    expect(status()).toBe("5 libri");
+    expect(screen.getByRole("searchbox", { name: "Cerca fra i libri" })).toBeTruthy();
+  });
+
+  it("filters by author and writes the URL", async () => {
+    renderBooks();
+
+    await fireEvent.click(chip("Stephen King"));
+
+    expect(status()).toBe("3 libri");
+    expect(window.location.search).toBe("?autore=stephen-king");
+    expect(screen.getByRole("button", { name: "Scrittura 1 libro" })).toBeTruthy();
+  });
+
+  it("searches by prefix, without downloading any index", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    renderBooks();
+    const box = screen.getByRole("searchbox", { name: "Cerca fra i libri" });
+
+    await fireEvent.focus(box);
+    await fireEvent.update(box, "green");
+    vi.advanceTimersByTime(250);
+    await nextTick();
+
+    expect(bookTitles()).toEqual(["Il miglio verde"]);
+    expect(fetchMock).not.toHaveBeenCalled();
+    // No relevance order without an index, even while searching.
+    const sort = screen.getByRole("combobox", { name: "Ordina per" });
+    expect(
+      within(sort)
+        .getAllByRole("option")
+        .map((o) => o.textContent?.trim()),
+    ).toEqual(["Autore", "Titolo", "Anno"]);
+  });
+
+  it("sorts by year, oldest first", async () => {
+    renderBooks();
+
+    await fireEvent.update(screen.getByRole("combobox", { name: "Ordina per" }), "anno");
+
+    expect(bookTitles()[0]).toBe("Dracula");
+    expect(window.location.search).toBe("?ordine=anno");
+  });
+
+  it("says plainly when nothing matches", async () => {
+    renderBooks();
+    const box = screen.getByRole("searchbox", { name: "Cerca fra i libri" });
+
+    await fireEvent.update(box, "zzzz");
+    vi.advanceTimersByTime(250);
+    await nextTick();
+
+    expect(status()).toBe("Nessun libro qui, per ora.");
   });
 });

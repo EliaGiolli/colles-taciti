@@ -1,25 +1,102 @@
 /**
- * Turns stories into what the archive needs: the island's items and
- * facets (archive.ts) and the documents of the full-text index
- * (search-index.ts). Runs at build time only.
+ * Builds the archive data at build time: the generic helpers both
+ * archives use (ranks, facets), and the story archive itself: the
+ * island's items and facets (archive.ts) and the documents of the
+ * full-text index (search-index.ts). The books have their own builder,
+ * book-archive.ts, on the same helpers.
  *
  * Pure functions over plain inputs, so they are tested with small
  * fixtures; archive-data.ts feeds them the real collections.
  */
-import type { StoryCardData } from "@/features/stories/client";
-import { toIsoDate } from "@/shared/lib/format-date";
-import {
-  type ArchiveItem,
-  FACET_KEYS,
-  type Facet,
-  type FacetKey,
-  type FacetOption,
-  STORY_FORMS,
-  storyForm,
-} from "./archive";
+import { FILTER_PARAMS, type StoryCardData } from "@/features/stories/client";
+import type { ArchiveItem, Facet, FacetOption } from "./archive";
+import type { OrderOf } from "./archive-kinds";
 import { searchCopy } from "./copy";
 import { incipit, type SearchDocument } from "./search-index";
 import { searchTerms } from "./terms";
+
+// ── Generic helpers ─────────────────────────────────────────────────────
+
+/**
+ * The position of every source in every order, for `ArchiveItem.ranks`:
+ * `orders` maps each order's name to a comparator over the sources.
+ */
+export function computeRanks<T extends { id: string }, O extends string>(
+  sources: readonly T[],
+  orders: Readonly<Record<O, (a: T, b: T) => number>>,
+): Map<string, Record<string, number>> {
+  const ranks = new Map<string, Record<string, number>>(sources.map((s) => [s.id, {}]));
+  for (const order of Object.keys(orders) as O[]) {
+    const sorted = [...sources].sort(orders[order]);
+    for (const [position, source] of sorted.entries()) {
+      const entry = ranks.get(source.id);
+      if (entry) entry[order] = position;
+    }
+  }
+  return ranks;
+}
+
+/**
+ * The facets of an archive: for each key, the candidate options that at
+ * least one item uses, in the candidates' order. A value no item has is
+ * left out (it could only lead to an empty list), and so is a facet with
+ * no values left.
+ */
+export function buildFacets<K extends string>(
+  items: readonly Pick<ArchiveItem<K>, "facets">[],
+  keys: readonly K[],
+  candidates: Readonly<Record<K, readonly FacetOption[]>>,
+  labels: Readonly<Record<K, string>>,
+): Facet<K>[] {
+  const used = new Map<K, Set<string>>(keys.map((key) => [key, new Set()]));
+  for (const item of items) {
+    for (const key of keys) {
+      for (const id of item.facets[key]) used.get(key)?.add(id);
+    }
+  }
+  return keys
+    .map((key) => ({
+      key,
+      label: labels[key],
+      options: candidates[key].filter((option) => used.get(key)?.has(option.id)),
+    }))
+    .filter((facet) => facet.options.length > 0);
+}
+
+/** The labels of `ids`, from a vocabulary (the id itself if it is missing). */
+function labelsOf(ids: readonly string[], options: readonly FacetOption[]): string[] {
+  return ids.map((id) => options.find((option) => option.id === id)?.label ?? id);
+}
+
+// ── Stories ─────────────────────────────────────────────────────────────
+
+/**
+ * The story facets, in display order, named by their URL parameter (the
+ * reader sees them in the address bar: `/racconti?luogo=mugello`). The
+ * three tag families take their names from the stories feature, where the
+ * story pages already link to them.
+ */
+export const STORY_FACETS = [
+  "paura",
+  FILTER_PARAMS.place,
+  FILTER_PARAMS.theme,
+  FILTER_PARAMS.inspiration,
+  "forma",
+] as const;
+export type StoryFacet = (typeof STORY_FACETS)[number];
+
+/**
+ * How a story is published, the values of the «Forma» facet: in one piece,
+ * in chapters, or still coming out. Every story has exactly one.
+ */
+export const STORY_FORMS = ["breve", "capitoli", "in-corso"] as const;
+export type StoryForm = (typeof STORY_FORMS)[number];
+
+/** The form of a story, from its status and its number of chapters. */
+export function storyForm(status: "complete" | "ongoing", chapters: number): StoryForm {
+  if (status === "ongoing") return "in-corso";
+  return chapters > 1 ? "capitoli" : "breve";
+}
 
 /** What the archive needs to know about one story. */
 export interface ArchiveSource {
@@ -48,7 +125,23 @@ export interface ArchiveVocabulary {
   tags: readonly FacetOption[];
 }
 
-function facetValues(source: ArchiveSource): Record<FacetKey, string[]> {
+const titleCollator = new Intl.Collator("it-IT");
+
+/**
+ * The orders of the story archive (see archive-kinds.ts):
+ * - `recenti`: newest first, then by title (as on every other list);
+ * - `titolo`: alphabetical, with Italian rules («È» next to «E»).
+ */
+export const STORY_ORDERS: Record<
+  OrderOf<"stories">,
+  (a: ArchiveSource, b: ArchiveSource) => number
+> = {
+  recenti: (a, b) =>
+    b.publishedAt.getTime() - a.publishedAt.getTime() || titleCollator.compare(a.title, b.title),
+  titolo: (a, b) => titleCollator.compare(a.title, b.title),
+};
+
+function storyFacetValues(source: ArchiveSource): Record<StoryFacet, string[]> {
   return {
     paura: source.fears,
     luogo: source.places,
@@ -58,12 +151,12 @@ function facetValues(source: ArchiveSource): Record<FacetKey, string[]> {
   };
 }
 
-function labelsOf(ids: readonly string[], options: readonly FacetOption[]): string[] {
-  return ids.map((id) => options.find((option) => option.id === id)?.label ?? id);
-}
-
-/** The archive item of a story (see `ArchiveItem`). */
-export function toArchiveItem(source: ArchiveSource, vocabulary: ArchiveVocabulary): ArchiveItem {
+/** The archive item of a story, with its positions from {@link computeRanks}. */
+export function toArchiveItem(
+  source: ArchiveSource,
+  vocabulary: ArchiveVocabulary,
+  ranks: ReadonlyMap<string, Record<string, number>>,
+): ArchiveItem<StoryFacet> {
   const tagIds = [...source.places, ...source.themes, ...source.inspirations];
   const words = [
     source.title,
@@ -75,47 +168,45 @@ export function toArchiveItem(source: ArchiveSource, vocabulary: ArchiveVocabula
   ];
   return {
     id: source.id,
-    title: source.title,
-    publishedAt: toIsoDate(source.publishedAt),
-    facets: facetValues(source),
+    facets: storyFacetValues(source),
     text: searchTerms(words.join(" ")).join(" "),
-    card: source.card,
+    ranks: ranks.get(source.id) ?? {},
+    card: { type: "story", data: source.card },
   };
 }
 
+/** What the island needs for an archive: its items and its facets. */
+export interface ArchiveData<K extends string = string> {
+  items: ArchiveItem<K>[];
+  facets: Facet<K>[];
+}
+
 /**
- * The facets of the archive: every value used by at least one story, in
- * the vocabulary's order (fears as in «Scegli la tua paura», tags as in
- * tags.json, forms short to ongoing). A value no story has is left out: it
- * could only ever lead to an empty list. A facet with no values is left
- * out too.
+ * The story archive: every story as an item, in the order given (newest
+ * first, as `getStories()` returns them), and the facets they use. Fears
+ * come in the order of «Scegli la tua paura», tags as in tags.json, forms
+ * from short to ongoing.
  */
-export function buildFacets(
+export function buildStoryArchive(
   sources: readonly ArchiveSource[],
   vocabulary: ArchiveVocabulary,
-): Facet[] {
-  const used = new Map<FacetKey, Set<string>>(FACET_KEYS.map((key) => [key, new Set()]));
-  for (const source of sources) {
-    const values = facetValues(source);
-    for (const key of FACET_KEYS) {
-      for (const id of values[key]) used.get(key)?.add(id);
-    }
-  }
-
+): ArchiveData<StoryFacet> {
+  const ranks = computeRanks(sources, STORY_ORDERS);
+  const items = sources.map((source) => toArchiveItem(source, vocabulary, ranks));
   const forms = STORY_FORMS.map((id) => ({ id, label: searchCopy.forms[id] }));
-  const candidates: Record<FacetKey, readonly FacetOption[]> = {
-    paura: vocabulary.fears,
-    luogo: vocabulary.tags,
-    tema: vocabulary.tags,
-    ispirazione: vocabulary.tags,
-    forma: forms,
-  };
-
-  return FACET_KEYS.map((key) => ({
-    key,
-    label: searchCopy.facets.names[key],
-    options: candidates[key].filter((option) => used.get(key)?.has(option.id)),
-  })).filter((facet) => facet.options.length > 0);
+  const facets = buildFacets(
+    items,
+    STORY_FACETS,
+    {
+      paura: vocabulary.fears,
+      luogo: vocabulary.tags,
+      tema: vocabulary.tags,
+      ispirazione: vocabulary.tags,
+      forma: forms,
+    },
+    searchCopy.facets.names,
+  );
+  return { items, facets };
 }
 
 /** The full-text index document of a story. */

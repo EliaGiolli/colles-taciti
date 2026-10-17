@@ -18,17 +18,29 @@ describe("searchCopy", () => {
       searchCopy.page.title,
       searchCopy.page.metaDescription,
       searchCopy.page.intro,
-      searchCopy.search.placeholder,
+      searchCopy.kinds.stories.search.placeholder,
+      searchCopy.kinds.books.search.placeholder,
       searchCopy.results.reset,
     ];
     expect(texts.flatMap((text) => findBrandToneIssues(text))).toEqual([]);
   });
 
   it("counts results, with the PLAN's empty state", () => {
-    expect(searchCopy.results.count(1)).toBe("1 racconto");
-    expect(searchCopy.results.count(4)).toBe("4 racconti");
-    expect(searchCopy.results.count(0)).toBe("Nessun racconto qui, per ora.");
+    const { stories, books } = searchCopy.kinds;
+    expect(stories.count(1)).toBe("1 racconto");
+    expect(stories.count(4)).toBe("4 racconti");
+    expect(stories.count(0)).toBe("Nessun racconto qui, per ora.");
+    expect(books.count(1)).toBe("1 libro");
+    expect(books.count(24)).toBe("24 libri");
+    expect(books.count(0)).toBe("Nessun libro qui, per ora.");
+    expect(books.chipCount(2)).toBe("2 libri");
     expect(searchCopy.facets.toggle(0)).toBe("Filtri");
     expect(searchCopy.facets.toggle(2)).toBe("Filtri (2)");
+  });
+
+  it("names every sort order, and the decades", () => {
+    expect(searchCopy.sort.option("recenti")).toBe("Più recenti");
+    expect(searchCopy.sort.option("anno")).toBe("Anno");
+    expect(searchCopy.decade(1980)).toBe("1980–1989");
   });
 });

@@ -1,35 +1,43 @@
 <script setup lang="ts">
 /**
- * The search island of /racconti: search box, filters, sort order and the
- * list of stories (PLAN › Ricerca, filtri e tag). DS: no dedicated
+ * The search island of /racconti and /libri: search box, filters, sort
+ * order and the list (PLAN › Ricerca, filtri e tag). DS: no dedicated
  * component; built from Modulo › campo (search box, select), FacetChip
- * (filters), Etichetta (facet names) and SchedaRacconto with cover (the
- * list, DS: «usala nell'archivio /racconti»).
+ * (filters), Etichetta (facet names), and the list's own card:
+ * SchedaRacconto with cover (DS: «usala nell'archivio /racconti») or
+ * Libro with cover.
+ *
+ * **One island, two archives.** `kind` says which: it picks the texts, the
+ * sort orders (archive-kinds.ts) and the card. Everything else is data
+ * computed at build time (archive-build.ts, book-archive.ts): the items,
+ * the facets and their values, each item's position in each order. So the
+ * logic below knows nothing about stories or books.
  *
  * **Rendered twice.** Astro renders it on the server at build time, so the
- * static HTML already holds the complete list of stories, readable by
- * search engines and by readers without JavaScript. In the browser it is
- * hydrated with `client:idle` (once the page is idle) and the controls
- * come alive. Without JavaScript the controls would do nothing, so they
- * are hidden (`no-js:hidden`, a variant defined in app.css) and only the
- * list shows.
+ * static HTML already holds the complete list, readable by search engines
+ * and by readers without JavaScript. In the browser it is hydrated with
+ * `client:idle` (once the page is idle) and the controls come alive.
+ * Without JavaScript the controls would do nothing, so they are hidden
+ * (`no-js:hidden`, a variant defined in app.css) and only the list shows.
  *
  * **State** lives in the URL (`useUrlState`): search text, facet values
  * and sort order, so a filtered archive can be shared and «back» undoes a
  * filter. Typing rewrites the current history entry (after a short pause);
  * switching a filter or the order adds one.
  *
- * **Search** runs on MiniSearch's index, downloaded on first use
- * (`useSearchIndex`). Until it arrives, a plain prefix match on the data
- * already here stands in, so typing never looks broken.
+ * **Search.** With an `indexUrl` (the stories) it runs on MiniSearch's
+ * index, downloaded on first use (`useSearchIndex`); until it arrives, a
+ * plain prefix match on the data already here stands in, so typing never
+ * looks broken. Without one (the books) the prefix match is the search.
  *
  * **Results** are announced by ResultsCount (`role="status"`). The list
- * animates with `<TransitionGroup>`: cards fade in and out and slide into
+ * animates with `<TransitionGroup>`: items fade in and out and slide into
  * place in 200ms. Only when the reader changes something: the first
  * filtering after hydration (from a link such as `?luogo=mugello`) is
  * instant, and `prefers-reduced-motion` turns everything off (app.css).
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { BookItem } from "@/features/books/client";
 import { StoryCard } from "@/features/stories/client";
 import { cn } from "@/shared/lib/cn";
 import { fieldControl, fieldLabel, fieldWrapper } from "@/shared/variants/field";
@@ -43,30 +51,42 @@ import {
   effectiveOrder,
   emptySelection,
   type Facet,
-  type FacetKey,
   facetCounts,
   matchesFacets,
   matchesText,
-  SORT_ORDERS,
+  RELEVANCE,
+  selectedIn,
   sortItems,
   toggleOption,
   visibleOptions,
 } from "./archive";
-import { archiveUrlSchema, selectionOf } from "./archive-url";
-import { searchCopy as copy } from "./copy";
+import { ARCHIVE_KINDS, type ArchiveKind, orderDefaults, urlOrders } from "./archive-kinds";
+import { archiveUrlSchema, selectionOf, selectionPatch } from "./archive-url";
+import { searchCopy } from "./copy";
 import ResultsCount from "./ResultsCount.vue";
 import { searchTerms } from "./terms";
 import { useSearchIndex } from "./useSearchIndex";
 import { useUrlState } from "./useUrlState";
 
 const props = defineProps<{
-  /** Every story, newest first (archive-build.ts). */
+  /** Which archive this is: the texts, the orders and the card follow. */
+  kind: ArchiveKind;
+  /** Every item, in the default order (archive-build.ts, book-archive.ts). */
   items: ArchiveItem[];
   /** The facets and their values, in display order. */
   facets: Facet[];
-  /** Where the full-text index is served (`SEARCH_INDEX_PATH`). */
-  indexUrl: string;
+  /** Where the full-text index is served (`SEARCH_INDEX_PATH`); none for prefix search only. */
+  indexUrl?: string;
 }>();
+
+/**
+ * Read once: an island's props never change after hydration (Astro
+ * serialises them into the page), so these need no `computed()`.
+ */
+const copy = searchCopy.kinds[props.kind];
+const orders: readonly string[] = ARCHIVE_KINDS[props.kind].orders;
+const defaults = orderDefaults(props.kind);
+const facetKeys = props.facets.map((facet) => facet.key);
 
 /**
  * How long typing must pause before the search runs and the URL changes.
@@ -77,54 +97,58 @@ const QUERY_DELAY_MS = 250;
 
 /** Ids of the controls, for `<label for>` and `aria-controls`. */
 const ids = {
-  search: "cerca-racconti",
-  sort: "ordina-racconti",
-  panel: "filtri-racconti",
-  facet: (key: FacetKey) => `filtro-${key}`,
+  search: `cerca-${copy.idSuffix}`,
+  sort: `ordina-${copy.idSuffix}`,
+  panel: `filtri-${copy.idSuffix}`,
+  facet: (key: string) => `filtro-${key}`,
 } as const;
 
-const searchIndex = useSearchIndex(props.indexUrl);
+const searchIndex = props.indexUrl === undefined ? null : useSearchIndex(props.indexUrl);
 
 /** The text in the search box, as typed (the URL gets it after the pause). */
 const query = ref("");
 
-const { state, update } = useUrlState(archiveUrlSchema(props.facets), (read) => {
-  query.value = read.q;
-  // Arriving with a search already in the URL: fetch the index right away.
-  if (read.q !== "") void searchIndex.load();
-});
+const { state, update } = useUrlState(
+  archiveUrlSchema(props.facets, urlOrders(props.kind)),
+  (read) => {
+    query.value = read.q;
+    // Arriving with a search already in the URL: fetch the index right away.
+    if (read.q !== "") void searchIndex?.load();
+  },
+);
 
-const selection = computed(() => selectionOf(state.value));
+const selection = computed(() => selectionOf(state.value, props.facets));
 const hasQuery = computed(() => searchTerms(state.value.q).length > 0);
 
 /**
- * The stories matching the search text (id → relevance), or `null` when
+ * The items matching the search text (id → relevance), or `null` when
  * there is no text to search for. Uses the index when it is loaded, the
- * fallback match (no relevance, all 0) before that.
+ * prefix match (no relevance, all 0) otherwise.
  */
 const textScores = computed<ReadonlyMap<string, number> | null>(() => {
   if (!hasQuery.value) return null;
-  const search = searchIndex.search.value;
+  const search = searchIndex?.search.value;
   if (search) return search(state.value.q);
   const matching = props.items.filter((item) => matchesText(item, state.value.q));
   return new Map(matching.map((item) => [item.id, 0]));
 });
 
-/** The stories left by the search text, before the filters. */
+/** The items left by the search text, before the filters. */
 const pool = computed(() => {
   const scores = textScores.value;
   return scores === null ? props.items : props.items.filter((item) => scores.has(item.id));
 });
 
-const order = computed(() => effectiveOrder(state.value.ordine, hasQuery.value));
-const sortOptions = computed(() =>
-  SORT_ORDERS.filter((option) => option !== "pertinenza" || hasQuery.value),
+const order = computed(() => effectiveOrder(state.value.ordine, hasQuery.value, defaults));
+const sortOptions = computed<readonly string[]>(() =>
+  defaults.relevance && hasQuery.value ? [...orders, RELEVANCE] : orders,
 );
 
 const results = computed(() =>
   sortItems(
     pool.value.filter((item) => matchesFacets(item, selection.value)),
     order.value,
+    defaults.order,
     textScores.value ?? undefined,
   ),
 );
@@ -134,11 +158,20 @@ const shownFacets = computed(() =>
   props.facets
     .map((facet) => ({
       facet,
-      options: visibleOptions(facet, counts.value[facet.key], selection.value[facet.key]),
+      options: visibleOptions(
+        facet,
+        counts.value[facet.key],
+        selectedIn(selection.value, facet.key),
+      ),
     }))
     .filter((group) => group.options.length > 0),
 );
 const activeFilters = computed(() => countSelected(selection.value));
+
+/** How many items switching `optionId` on would leave (the chip's number). */
+function countOf(key: string, optionId: string): number {
+  return counts.value[key]?.get(optionId) ?? 0;
+}
 
 /** On phones the filters fold under a button; from 1024px they are always open. */
 const panelOpen = ref(false);
@@ -160,28 +193,27 @@ watch(query, (text) => {
   queryTimer = setTimeout(commitQuery, QUERY_DELAY_MS);
 });
 
-function toggle(key: FacetKey, optionId: string) {
-  update(toggleOption(selection.value, key, optionId));
+function toggle(key: string, optionId: string) {
+  update(selectionPatch(toggleOption(selection.value, key, optionId)));
 }
 
 function clearFilters() {
-  update(emptySelection());
+  update(selectionPatch(emptySelection(facetKeys)));
 }
 
 function resetAll() {
   clearTimeout(queryTimer);
   query.value = "";
-  update({ ...emptySelection(), q: "" });
+  update({ ...selectionPatch(emptySelection(facetKeys)), q: "" });
 }
 
 function onSort(event: Event) {
   const value = (event.target as HTMLSelectElement).value;
-  const chosen = SORT_ORDERS.find((option) => option === value);
-  if (chosen !== undefined) update({ ordine: chosen });
+  if (sortOptions.value.includes(value)) update({ ordine: value });
 }
 
 function loadIndex() {
-  void searchIndex.load();
+  void searchIndex?.load();
 }
 
 // ── Animation only after the first sync with the URL ────────────────────
@@ -189,7 +221,7 @@ function loadIndex() {
 /**
  * Off until the state read from the URL on mount has been rendered: a
  * reader arriving from `?luogo=mugello` should see the filtered list, not
- * watch the other stories fade out. `useUrlState` reads the URL in its own
+ * watch the other items fade out. `useUrlState` reads the URL in its own
  * `onMounted`, registered before this one, so one `nextTick` later that
  * render is done.
  */
@@ -226,13 +258,13 @@ onBeforeUnmount(() => {
         :aria-controls="ids.panel"
         @click="panelOpen = !panelOpen"
       >
-        {{ copy.facets.toggle(activeFilters) }}
+        {{ searchCopy.facets.toggle(activeFilters) }}
       </BaseButton>
 
       <div
         :id="ids.panel"
         role="group"
-        :aria-label="copy.facets.label"
+        :aria-label="searchCopy.facets.label"
         :class="cn('flex-col gap-5', panelOpen ? 'flex' : 'hidden lg:flex')"
       >
         <div
@@ -249,25 +281,27 @@ onBeforeUnmount(() => {
             <li v-for="option in group.options" :key="option.id">
               <BaseFacetChip
                 :label="option.label"
-                :pressed="selection[group.facet.key].includes(option.id)"
-                :count="counts[group.facet.key].get(option.id) ?? 0"
-                :count-label="copy.facets.count(counts[group.facet.key].get(option.id) ?? 0)"
+                :pressed="selectedIn(selection, group.facet.key).includes(option.id)"
+                :count="countOf(group.facet.key, option.id)"
+                :count-label="copy.chipCount(countOf(group.facet.key, option.id))"
                 @click="toggle(group.facet.key, option.id)"
               />
             </li>
           </ul>
         </div>
         <div v-if="activeFilters > 0">
-          <BaseButton variant="link" @click="clearFilters">{{ copy.facets.clear }}</BaseButton>
+          <BaseButton variant="link" @click="clearFilters">{{
+            searchCopy.facets.clear
+          }}</BaseButton>
         </div>
       </div>
     </div>
 
     <div class="flex flex-col gap-4">
       <div class="flex min-h-tocco flex-wrap items-center justify-between gap-x-5 gap-y-3">
-        <ResultsCount :count="results.length" />
+        <ResultsCount :count="results.length" :label="copy.count(results.length)" />
         <div class="flex items-center gap-3 no-js:hidden">
-          <label :for="ids.sort" :class="fieldLabel()">{{ copy.sort.label }}</label>
+          <label :for="ids.sort" :class="fieldLabel()">{{ searchCopy.sort.label }}</label>
           <select
             :id="ids.sort"
             :value="order"
@@ -275,7 +309,7 @@ onBeforeUnmount(() => {
             @change="onSort"
           >
             <option v-for="option in sortOptions" :key="option" :value="option">
-              {{ copy.sort.options[option] }}
+              {{ searchCopy.sort.option(option) }}
             </option>
           </select>
         </div>
@@ -292,12 +326,13 @@ onBeforeUnmount(() => {
         move-class="transition-transform"
       >
         <li v-for="item in results" :key="item.id">
-          <StoryCard :story="item.card" :heading-level="2" />
+          <StoryCard v-if="item.card.type === 'story'" :story="item.card.data" :heading-level="2" />
+          <BookItem v-else :book="item.card.data" />
         </li>
       </TransitionGroup>
 
       <div v-if="results.length === 0" class="no-js:hidden">
-        <BaseButton @click="resetAll">{{ copy.results.reset }}</BaseButton>
+        <BaseButton @click="resetAll">{{ searchCopy.results.reset }}</BaseButton>
       </div>
     </div>
   </div>

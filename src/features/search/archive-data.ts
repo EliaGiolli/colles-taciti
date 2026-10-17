@@ -1,28 +1,26 @@
 /**
- * The archive's data, read from the content collections at build time:
- * the island's props for /racconti and the documents of the search index
- * for the `/search-index.json` endpoint.
+ * The archives' data, read from the content collections at build time:
+ * the island's props for /racconti and /libri, and the documents of the
+ * stories' search index for the `/search-index.json` endpoint.
  *
  * Server-only (it reads `astro:content`): the island never imports this
  * file, it receives the result as props.
  */
 import { getCollection } from "astro:content";
+import { type Book, getBooks } from "@/features/books";
 import { getStories, getStoryThumbnail, type Story, storyCard } from "@/features/stories";
-import type { ArchiveItem, Facet } from "./archive";
 import {
+  type ArchiveData,
   type ArchiveSource,
   type ArchiveVocabulary,
-  buildFacets,
-  toArchiveItem,
+  buildStoryArchive,
   toSearchDocument,
 } from "./archive-build";
+import { type BookSource, buildBookArchive } from "./book-archive";
 import type { SearchDocument } from "./search-index";
 
-/** The props of `SearchBrowser.vue`, minus the index URL. */
-export interface Archive {
-  items: ArchiveItem[];
-  facets: Facet[];
-}
+/** The props of `SearchBrowser.vue`, minus `kind` and the index URL. */
+export type Archive = ArchiveData;
 
 async function getVocabulary(): Promise<ArchiveVocabulary> {
   const [fears, tags] = await Promise.all([getCollection("fears"), getCollection("tags")]);
@@ -69,10 +67,25 @@ export async function getArchive(): Promise<Archive> {
       ),
     ),
   );
+  return buildStoryArchive(sources, vocabulary);
+}
+
+function toBookSource(book: Book): BookSource {
+  const { data } = book;
   return {
-    items: sources.map((source) => toArchiveItem(source, vocabulary)),
-    facets: buildFacets(sources, vocabulary),
+    id: book.id,
+    title: data.title,
+    originalTitle: data.originalTitle,
+    authors: data.authors,
+    section: data.section,
+    year: data.year,
+    card: book.card,
   };
+}
+
+/** Every book as an archive item, by author, and the facets they use. */
+export async function getBookArchive(): Promise<Archive> {
+  return buildBookArchive((await getBooks()).map(toBookSource));
 }
 
 /** The documents of the full-text index, one per story. */
