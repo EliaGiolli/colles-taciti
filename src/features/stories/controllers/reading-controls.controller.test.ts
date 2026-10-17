@@ -15,8 +15,8 @@ const scale = () => root.style.getPropertyValue(TEXT_SCALE_PROPERTY);
 beforeEach(() => {
   document.body.innerHTML = `
     <div role="group" aria-label="Dimensione del testo">
-      <button type="button" data-step="-1" aria-label="Testo più piccolo">A−</button>
-      <button type="button" data-step="1" aria-label="Testo più grande">A+</button>
+      <button type="button" data-step="-1" aria-label="A−, testo più piccolo">A−</button>
+      <button type="button" data-step="1" aria-label="A+, testo più grande">A+</button>
     </div>`;
   group = getByRole(document.body, "group");
 });
@@ -38,25 +38,25 @@ describe("reading-controls", () => {
   it("changes, applies and saves the size one step at a time", () => {
     disconnect = connect(group);
 
-    button("Testo più grande").click();
+    button("A+, testo più grande").click();
 
     expect(scale()).toBe(String(TEXT_SCALES[2]));
     expect(window.localStorage.getItem(TEXT_SIZE_STORAGE_KEY)).toBe("2");
 
-    button("Testo più piccolo").click();
+    button("A−, testo più piccolo").click();
     expect(scale()).toBe("");
   });
 
   it("marks the end of the ladder with aria-disabled, keeping the button focusable", () => {
     disconnect = connect(group);
 
-    button("Testo più piccolo").click();
+    button("A−, testo più piccolo").click();
 
-    expect(button("Testo più piccolo").getAttribute("aria-disabled")).toBe("true");
-    expect(button("Testo più piccolo").hasAttribute("disabled")).toBe(false);
-    expect(button("Testo più grande").getAttribute("aria-disabled")).toBe("false");
+    expect(button("A−, testo più piccolo").getAttribute("aria-disabled")).toBe("true");
+    expect(button("A−, testo più piccolo").hasAttribute("disabled")).toBe(false);
+    expect(button("A+, testo più grande").getAttribute("aria-disabled")).toBe("false");
 
-    button("Testo più piccolo").click();
+    button("A−, testo più piccolo").click();
     expect(window.localStorage.getItem(TEXT_SIZE_STORAGE_KEY)).toBe("0");
   });
 
@@ -73,7 +73,7 @@ describe("reading-controls", () => {
     disconnect = connect(group);
     disconnect();
 
-    button("Testo più grande").click();
+    button("A+, testo più grande").click();
 
     expect(window.localStorage.getItem(TEXT_SIZE_STORAGE_KEY)).toBeNull();
   });

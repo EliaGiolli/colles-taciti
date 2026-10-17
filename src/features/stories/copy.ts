@@ -56,8 +56,9 @@ export const storiesCopy = {
   },
   controls: {
     label: "Dimensione del testo",
-    smaller: "Testo più piccolo",
-    larger: "Testo più grande",
+    /** Accessible names: the visible «A−»/«A+» first (WCAG 2.5.3), then what they do. */
+    smaller: "A−, testo più piccolo",
+    larger: "A+, testo più grande",
   },
   fearNote: {
     eyebrow: "Nota dell'autore",

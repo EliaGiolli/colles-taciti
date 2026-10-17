@@ -9,9 +9,12 @@
  * same setting on one screen would only raise the question of which wins.
  *
  * Behaviour lives in `reading-controls.controller.ts` (text-size.ts for the
- * rules). Each button has a full accessible name, «Testo più grande»,
- * because «A+» read aloud means nothing; the visible «A−» uses a real minus
- * sign (U+2212), as wide as the plus.
+ * rules). Each button has a full accessible name, «A+, testo più grande»:
+ * «A+» alone read aloud means nothing, and the name starts with the visible
+ * text so that a reader using voice control can say «A più» to press it
+ * (WCAG 2.5.3, label in name; Lighthouse flagged the bare «Testo più
+ * grande»). The visible «A−» uses a real minus sign (U+2212), as wide as
+ * the plus.
  *
  * Without JavaScript the buttons could do nothing, so they are hidden, with
  * the same signal the theme switch uses: the anti-flash script always sets

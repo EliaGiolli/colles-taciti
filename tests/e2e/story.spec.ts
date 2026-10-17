@@ -100,7 +100,7 @@ test("A+ enlarges the text and the choice is remembered", async ({ page }) => {
   const size = () =>
     prose.evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
   const before = await size();
-  const larger = page.getByRole("button", { name: "Testo più grande" });
+  const larger = page.getByRole("button", { name: "A+, testo più grande" });
   // The controller is loaded lazily: it has connected once it has set
   // aria-disabled. A click before that would do nothing.
   await expect(larger).toHaveAttribute("aria-disabled", "false");

@@ -3,7 +3,7 @@
  * `site` in astro.config.ts (the domain is still provisional).
  *
  * Everything is open to crawlers except /feedback, a form result page.
- * Pages that must stay out of the index (/design-system) say so with
+ * Pages that must stay out of the index (the error pages) say so with
  * `noindex` instead: a crawler blocked by robots.txt never reads it.
  */
 import type { APIRoute } from "astro";

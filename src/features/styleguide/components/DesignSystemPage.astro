@@ -11,8 +11,10 @@
  * the choice is saved like on any other page. The e2e test seeds the saved
  * choice instead of clicking, so each theme is checked from first paint.
  *
- * `noindex`: useful to us, not to search engines. Whether it stays public
- * after launch is decided in PR 12 (see ROADMAP).
+ * Not in production (Elia's decision, 2026-10-17): it is not a file in
+ * src/pages, but a route added by an integration in astro.config.ts only
+ * with `astro dev` and in the e2e build. `noindex` stays, in case a
+ * preview of the e2e build is ever shared.
  */
 import BaseLayout from "@/core/layout/components/BaseLayout.astro";
 import BookItem from "@/features/books/components/BookItem.vue";

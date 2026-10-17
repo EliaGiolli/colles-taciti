@@ -125,7 +125,8 @@ All colours, type styles, spacing and radii come from the Colles Taciti design s
 default scales are reset, so only design-system values exist (`bg-terra`, `text-lettura`,
 `max-w-misura`, `p-5` = 24px), and there are no shadows or rounded utilities. Two themes, *Notte*
 and *Nebbia*, switch with `data-theme` on `<html>`. The shared components are shown at
-`/design-system` (noindex).
+`/design-system`, which exists only with `bun run dev` and in the end-to-end build, never in
+production (an integration in `astro.config.ts` adds the route).
 
 ### Layout and theme
 
@@ -280,8 +281,23 @@ description, canonical URL (never with a query string, so filtered archive views
 `/racconti`), Open Graph with the story's 1200×630 cover, and JSON-LD: `WebSite` + `Person` on the
 homepage, `ShortStory` (with `CreativeWorkSeries` and `Incomplete` where they apply) on stories,
 `CollectionPage` on the fear pages. `@astrojs/sitemap` writes `sitemap-index.xml` (without
-`/design-system`, `/feedback` and the error pages), and `/robots.txt` points to it. Both follow
+`/feedback` and the error pages), and `/robots.txt` points to it. Both follow
 `site` in `astro.config.ts`, which is provisional until the domain exists.
+
+### Security headers
+
+- **Content Security Policy** (`security.csp` in `astro.config.ts`): Astro hashes every script and
+  style it puts in a page, inline ones included, and writes the policy into a `<meta>` of each
+  page. There is no `'unsafe-inline'`. Third parties are allowed only for GA4: its loader on
+  googletagmanager.com and its hits on google-analytics.com, used only after consent. An e2e test
+  (`tests/e2e/csp.spec.ts`) fails on any violation.
+- **Headers in `vercel.json`**:
+  - `frame-ancestors 'none'`, which a `<meta>` cannot carry;
+  - `X-Content-Type-Options: nosniff`;
+  - `Referrer-Policy: strict-origin-when-cross-origin`;
+  - a `Permissions-Policy` that turns off the camera, the microphone and geolocation.
+- Markdown syntax highlighting is off: Shiki's inline styles would break the CSP, and the stories
+  have no code.
 
 ### Error pages
 
