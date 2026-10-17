@@ -14,10 +14,6 @@
   <img alt="License" src="https://img.shields.io/badge/license-all%20rights%20reserved-555555?style=flat-square" />
 </p>
 
-<p>
-  <img alt="Status" src="https://img.shields.io/badge/status-bootstrap-8A1C1C?style=flat-square" />
-</p>
-
 </div>
 
 ---
