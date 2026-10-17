@@ -19,7 +19,7 @@
     "test:watch": "vitest --project unit",
     "test:integration": "vitest run --project integration",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "E2E=1 astro build && playwright test",
+    "test:e2e": "E2E=1 PUBLIC_GA_ID=G-E2ETEST000 astro build && playwright test",
     "check": "bun run typecheck && bun run lint && bun run test && bun run test:integration",
     "prepare": "lefthook install",
     "copertine": "bun scripts/copertine.ts",

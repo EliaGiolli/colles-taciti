@@ -78,6 +78,7 @@ test("ships no framework: only the theme switch, «Stai leggendo» and the form"
 
   expect(scripts.some((path) => /vue|client\./i.test(path))).toBe(false);
   expect(scripts.filter((path) => path.includes(".controller.")).sort()).toEqual([
+    expect.stringContaining("consent.controller."),
     expect.stringContaining("continue-reading.controller."),
     expect.stringContaining("feedback-form.controller."),
     expect.stringContaining("theme-toggle.controller."),

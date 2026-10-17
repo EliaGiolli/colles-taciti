@@ -1,0 +1,45 @@
+---
+/**
+ * The analytics consent banner. DS: no dedicated component; a band at the
+ * bottom of the screen in the page's own colours (terra, a linea rule on
+ * top), no popup and no overlay (DS › Cosa evitare: «popup»).
+ *
+ * «Accetta» and «Rifiuta» are the same kind of button, side by side: saying
+ * no must be as easy as saying yes.
+ *
+ * Rendered hidden: consent.controller.ts shows it only when no choice is
+ * saved, so readers who already chose never see it flash, and without
+ * JavaScript it never appears (there is no analytics to consent to).
+ * Without a GA4 measurement ID (`PUBLIC_GA_ID`) it is not rendered at all.
+ *
+ * @example <ConsentBanner />
+ */
+import { PUBLIC_GA_ID } from "astro:env/client";
+import Button from "@/shared/components/Button.astro";
+import { consentCopy as copy } from "./copy";
+
+const labelId = "consenso-titolo";
+---
+
+{PUBLIC_GA_ID && (
+  <section
+    data-controller="consent"
+    data-ga-id={PUBLIC_GA_ID}
+    aria-labelledby={labelId}
+    hidden
+    class="fixed inset-x-0 bottom-0 z-10 border-t border-linea bg-terra"
+  >
+    <div class="mx-auto flex max-w-pagina flex-col gap-4 px-4 py-5 md:flex-row md:items-center md:justify-between md:px-6">
+      <div class="flex max-w-misura flex-col gap-1">
+        <h2 id={labelId} class="font-mono text-meta text-osso">
+          {copy.label}
+        </h2>
+        <p class="text-piccolo text-osso-muto">{copy.text}</p>
+      </div>
+      <div class="flex gap-3">
+        <Button data-consent="granted">{copy.accept}</Button>
+        <Button data-consent="denied">{copy.reject}</Button>
+      </div>
+    </div>
+  </section>
+)}

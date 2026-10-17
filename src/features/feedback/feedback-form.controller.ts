@@ -14,7 +14,9 @@
  * for submissions that bypass it; those get the generic line too.
  */
 import { actions } from "astro:actions";
+import { track } from "@/core/analytics/track";
 import { feedbackCopy as copy } from "./copy";
+import { FIELDS } from "./schema";
 
 export function connect(element: HTMLElement): () => void {
   const form = element.querySelector<HTMLFormElement>("form[data-feedback-form]");
@@ -38,6 +40,8 @@ export function connect(element: HTMLElement): () => void {
       status.textContent = copy.failure;
       return;
     }
+    const story = new FormData(form).get(FIELDS.story);
+    track("feedback_submit", { story_id: typeof story === "string" && story ? story : "homepage" });
     const done = document.createElement("p");
     done.className = "text-corpo";
     done.tabIndex = -1;

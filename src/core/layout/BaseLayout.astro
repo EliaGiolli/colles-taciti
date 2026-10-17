@@ -24,6 +24,7 @@
  *   <h1>…</h1>
  * </BaseLayout>
  */
+import ConsentBanner from "@/core/consent/ConsentBanner.astro";
 import Seo from "@/core/seo/Seo.astro";
 import type { JsonLd } from "@/core/seo/jsonld";
 import ThemeScript from "@/core/theme/ThemeScript.astro";
@@ -78,10 +79,12 @@ const MAIN_ID = "contenuto";
       {copy.skipLink}
     </a>
     <Header />
-    <main id={MAIN_ID} class="flex-1">
+    <!-- tabindex=-1: the skip link and the consent banner move the focus here. -->
+    <main id={MAIN_ID} tabindex="-1" class="flex-1 focus:outline-none">
       <slot />
     </main>
     <Footer />
+    <ConsentBanner />
 
     <!-- Processed by Astro: bundled, deferred and loaded as an ES module.
          It connects every [data-controller] on the page (the theme toggle
