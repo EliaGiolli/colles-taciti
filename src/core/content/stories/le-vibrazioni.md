@@ -1,9 +1,11 @@
 ---
 # PLACEHOLDER: title, label, logline, setting and SEO come from the SEO brief v2;
 # date, warnings, tags and the text are provisional (ROADMAP › Open points).
+# The fear note is final (Elia, 17 October 2026).
 # Already on Wattpad: add `wattpadUrl` once the story's address is confirmed.
 title: Le vibrazioni
-categories: [horror-psicologico, body-horror]
+# Esperimenti first (Elia, 17 October 2026): it is the main fear, so the cover uses `punti`.
+categories: [esperimenti, horror-psicologico, body-horror]
 tags:
   places: []
   themes: [lavoro, ansia, corpo]
@@ -22,11 +24,9 @@ starter:
   hook: Se cerchi la carne
 related: [il-limbo-dei-processi, senza-rimorso]
 fearNote: |
-  [Segnaposto] La nota definitiva racconterà la paura da cui è nato questo racconto: la suoneria del telefono dell'ufficio in aeroporto, l'ansia di dover rispondere, il corpo che si irrigidisce a ogni squillo.
+  Questo racconto è nato da una suoneria: quella dei cellulari Samsung, che avevo sul telefono dell'ufficio quando lavoravo in aeroporto. Per me quel suono voleva dire una cosa sola, ansia e stress. Ogni volta che partiva sapevo che dall'altra parte qualcuno aspettava una risposta, e che dovevo darla subito. Col tempo bastavano le prime note per sentire il corpo irrigidirsi, ancora prima di guardare lo schermo.
 
-  Sarà scritta in prima persona, fra le ottanta e le centocinquanta parole, con un dettaglio fisico preciso, nessuna morale e senza spiegare il finale. Sul sito comparirà subito dopo il testo, prima del modulo per i commenti.
-
-  Questo testo di prova serve solo a verificare l'impaginazione e i controlli automatici del sito, e verrà sostituito prima del lancio.
+  Quella suoneria è stata il punto di partenza. Poi, scrivendo, l'ho espansa in qualcosa di mio, che con l'ufficio non ha quasi più niente a che fare.
 ---
 
 [Segnaposto] Un racconto breve, senza capitoli: il testo vero arriverà con la versione definitiva.

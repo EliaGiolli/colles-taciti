@@ -68,14 +68,15 @@ test("the archive lists every story with its cover, and loads Vue", async ({ pag
   });
   await openArchive(page);
 
-  await expect(status(page)).toHaveText("4 racconti");
+  await expect(status(page)).toHaveText("5 racconti");
   await expect(cardTitles(page)).toHaveText([
+    "Al cuore non si comanda",
     "Senza Rimorso",
     "Il limbo dei processi",
     "Se ni' mondo esistesse un po' di male",
     "Le vibrazioni",
   ]);
-  await expect(page.getByRole("main").locator("svg.ct-copertina")).toHaveCount(4);
+  await expect(page.getByRole("main").locator("svg.ct-copertina")).toHaveCount(5);
   expect(scripts.some((path) => path.includes("SearchBrowser"))).toBe(true);
   // MiniSearch and the index wait for the first search.
   expect(scripts.some((path) => path.includes("search-index"))).toBe(false);
@@ -98,7 +99,7 @@ test("a filter narrows the list and goes into the URL; «back» undoes it", asyn
   await page.goBack();
 
   await expect(page).toHaveURL(/\/racconti$/);
-  await expect(status(page)).toHaveText("4 racconti");
+  await expect(status(page)).toHaveText("5 racconti");
 });
 
 test("the search finds a story, forgiving a typo, and keeps the text in the URL", async ({
@@ -116,7 +117,7 @@ test("the search finds a story, forgiving a typo, and keeps the text in the URL"
   await expect(status(page)).toHaveText("Nessun racconto qui, per ora.");
 
   await page.getByRole("button", { name: "Azzera ricerca e filtri" }).click();
-  await expect(status(page)).toHaveText("4 racconti");
+  await expect(status(page)).toHaveText("5 racconti");
   await expect(page).toHaveURL(/\/racconti$/);
 });
 
@@ -137,8 +138,8 @@ test("without JavaScript the archive is the full list, with no dead controls", a
   const page = await context.newPage();
   await page.goto("/racconti");
 
-  await expect(cardTitles(page)).toHaveCount(4);
-  await expect(status(page)).toHaveText("4 racconti");
+  await expect(cardTitles(page)).toHaveCount(5);
+  await expect(status(page)).toHaveText("5 racconti");
   await expect(page.getByRole("searchbox")).toBeHidden();
   await expect(page.getByRole("combobox", { name: "Ordina per" })).toBeHidden();
   await expect(page.getByRole("button", { name: /^Slasher \d/ })).toBeHidden();
@@ -169,9 +170,16 @@ test("a fear page lists its stories and the other fears, without Vue", async ({ 
   expect(scripts.some((path) => /vue|client\.|SearchBrowser/i.test(path))).toBe(false);
 });
 
-test("an empty fear says so", async ({ page }) => {
+// Esperimenti was the empty fear until «Al cuore non si comanda»; every fear
+// now has stories, so the empty state is covered by the component test
+// (src/features/categories/components/categories.test.ts).
+test("Esperimenti lists its stories, newest first", async ({ page }) => {
   await page.goto("/esperimenti");
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Esperimenti");
-  await expect(page.getByRole("main")).toContainText("Nessun racconto qui, per ora.");
+  await expect(cardTitles(page)).toHaveText([
+    "Al cuore non si comanda",
+    "Le vibrazioni",
+    "Le altre paure",
+  ]);
 });

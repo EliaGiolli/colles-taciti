@@ -234,6 +234,7 @@ production after the merge (previews are behind Vercel Authentication). See `doc
 - [ ] Domain
 - [ ] SEO title and description of /racconti (`features/search/copy.ts`) and of the five fear pages (`seo` in `fears.json`): written in PR 6 on the SEO brief's pattern, to be checked by Elia against the brief
 - [ ] Real texts, fear notes, warnings, dates and tags for each story (placeholders marked `[Segnaposto]` in `src/core/content/stories`)
+  - 2026-10-17: first real story, *Al cuore non si comanda* (Esperimenti); *Le vibrazioni* moved to Esperimenti as its main fear, with its final fear note (text still a placeholder)
 - [ ] Wattpad addresses of Le vibrazioni and Senza Rimorso (`wattpadUrl` in their frontmatter)
 - [x] Photo `abat-jour-notte.jpg` in the homepage Hero (`src/assets/foto`, optimised by `astro:assets`)
 - [x] Books list (sent by Elia on 2026-10-17)

@@ -43,7 +43,7 @@ const stories: StoryLike[] = readStoryFiles().map(({ id, frontmatter, body }) =>
 
 describe("content files", () => {
   it("are all valid against their schemas", () => {
-    expect(stories).toHaveLength(4);
+    expect(stories).toHaveLength(5);
     expect(tags.length).toBeGreaterThan(0);
     expect(fears.map((fear) => fear.id)).toEqual([
       "body-horror",
@@ -64,8 +64,9 @@ describe("content files", () => {
     expect(problems).toEqual([]);
   });
 
-  it("give the launch catalogue: 3 complete stories plus Senza Rimorso ongoing", () => {
+  it("give the catalogue: 4 complete stories plus Senza Rimorso ongoing", () => {
     expect(sortByPublished(stories).map((story) => [story.id, story.data.status])).toEqual([
+      ["al-cuore-non-si-comanda", "complete"],
       ["senza-rimorso", "ongoing"],
       ["il-limbo-dei-processi", "complete"],
       ["se-ni-mondo-esistesse-un-po-di-male", "complete"],
@@ -82,7 +83,7 @@ describe("content files", () => {
     ]);
   });
 
-  it("put at least one story in every fear except Esperimenti", () => {
+  it("put at least one story in every fear", () => {
     const counts = countByFear(
       stories,
       fears.map((fear) => fear.id),
@@ -90,10 +91,10 @@ describe("content files", () => {
 
     expect(Object.fromEntries(counts)).toEqual({
       "body-horror": 1,
-      "horror-psicologico": 3,
+      "horror-psicologico": 4,
       slasher: 2,
       liminale: 1,
-      esperimenti: 0,
+      esperimenti: 2,
     });
   });
 });

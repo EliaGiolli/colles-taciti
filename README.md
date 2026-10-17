@@ -215,8 +215,10 @@ Content Collections ([`src/content.config.ts`](src/content.config.ts)):
 
   In a chat, `--` marks a system line and `!!` the line that breaks the scene. In a log, `ERR`
   lines are errors, `~ ` adds a static glitch and `~~ ` the live one (at most one per block).
-- The launch stories are **placeholders**: their metadata comes from the SEO brief, but the text
-  and the fear notes are marked `[Segnaposto]` until the real ones arrive.
+- The four launch stories are **placeholders**: their metadata comes from the SEO brief, but the
+  text and the fear notes are marked `[Segnaposto]` until the real ones arrive (*Le vibrazioni*
+  already has its real fear note). *Al cuore non si comanda*, in Esperimenti, is the first real
+  story.
 
 ### Homepage
 
