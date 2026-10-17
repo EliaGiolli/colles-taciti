@@ -60,11 +60,12 @@ export default defineConfig({
     vue(),
     /**
      * sitemap-index.xml with every prerendered page, minus the ones kept out
-     * of search engines: /design-system (noindex) and /feedback (a result
-     * page, rendered on demand). Linked from robots.txt.
+     * of search engines: /design-system (noindex), /feedback (a result page,
+     * rendered on demand) and the error pages (/404, /500). Linked from
+     * robots.txt.
      */
     sitemap({
-      filter: (page) => !/\/(design-system|feedback)$/.test(new URL(page).pathname),
+      filter: (page) => !/\/(design-system|feedback|404|500)$/.test(new URL(page).pathname),
     }),
   ],
 

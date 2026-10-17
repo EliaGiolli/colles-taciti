@@ -1,0 +1,33 @@
+---
+/**
+ * The page for an address that does not exist. Astro builds it to
+ * `404.html`, which Vercel serves, with status 404, for any missing
+ * address of the site.
+ *
+ * Static and without JavaScript (decided with Elia): it cannot know which
+ * address the reader typed, so it says plainly what happened and offers
+ * the ways back in. Under the Hero, «Scegli la tua paura», the same list
+ * as on the homepage: its counts come from a query that runs at build
+ * time, like on every other page.
+ *
+ * `noindex`, and left out of the sitemap (astro.config.ts).
+ */
+import BaseLayout from "@/core/layout/components/BaseLayout.astro";
+import FearPicker from "@/features/categories/components/FearPicker.astro";
+import { categoriesCopy } from "@/features/categories/copy";
+import ErrorPage from "@/features/errors/components/ErrorPage.astro";
+import { errorsCopy } from "@/features/errors/copy";
+import HomeSection from "@/features/home/components/HomeSection.astro";
+import { getFearsWithCounts } from "@/features/stories";
+
+const copy = errorsCopy.notFound;
+const fears = await getFearsWithCounts();
+---
+
+<BaseLayout title={copy.title} description={copy.description} noindex>
+  <ErrorPage copy={copy}>
+    <HomeSection id="scegli-la-tua-paura" title={categoriesCopy.picker.title}>
+      <FearPicker fears={fears} />
+    </HomeSection>
+  </ErrorPage>
+</BaseLayout>

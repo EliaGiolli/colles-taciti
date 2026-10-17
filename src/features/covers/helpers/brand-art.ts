@@ -4,10 +4,12 @@
  * and a ruggine hill. «The hills keep silent about what lies beneath them,
  * as the tagline says.»
  *
- * It fills the homepage Hero until the photograph the DS asks for there,
- * `abat-jour-notte.jpg`, exists (ROADMAP › Open points). It is drawn, not
- * photographed, so it needs no licence and no credit, and like the covers
- * it follows the theme through the DS paint classes (svg.ts).
+ * It filled the homepage Hero until the lamp photo arrived; now it is the
+ * image of the error pages (features/errors), Elia's choice: an original
+ * picture of the brand rather than a stock «not found». It is drawn, not
+ * photographed, so it needs no licence, no credit and no download, and
+ * like the covers it follows the theme through the DS paint classes
+ * (svg.ts).
  *
  * The geometry is the DS drawing, unchanged, in its own 480-wide space; the
  * viewBox is cut to 16:9 (the `formato-hero` of the DS) so the hills sit on

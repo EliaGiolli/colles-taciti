@@ -280,8 +280,23 @@ description, canonical URL (never with a query string, so filtered archive views
 `/racconti`), Open Graph with the story's 1200×630 cover, and JSON-LD: `WebSite` + `Person` on the
 homepage, `ShortStory` (with `CreativeWorkSeries` and `Incomplete` where they apply) on stories,
 `CollectionPage` on the fear pages. `@astrojs/sitemap` writes `sitemap-index.xml` (without
-`/design-system` and `/feedback`), and `/robots.txt` points to it. Both follow `site` in
-`astro.config.ts`, which is provisional until the domain exists.
+`/design-system`, `/feedback` and the error pages), and `/robots.txt` points to it. Both follow
+`site` in `astro.config.ts`, which is provisional until the domain exists.
+
+### Error pages
+
+Both pages ([`src/features/errors`](src/features/errors)) show the design system's brand
+illustration, the slab of flesh under the hills, drawn in code like the covers. They say
+plainly what happened, then offer the ways back.
+
+- **404** ([`src/pages/404.astro`](src/pages/404.astro)): static, no JavaScript. Built as
+  `404.html`, which Vercel serves with status 404 for any missing address. It ends with «Scegli la
+  tua paura».
+- **500** ([`src/pages/500.astro`](src/pages/500.astro)): rendered on demand, for what runs on the
+  server (`/feedback` and the feedback Action). It logs the error to the server logs and never
+  shows it to the reader.
+
+Both are `noindex`. Their texts are drafts in [`copy.ts`](src/features/errors/copy.ts).
 
 ### Story pages
 

@@ -1,0 +1,39 @@
+---
+/**
+ * The page shown when something that runs on the server fails: today only
+ * `/feedback` and the feedback Action, the parts of the site rendered on
+ * demand. A prerendered page cannot fail at request time, so Astro uses
+ * this page for on-demand routes only; `prerender = false` puts it in the
+ * server bundle with them.
+ *
+ * Astro passes the error as the `error` prop. It is logged on the server
+ * (Vercel's function logs) and **never shown**: a message or a stack trace
+ * can reveal how the server code is built. The reader gets a plain
+ * sentence instead, and the ways back to the static site.
+ *
+ * Kept simple on purpose: no content queries, nothing that could fail in
+ * turn. If this page itself failed, the host would show its own default
+ * error page.
+ *
+ * `noindex`, and left out of the sitemap (astro.config.ts).
+ */
+import BaseLayout from "@/core/layout/components/BaseLayout.astro";
+import ErrorPage from "@/features/errors/components/ErrorPage.astro";
+import { errorsCopy } from "@/features/errors/copy";
+
+export const prerender = false;
+
+interface Props {
+  error: unknown;
+}
+
+const { error } = Astro.props;
+// A deliberate report for whoever reads the server logs (Biome allows console.error).
+console.error("Errore durante il rendering:", error);
+
+const copy = errorsCopy.serverError;
+---
+
+<BaseLayout title={copy.title} description={copy.description} noindex>
+  <ErrorPage copy={copy} />
+</BaseLayout>
