@@ -25,7 +25,7 @@ fearNote: |
   Il racconto sfiora una tragedia vera. Per questo chiudo con delle scuse alle vittime dell'attentato di Nassiriya e alle loro famiglie, a nome del protagonista, che non è in condizione di farlo.
 ---
 
-Mi chiamo Alessandro, per gli amici Sandro, ho 50 anni e vivo da 30 anni…No, aspetta, sono 30 anni o di meno? tra casa mia e una struttura psichiatrica dal giorno in cui, Giovanni, ex militare come me, non morì spiaccicato a terra mentre eravamo tutti in missione con l'aeronautica italiana. Sto scrivendo le mie memorie perché, secondo lo psicanalista che mi segue, mi aiuteranno a combattere malattie neurodegenerative.
+Mi chiamo Alessandro, per gli amici Sandro, ho 50 anni e vivo da 30 anni… No, aspetta, sono 30 anni o di meno? tra casa mia e una struttura psichiatrica dal giorno in cui Giovanni, ex militare come me, non morì spiaccicato a terra mentre eravamo tutti in missione con l'aeronautica italiana. Sto scrivendo le mie memorie perché, secondo lo psicanalista che mi segue, mi aiuteranno a combattere malattie neurodegenerative.
 
 Era un giorno molto soleggiato, direi molto caldo per essere ottobre, e io, Giovanni, Paolo e il capitano Enrico eravamo seduti sulle panche ai lati dell’elicottero. Ricordo come oggi che stavamo sorvolando i cieli della provincia di Pisa per recarci alla base militare americana di Camp Darby, vicino Livorno, per discutere di una missione congiunta con gli Alleati in Iraq, quella che sarebbe divenuta per noi italiani la tragedia di Nassiriya.
 
@@ -37,7 +37,7 @@ Giovanni si alzò in piedi, portò le mani al volto e iniziò a piangere. Si era
 
 Disse: “No, non posso credere che diventeremo carne da macello. Non voglio morire”.
 
-Si portò una mano al petto, e ci guardò. Le sue labbra avevano un colore bluastro e il suo sguardo era privo di espressività come se stesse scrutando nel vuoto più totale. Si avvicinò al portellone aperto e, con una naturalezza quasi irreale cadde nel vuoto sotto di noi.
+Si portò una mano al petto, e ci guardò. Le sue labbra avevano un colore bluastro e il suo sguardo era privo di espressività come se stesse scrutando nel vuoto più totale. Si avvicinò al portellone aperto e, con una naturalezza quasi irreale, cadde nel vuoto sotto di noi.
 
 Così se ne andò un grande uomo, un professionista impeccabile e un amico fedele. Il suo corpo non fu più ritrovato.
 
