@@ -1,0 +1,51 @@
+---
+/**
+ * Everything in `<head>` that search engines and link previews read:
+ * title, description, canonical URL, Open Graph and Twitter tags, robots
+ * and JSON-LD. DS: none (invisible). Rendered by BaseLayout for every page.
+ *
+ * - **Canonical**: the page's own path on the site's origin (`site` in
+ *   astro.config.ts), never with a query string, so `/racconti?luogo=pisa`
+ *   points search engines to `/racconti` (PLAN › Ricerca › SEO).
+ * - **Image**: a path or an absolute URL, made absolute here (Open Graph
+ *   needs one). Stories use their 1200×630 cover.
+ * - **JSON-LD**: one `<script>` per node, serialised safely (jsonld.ts).
+ *
+ * @example <Seo title="…" description="…" image="/copertine/x-anteprima.png" />
+ */
+import { type JsonLd, serializeJsonLd } from "../helpers/jsonld";
+
+export interface Props {
+  title: string;
+  description: string;
+  /** Preview image (1200×630), as a path or an absolute URL. */
+  image?: string | undefined;
+  /** `article` for a story, `website` for everything else. */
+  type?: "website" | "article";
+  noindex?: boolean;
+  jsonLd?: readonly JsonLd[];
+}
+
+const { title, description, image, type = "website", noindex = false, jsonLd = [] } = Astro.props;
+const origin = Astro.site ?? Astro.url;
+const canonical = new URL(Astro.url.pathname, origin).href;
+const imageUrl = image === undefined ? undefined : new URL(image, origin).href;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex" />}
+<meta property="og:site_name" content="Colles Taciti" />
+<meta property="og:locale" content="it_IT" />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+{imageUrl && <meta property="og:image" content={imageUrl} />}
+{imageUrl && <meta property="og:image:width" content="1200" />}
+{imageUrl && <meta property="og:image:height" content="630" />}
+<meta name="twitter:card" content={imageUrl ? "summary_large_image" : "summary"} />
+{jsonLd.map((node) => (
+  <script type="application/ld+json" set:html={serializeJsonLd(node)} />
+))}

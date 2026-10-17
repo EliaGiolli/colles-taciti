@@ -14,22 +14,22 @@
  * `noindex`: useful to us, not to search engines. Whether it stays public
  * after launch is decided in PR 12 (see ROADMAP).
  */
-import BaseLayout from "@/core/layout/BaseLayout.astro";
-import BookItem from "@/features/books/BookItem.vue";
-import BookShelf from "@/features/books/BookShelf.astro";
-import Brand from "@/core/layout/Brand.astro";
-import Cover from "@/features/covers/Cover.astro";
+import BaseLayout from "@/core/layout/components/BaseLayout.astro";
+import BookItem from "@/features/books/components/BookItem.vue";
+import BookShelf from "@/features/books/components/BookShelf.astro";
+import Brand from "@/core/layout/components/Brand.astro";
+import Cover from "@/features/covers/components/Cover.astro";
 import { coversCopy } from "@/features/covers";
-import ChapterIndex from "@/features/stories/ChapterIndex.astro";
-import FearNote from "@/features/stories/FearNote.astro";
-import OngoingBanner from "@/features/stories/OngoingBanner.astro";
-import Prose from "@/features/stories/Prose.astro";
-import ReadingControls from "@/features/stories/ReadingControls.astro";
-import ContinueReading from "@/features/stories/reading-progress/ContinueReading.astro";
-import ResumeLine from "@/features/stories/reading-progress/ResumeLine.astro";
-import StoryCard from "@/features/stories/StoryCard.vue";
-import StoryFacts from "@/features/stories/StoryFacts.astro";
-import StoryHero from "@/features/stories/StoryHero.astro";
+import ChapterIndex from "@/features/stories/components/ChapterIndex.astro";
+import FearNote from "@/features/stories/components/FearNote.astro";
+import OngoingBanner from "@/features/stories/components/OngoingBanner.astro";
+import Prose from "@/features/stories/components/Prose.astro";
+import ReadingControls from "@/features/stories/components/ReadingControls.astro";
+import ContinueReading from "@/features/stories/reading-progress/components/ContinueReading.astro";
+import ResumeLine from "@/features/stories/reading-progress/components/ResumeLine.astro";
+import StoryCard from "@/features/stories/components/StoryCard.vue";
+import StoryFacts from "@/features/stories/components/StoryFacts.astro";
+import StoryHero from "@/features/stories/components/StoryHero.astro";
 import { chaptersFromMarkdown } from "@/features/stories";
 import { styleguideCopy as copy } from "@/features/styleguide/copy";
 import Button from "@/shared/components/Button.astro";

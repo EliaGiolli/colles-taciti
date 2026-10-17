@@ -1,0 +1,46 @@
+---
+/**
+ * Anti-flash theme script: applies the reader's saved theme before the first
+ * paint. Rendered by BaseLayout at the top of `<head>`.
+ *
+ * Why inline, and why so early: a normal Astro `<script>` is a deferred
+ * module that runs after the HTML has been parsed, by which time the
+ * browser may already have painted the page in Notte. A reader who chose
+ * Nebbia would see a dark flash on every page load. An inline script in
+ * `<head>` blocks parsing for the microsecond it takes to run, so
+ * `data-theme` is on `<html>` before anything is drawn.
+ *
+ * Why `define:vars`: the script cannot `import` (inline scripts are not
+ * bundled), but its constants must match `theme.ts` exactly. `define:vars`
+ * serialises them from the frontmatter into the script, so theme.ts stays
+ * the single source of truth. (It also implies `is:inline`.)
+ *
+ * The script always sets the attribute, even for Notte: the toggle's CSS
+ * uses its presence to know that JavaScript ran (see ThemeToggle.astro).
+ * Plain ES5-style code on purpose: it runs unprocessed, in every browser.
+ *
+ * Content Security Policy: an inline script needs a hash or a nonce under a
+ * strict CSP. That is decided in PR 12 (see ROADMAP).
+ */
+import { DEFAULT_THEME, THEME_ATTRIBUTE, THEME_STORAGE_KEY, THEMES } from "../constants/theme";
+
+const themes = Object.values(THEMES);
+---
+
+<script
+  define:vars={{
+    storageKey: THEME_STORAGE_KEY,
+    attribute: THEME_ATTRIBUTE,
+    fallback: DEFAULT_THEME,
+    themes,
+  }}
+>
+  var theme = fallback;
+  try {
+    var saved = window.localStorage.getItem(storageKey);
+    if (themes.indexOf(saved) !== -1) theme = saved;
+  } catch (error) {
+    // Storage blocked (private mode, site data disabled): keep Notte.
+  }
+  document.documentElement.setAttribute(attribute, theme);
+</script>

@@ -1,0 +1,51 @@
+---
+/**
+ * The banner of a story still coming out in chapters. DS: InCorso
+ * (`.ct-in-corso`), the one large carne field of a page.
+ *
+ * Two uses:
+ * - on the story page, after the last chapter out: the label «In corso ·
+ *   capitolo 3» and «I nuovi capitoli escono qui per primi.», no title (the
+ *   page's H1 is right above) and no button (the reader is already here);
+ * - on the homepage (PR 5), with the story title as H2 and the
+ *   «Leggi dall'inizio» button (`href`, `action`).
+ *
+ * Text and borders in `su-carne`, never osso or ferita on carne (DS). The
+ * content stays within 40rem on wide screens.
+ *
+ * @example <OngoingBanner chapter={3} />
+ * @example <OngoingBanner chapter={3} title="Senza Rimorso" href="/racconti/senza-rimorso" action="Leggi dall'inizio" />
+ */
+import Button from "@/shared/components/Button.astro";
+import Label from "@/shared/components/Label.astro";
+import { storiesCopy as copy } from "../copy";
+
+export interface Props {
+  /** Chapters out so far. */
+  chapter: number;
+  /** The story title, as an H2 (homepage). */
+  title?: string;
+  /** The sentence under it; the DS one by default. */
+  text?: string;
+  /** Link and label of the button (homepage). */
+  href?: string;
+  action?: string;
+}
+
+const { chapter, title, text = copy.ongoingBanner.text, href, action } = Astro.props;
+---
+
+<section class="bg-carne px-5 py-7 text-su-carne">
+  <div class="flex max-w-[40rem] flex-col items-start gap-3">
+    <Label tone="onFlesh" as="p">
+      {copy.ongoingBanner.label(chapter)}
+    </Label>
+    {title && <h2 class="font-display text-titolo-1">{title}</h2>}
+    <p class="text-corpo">{text}</p>
+    {href && action && (
+      <Button variant="onFlesh" href={href} class="mt-2">
+        {action}
+      </Button>
+    )}
+  </div>
+</section>

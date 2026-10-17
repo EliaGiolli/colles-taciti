@@ -3,7 +3,7 @@
  * the fear pages. The fears' own names, definitions and SEO texts are
  * content, in src/core/content/fears.json.
  */
-import { formatCount } from "@/shared/lib/plural";
+import { formatCount } from "@/shared/helpers/plural";
 
 export const categoriesCopy = {
   picker: {

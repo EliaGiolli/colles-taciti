@@ -1,6 +1,6 @@
 /**
  * /search-index.json: the full-text index of the stories, serialised by
- * MiniSearch (see features/search/search-index.ts).
+ * MiniSearch (see features/search/helpers/search-index.ts).
  *
  * An endpoint rather than a page: Astro calls `GET` once at build time
  * (the site is static, so it is prerendered like every page) and writes

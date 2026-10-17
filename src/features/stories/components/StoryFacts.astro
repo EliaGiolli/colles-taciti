@@ -1,0 +1,94 @@
+---
+/**
+ * The facts of a story, under its title. DS: SchedaTecnica (`.ct-meta`).
+ *
+ * A description list in the DS order: Sottogenere, Ambientazione, Lettura,
+ * Pubblicato, Avvertenze. Two rows are added after them for the PLAN
+ * («SchedaTecnica, tag come link ai filtri»): the fears, linking to their
+ * pages, and the tags, linking to the filtered archive.
+ *
+ * - The date is written in full, «14 ottobre 2026», inside a `<time>` with
+ *   the ISO date for machines; an update adds «aggiornato il …».
+ * - Warnings are lowercase words in thin chips, no icons, no alarm colours:
+ *   «servono a fidarsi, non a fare paura» (DS). The row is left out when a
+ *   story has none.
+ * - Links are at least 24px tall (`py-px` on a 22px line): the WCAG 2.2
+ *   minimum target size, which axe checks.
+ *
+ * @example <StoryFacts label="Slasher folk" setting="Mugello" reading="3 capitoli · 41 min" publishedAt={date} warnings={["gore"]} links={links} />
+ */
+import { formatDate, toIsoDate } from "@/shared/helpers/format-date";
+import { storiesCopy as copy } from "../copy";
+import type { StoryLink } from "../server/queries";
+
+export interface Props {
+  label: string;
+  setting: string;
+  /** «5 capitoli · 38 min» (see `storyReadingSummary`). */
+  reading: string;
+  publishedAt: Date;
+  updatedAt?: Date | undefined;
+  warnings: readonly string[];
+  links: { fears: readonly StoryLink[]; tags: readonly StoryLink[] };
+}
+
+const { label, setting, reading, publishedAt, updatedAt, warnings, links } = Astro.props;
+
+const linkClass =
+  "inline-block py-px underline decoration-linea-forte underline-offset-4 transition-colors hover:text-ferita hover:decoration-ferita";
+const linkGroups = [
+  { term: copy.facts.fears, items: links.fears },
+  { term: copy.facts.tags, items: links.tags },
+].filter((group) => group.items.length > 0);
+---
+
+<dl class="grid max-w-misura grid-cols-[max-content_1fr] gap-x-5 gap-y-2 border-y border-linea py-4 font-mono text-meta">
+  <dt class="text-osso-muto">{copy.facts.subgenre}</dt>
+  <dd>{label}</dd>
+  <dt class="text-osso-muto">{copy.facts.setting}</dt>
+  <dd>{setting}</dd>
+  <dt class="text-osso-muto">{copy.facts.reading}</dt>
+  <dd>{reading}</dd>
+  <dt class="text-osso-muto">{copy.facts.published}</dt>
+  <dd>
+    <time datetime={toIsoDate(publishedAt)}>{formatDate(publishedAt, "long")}</time>
+    {updatedAt && (
+      <span class="text-osso-muto">
+        {" · "}
+        <time datetime={toIsoDate(updatedAt)}>
+          {copy.facts.updated(formatDate(updatedAt, "long"))}
+        </time>
+      </span>
+    )}
+  </dd>
+  {warnings.length > 0 && (
+    <>
+      <dt class="text-osso-muto">{copy.facts.warnings}</dt>
+      <dd>
+        <ul class="flex flex-wrap gap-2">
+          {warnings.map((warning) => (
+            <li class="rounded-sm border border-linea-forte px-2 text-[0.8125rem] leading-[1.5rem] text-ruggine-testo">
+              {warning}
+            </li>
+          ))}
+        </ul>
+      </dd>
+    </>
+  )}
+  {linkGroups.map(({ term, items }) => (
+    <>
+      <dt class="text-osso-muto">{term}</dt>
+      <dd>
+        <ul class="flex flex-wrap gap-x-4 gap-y-1">
+          {items.map(({ label: text, href }) => (
+            <li>
+              <a href={href} class={linkClass}>
+                {text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </dd>
+    </>
+  ))}
+</dl>

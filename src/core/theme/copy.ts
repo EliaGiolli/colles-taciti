@@ -5,7 +5,7 @@
  * they look like (night, fog) better than «scuro» and «chiaro» would, and
  * they are part of the site's voice.
  */
-import { THEMES, type Theme } from "./theme";
+import { THEMES, type Theme } from "./constants/theme";
 
 export const themeCopy = {
   /** Accessible name of the button group, read before the two options. */

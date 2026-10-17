@@ -5,15 +5,13 @@
  *
  * The id is the URL slug. Names, definitions, intros and SEO texts are
  * public copy, so they go through the brand-tone check
- * (core/content/public-copy.ts).
+ * (core/content/helpers/public-copy.ts).
  */
 import { z } from "astro/zod";
-import { publicCopy } from "@/core/content/public-copy";
-import { seoFields } from "@/core/content/seo";
-import { countWords } from "@/shared/lib/count-words";
-
-/** One paragraph above the stories: long enough to say something, short enough not to push them down. */
-export const FEAR_INTRO_WORDS = { min: 60, max: 120 } as const;
+import { publicCopy } from "@/core/content/helpers/public-copy";
+import { seoFields } from "@/core/content/helpers/seo-fields";
+import { countWords } from "@/shared/helpers/count-words";
+import { FEAR_INTRO_WORDS } from "./constants/intro";
 
 /** YouTube's own addresses: the watch page and the short `youtu.be` links. */
 const YOUTUBE_HOST = /^(www\.|m\.)?youtube\.com$|^youtu\.be$/;

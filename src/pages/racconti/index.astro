@@ -15,9 +15,9 @@
  * is meant for search engines: Seo.astro gives every view the canonical
  * URL without parameters.
  */
-import BaseLayout from "@/core/layout/BaseLayout.astro";
+import BaseLayout from "@/core/layout/components/BaseLayout.astro";
 import { getArchive, SEARCH_INDEX_PATH, searchCopy as copy } from "@/features/search";
-import SearchBrowser from "@/features/search/SearchBrowser.vue";
+import SearchBrowser from "@/features/search/components/SearchBrowser.vue";
 
 const { items, facets } = await getArchive();
 ---

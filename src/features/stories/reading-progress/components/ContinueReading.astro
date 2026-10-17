@@ -1,0 +1,57 @@
+---
+/**
+ * «Stai leggendo»: the story the reader left half-way, offered again on the
+ * homepage (PLAN › Pagine › Homepage; placed there in PR 5). DS: no
+ * dedicated component; built from Etichetta, a Bodoni title and a meta line.
+ *
+ * Rendered empty and `hidden`: only the reader's browser knows what they
+ * were reading. `continue-reading.controller.ts` reads the saved progress
+ * and, if there is an unfinished story, fills in title and chapter and
+ * shows the block. The whole block is a single link to the story.
+ *
+ * `preview` renders it visible with sample data, for /design-system only.
+ *
+ * @example <ContinueReading />
+ */
+import Label from "@/shared/components/Label.astro";
+import { storiesCopy as copy } from "../../copy";
+
+export interface Props {
+  /** Sample content, shown at once (design-system page). */
+  preview?: { href: string; title: string; detail: string };
+}
+
+const { preview } = Astro.props;
+const headingId = "stai-leggendo";
+---
+
+<section
+  data-controller={preview ? undefined : "continue-reading"}
+  hidden={preview === undefined}
+  aria-labelledby={headingId}
+  class="max-w-misura"
+>
+  <h2 id={headingId}>
+    <Label tone="muted">{copy.continueReading.label}</Label>
+  </h2>
+  <a
+    data-continue-link
+    href={preview?.href ?? "/racconti"}
+    class="group mt-2 flex flex-col gap-1 border-t border-linea pt-3 no-underline"
+  >
+    <span
+      data-continue-title
+      class="font-display text-titolo-2 transition-colors group-hover:text-ferita"
+    >
+      {preview?.title}
+    </span>
+    <span class="font-mono text-meta text-osso-muto">
+      <span data-continue-detail>{preview?.detail}</span>
+      <span aria-hidden="true">&nbsp;·&nbsp;</span>
+      <span class="text-osso underline decoration-linea-forte underline-offset-4">
+        {copy.continueReading.action}
+      </span>
+      <span aria-hidden="true">&nbsp;→</span>
+    </span>
+  </a>
+</section>

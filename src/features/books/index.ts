@@ -7,17 +7,16 @@
  * island) see client.ts: this file re-exports the queries, which import
  * `astro:content`.
  */
+
+export { BOOK_COVERS_PATH, BOOK_SECTIONS, type BookSection } from "./constants/vocabulary";
+export { booksCopy } from "./copy";
 export {
   authorsLabel,
   type BookCardData,
   bookCard,
-  byAuthor,
-  byTitle,
-  byYear,
   openLibraryWorkUrl,
   surname,
-} from "./card";
-export { booksCopy } from "./copy";
-export { type Book, getBooks } from "./queries";
+} from "./helpers/card";
+export { byAuthor, byTitle, byYear } from "./helpers/order";
 export type { BookData } from "./schema";
-export { BOOK_COVERS_PATH, BOOK_SECTIONS, type BookSection } from "./vocabulary";
+export { type Book, getBooks } from "./server/queries";

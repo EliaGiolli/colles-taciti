@@ -16,7 +16,6 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { bookSchema } from "@/features/books/schema";
 import { fearSchema } from "@/features/categories/schema";
-import { storySchema, tagSchema } from "@/features/stories/schema";
 import {
   countByFear,
   findIntegrityProblems,
@@ -24,7 +23,8 @@ import {
   selectOngoing,
   selectStarters,
   sortByPublished,
-} from "@/features/stories/story-list";
+} from "@/features/stories/helpers/story-list";
+import { storySchema, tagSchema } from "@/features/stories/schema";
 import { readJsonEntries, readStoryFiles } from "../../scripts/lib/content-files";
 
 /** Parses every entry of a vocabulary, failing the test on the first invalid one. */

@@ -15,7 +15,7 @@
  */
 import type { ClassValue } from "clsx";
 import { computed, useAttrs } from "vue";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/shared/helpers/cn";
 import { type FieldState, fieldControl } from "@/shared/variants/field";
 
 defineOptions({ inheritAttrs: false });

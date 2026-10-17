@@ -175,7 +175,10 @@ Banner and feedback e-mail confirmed working in production by Elia. See `docs/PL
 
 ## PR 10 · `feat/books`
 
-PR: – · Merged: – · Notes: –
+PR: [#12](https://github.com/EliaGiolli/colles-taciti/pull/12) · Merged: 2026-10-17 · Notes: 24 books,
+not 23; Open Library instead of Google Books, with `originalTitle` for Italian editions and seven
+years fixed by hand; one generic island with ranks computed at build time; fear-page intros as
+`[Segnaposto]` drafts, liminal video still missing. See `docs/PLAN.md` › change log.
 
 Changed with Elia on 2026-10-17: his real list instead of test data; the personal note becomes
 optional (no SEO goal for /libri); no «tag» facet; films postponed to after launch; intros and
@@ -196,12 +199,12 @@ PR: – · Merged: – · Notes: –
 Added with Elia on 2026-10-17: every feature and `core` module groups its files by kind, so
 constants and helpers no longer sit scattered next to components. Moves only, no behaviour change.
 
-- [ ] Subfolders by kind: `components/`, `controllers/`, `composables/`, `constants/`, `helpers/`, `server/`; `index.ts`, `client.ts`, `copy.ts`, `schema.ts` stay at the root
-- [ ] Split the files that mix constants and functions (`theme.ts`, `nav.ts`, `brand-tone.ts`, `registry.ts`, `feedback/schema.ts` and `notify.ts`…)
-- [ ] `shared/lib` → `shared/helpers`, new `shared/constants` (design tokens, locale)
-- [ ] `git mv` for every move; imports rewritten in `src`, `tests`, `scripts` and the configs
-- [ ] Structure test (`tests/integration/structure.test.ts`): components, controllers, composables and server-only modules in their folders
-- [ ] CLAUDE.md › Architecture, README and PLAN trees updated
+- [x] Subfolders by kind: `components/`, `controllers/`, `composables/`, `constants/`, `helpers/`, `server/`; `index.ts`, `client.ts`, `copy.ts`, `schema.ts` stay at the root
+- [x] Split the files that mix constants and functions (`theme.ts`, `nav.ts`, `brand-tone.ts`, `registry.ts`, `feedback/schema.ts` and `notify.ts`…)
+- [x] `shared/lib` → `shared/helpers`, new `shared/constants` (design tokens, locale)
+- [x] `git mv` for every move; imports rewritten in `src`, `tests`, `scripts` and the configs
+- [x] Structure test (`tests/integration/structure.test.ts`): components, controllers, composables and server-only modules in their folders
+- [x] CLAUDE.md › Architecture, README and PLAN trees updated (README updated)
 
 ## PR 12 · `chore/launch`
 

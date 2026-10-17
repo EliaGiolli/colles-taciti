@@ -8,7 +8,7 @@
  * - View Transitions ship only inside `prefers-reduced-motion: no-preference`.
  */
 import { expect, type Page, test } from "@playwright/test";
-import { THEME_STORAGE_KEY } from "@/core/theme/theme";
+import { THEME_STORAGE_KEY } from "@/core/theme/constants/theme";
 
 /** DS `terra`, the page background, in each theme (tokens.json). */
 const TERRA = { dark: "rgb(17, 16, 14)", light: "rgb(236, 233, 226)" };

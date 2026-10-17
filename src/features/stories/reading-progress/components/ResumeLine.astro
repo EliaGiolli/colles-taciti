@@ -1,0 +1,37 @@
+---
+/**
+ * «Eri al capitolo 2 → Riprendi»: the offer to pick a story up where the
+ * reader left it (PLAN › Riprendi lettura). DS: no dedicated component;
+ * Plex Mono meta line with a DS text link.
+ *
+ * The server cannot know where this reader stopped, so the line is
+ * rendered empty and `hidden`. The reading-progress controller, on the
+ * element that wraps it, fills in the text and shows it when a saved
+ * position exists. Without JavaScript it stays hidden: there is nothing to
+ * resume without the script that saved the position in the first place.
+ *
+ * `preview` renders it visible with sample text, for /design-system only.
+ *
+ * @example <ResumeLine />
+ */
+import { storiesCopy as copy } from "../../copy";
+
+export interface Props {
+  /** Sample text, shown at once (design-system page). */
+  preview?: string;
+}
+
+const { preview } = Astro.props;
+---
+
+<p data-resume hidden={preview === undefined} class="font-mono text-meta text-osso-muto">
+  <span data-resume-text>{preview}</span>
+  <span aria-hidden="true">&nbsp;→&nbsp;</span>
+  <a
+    data-resume-link
+    href="#testo"
+    class="inline-block py-px text-osso underline decoration-linea-forte underline-offset-4 transition-colors hover:text-ferita hover:decoration-ferita"
+  >
+    {copy.resume.action}
+  </a>
+</p>

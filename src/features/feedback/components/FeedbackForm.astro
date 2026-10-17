@@ -1,0 +1,107 @@
+---
+/**
+ * «Ti è rimasto addosso qualcosa?»: the anonymous feedback form, at the end
+ * of every story and on the homepage. DS: Modulo (`.ct-modulo`): italic
+ * title, one sentence, fields with always-visible labels, one primary
+ * «Invia». Only the message is required; name and e-mail say they are
+ * optional.
+ *
+ * It works in two ways:
+ * - **with JavaScript**, feedback-form.controller.ts sends it with `fetch`
+ *   and replaces it with one line, «Ricevuto. Grazie per avermelo detto.»;
+ * - **without**, the browser posts it to /feedback, a server-rendered page
+ *   that runs the same action and shows the result (the page the form sits
+ *   on is a static file and cannot answer a POST).
+ *
+ * The honeypot is a field moved off screen and hidden from assistive
+ * technology: people never fill it, form-filling bots usually do.
+ *
+ * /feedback renders it again after a failed submit, with the reader's text
+ * (`values`) and the errors.
+ *
+ * @example <FeedbackForm story="senza-rimorso" />
+ */
+import { actions } from "astro:actions";
+import Button from "@/shared/components/Button.astro";
+import Field from "@/shared/components/Field.astro";
+import { feedbackCopy as copy } from "../copy";
+import { FEEDBACK_PATH } from "../constants/paths";
+import { FIELDS } from "../constants/fields";
+import { MESSAGE_MAX, NAME_MAX } from "../constants/limits";
+
+export interface Props {
+  /** Slug of the story the form follows; none on the homepage. */
+  story?: string | undefined;
+  /** What the reader wrote, after a failed submit. */
+  values?: { message?: string; name?: string; email?: string };
+  /** Field errors, after a failed submit. */
+  errors?: { message?: string | undefined; email?: string | undefined };
+  /** The submit failed for another reason (server, network). */
+  failed?: boolean;
+}
+
+const { story, values = {}, errors = {}, failed = false } = Astro.props;
+const headingId = "ti-e-rimasto-addosso";
+---
+
+<section
+  aria-labelledby={headingId}
+  class="flex max-w-misura flex-col gap-4"
+  data-controller="feedback-form"
+>
+  <h2 id={headingId} class="font-display text-titolo-corsivo italic">
+    {copy.title}
+  </h2>
+  <p class="text-osso-muto">{copy.lead}</p>
+  <form
+    method="POST"
+    action={`${FEEDBACK_PATH}${actions.feedback}`}
+    class="flex flex-col gap-4"
+    data-feedback-form
+  >
+    <Field
+      id="feedback-messaggio"
+      name={FIELDS.message}
+      label={copy.message.label}
+      placeholder={copy.message.placeholder}
+      multiline
+      required
+      maxlength={MESSAGE_MAX}
+      value={values.message}
+      error={errors.message}
+    />
+    <Field
+      id="feedback-nome"
+      name={FIELDS.name}
+      label={copy.name.label}
+      note={copy.name.note}
+      autocomplete="name"
+      maxlength={NAME_MAX}
+      value={values.name}
+    />
+    <Field
+      id="feedback-email"
+      name={FIELDS.email}
+      type="email"
+      autocomplete="email"
+      label={copy.email.label}
+      note={copy.email.note}
+      help={copy.email.help}
+      value={values.email}
+      error={errors.email}
+    />
+    {story && <input type="hidden" name={FIELDS.story} value={story} />}
+    <div aria-hidden="true" class="absolute left-[-100vw] h-px w-px overflow-hidden">
+      <label for="feedback-sito">{copy.honeypot}</label>
+      <input id="feedback-sito" name={FIELDS.honeypot} tabindex="-1" autocomplete="off" />
+    </div>
+    <div>
+      <Button variant="primary" type="submit">
+        {copy.submit}
+      </Button>
+    </div>
+    <p role="status" class="text-corpo text-ferita empty:hidden" data-feedback-status>
+      {failed ? copy.failure : ""}
+    </p>
+  </form>
+</section>

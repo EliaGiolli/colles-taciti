@@ -9,7 +9,7 @@
  */
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
-import { THEME_STORAGE_KEY } from "@/core/theme/theme";
+import { THEME_STORAGE_KEY } from "@/core/theme/constants/theme";
 
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 

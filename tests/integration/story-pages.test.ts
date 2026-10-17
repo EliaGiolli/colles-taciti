@@ -15,9 +15,9 @@ import { join } from "node:path";
 import { JSDOM } from "jsdom";
 import { markdownToHtml } from "satteri";
 import { describe, expect, it } from "vitest";
-import { ctBlocks } from "@/features/stories/blocks/plugin";
-import { chaptersFromMarkdown } from "@/features/stories/chapters";
-import { ctChapters } from "@/features/stories/chapters-plugin";
+import { chaptersFromMarkdown } from "@/features/stories/helpers/chapters";
+import { ctBlocks } from "@/features/stories/markdown/blocks-plugin";
+import { ctChapters } from "@/features/stories/markdown/chapters-plugin";
 import { readStoryFiles } from "../../scripts/lib/content-files";
 import { COVERS_DIR, coverJobs, hashSvg, MANIFEST_PATH } from "../../scripts/lib/cover-jobs";
 

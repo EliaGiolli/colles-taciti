@@ -14,10 +14,10 @@ import { renderAstro } from "@tests/helpers/render-astro";
 import { describe, expect, it } from "vitest";
 import { bookCard, booksCopy, byAuthor } from "@/features/books/client";
 import { bookSchema } from "@/features/books/schema";
-import { urlOrders } from "@/features/search/archive-kinds";
-import { archiveUrlSchema, selectionOf } from "@/features/search/archive-url";
-import { buildBookArchive } from "@/features/search/book-archive";
-import { readParams } from "@/features/search/url-state";
+import { archiveUrlSchema, selectionOf } from "@/features/search/helpers/archive-url";
+import { buildBookArchive } from "@/features/search/helpers/book-archive";
+import { urlOrders } from "@/features/search/helpers/orders";
+import { readParams } from "@/features/search/helpers/url-state";
 import { readJsonEntries } from "../../scripts/lib/content-files";
 import BooksPage from "../../src/pages/libri.astro";
 
