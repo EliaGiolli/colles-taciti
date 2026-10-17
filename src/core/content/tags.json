@@ -16,6 +16,8 @@
   { "id": "famiglia", "label": "Famiglia", "kind": "theme" },
   { "id": "diretta-streaming", "label": "Diretta streaming", "kind": "theme" },
   { "id": "diario", "label": "Diario", "kind": "theme" },
+  { "id": "guerra", "label": "Guerra", "kind": "theme" },
+  { "id": "sogni", "label": "Sogni", "kind": "theme" },
 
   { "id": "metallica-one", "label": "One dei Metallica", "kind": "inspiration" },
   { "id": "the-last-of-us-parte-ii", "label": "The Last of Us Parte II", "kind": "inspiration" },
