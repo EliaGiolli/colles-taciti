@@ -12,9 +12,9 @@
  * within 60 and 160 characters.
  */
 import { storiesCopy } from "@/features/stories/client";
-import { formatCount, type PluralForms } from "@/shared/lib/plural";
-import type { RELEVANCE } from "./archive";
-import type { ArchiveKind, OrderOf } from "./archive-kinds";
+import { formatCount, type PluralForms } from "@/shared/helpers/plural";
+import type { ArchiveKind, OrderOf } from "./constants/archive-kinds";
+import type { RELEVANCE } from "./constants/search-index";
 
 const stories: PluralForms = { one: "racconto", other: "racconti" };
 const books: PluralForms = { one: "libro", other: "libri" };

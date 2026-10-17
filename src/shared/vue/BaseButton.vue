@@ -23,7 +23,7 @@
  */
 import type { ClassValue } from "clsx";
 import { computed, useAttrs } from "vue";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/shared/helpers/cn";
 import { type ButtonVariant, buttonVariants } from "@/shared/variants/button";
 
 defineOptions({ inheritAttrs: false });

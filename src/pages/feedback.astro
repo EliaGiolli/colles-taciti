@@ -13,9 +13,9 @@
 export const prerender = false;
 
 import { actions, isInputError } from "astro:actions";
-import BaseLayout from "@/core/layout/BaseLayout.astro";
+import BaseLayout from "@/core/layout/components/BaseLayout.astro";
 import { FIELDS, feedbackCopy as copy } from "@/features/feedback";
-import FeedbackForm from "@/features/feedback/FeedbackForm.astro";
+import FeedbackForm from "@/features/feedback/components/FeedbackForm.astro";
 import Button from "@/shared/components/Button.astro";
 
 const result = Astro.getActionResult(actions.feedback);

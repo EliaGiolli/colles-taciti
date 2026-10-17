@@ -14,11 +14,11 @@
  * (Elia's decision, 2026-10-17), and a list of other people's books is
  * not something to mark up as the site's own work.
  */
-import BaseLayout from "@/core/layout/BaseLayout.astro";
-import BookShelf from "@/features/books/BookShelf.astro";
+import BaseLayout from "@/core/layout/components/BaseLayout.astro";
+import BookShelf from "@/features/books/components/BookShelf.astro";
 import { booksCopy as copy, getBooks } from "@/features/books";
 import { getBookArchive } from "@/features/search";
-import SearchBrowser from "@/features/search/SearchBrowser.vue";
+import SearchBrowser from "@/features/search/components/SearchBrowser.vue";
 
 const [books, { items, facets }] = await Promise.all([getBooks(), getBookArchive()]);
 ---

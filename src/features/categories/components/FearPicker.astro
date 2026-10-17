@@ -1,0 +1,49 @@
+---
+/**
+ * «Scegli la tua paura»: the five fears, each linking to its page, with its
+ * definition and how many stories it holds. DS: SceltaPaura (`.ct-paure`).
+ *
+ * One row per fear, separated by linea rules: the name in Bodoni (ferita on
+ * hover), the count in Plex Mono on the right, the definition in italic
+ * below («Quando il corpo smette di essere tuo.»). Each row is one link, at
+ * least 48px tall (DS › touch targets). The list stays within 48rem, as in
+ * the DS: on a wide screen five full-width rows would read as a table.
+ *
+ * The spaces between the three parts are written out (`{" "}`): they keep
+ * the link's accessible name «Body horror 1 racconto Quando…» instead of
+ * «Body horror1 racconto», whatever the layout does.
+ *
+ * The fears come in with their counts (`getFearsWithCounts()`), already in
+ * their set order; this component only draws them. The heading belongs to
+ * the page, which wraps the list in its own section.
+ *
+ * @example <FearPicker fears={await getFearsWithCounts()} />
+ */
+import type { FearWithCount } from "@/features/stories";
+import { categoriesCopy as copy } from "../copy";
+
+export interface Props {
+  fears: readonly FearWithCount[];
+}
+
+const { fears } = Astro.props;
+---
+
+<ul class="max-w-[48rem] border-b border-linea">
+  {fears.map((fear) => (
+    <li>
+      <a
+        href={fear.href}
+        class="group grid min-h-tocco grid-cols-[1fr_auto] items-baseline gap-x-4 gap-y-1 border-t border-linea py-4 no-underline"
+      >
+        <span class="font-display text-titolo-2 text-osso transition-colors group-hover:text-ferita">
+          {fear.name}
+        </span>{" "}
+        <span class="font-mono text-meta text-osso-muto">{copy.count(fear.count)}</span>{" "}
+        <span class="col-span-full text-presentazione text-osso-muto italic">
+          {fear.definition}
+        </span>
+      </a>
+    </li>
+  ))}
+</ul>

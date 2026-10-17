@@ -1,0 +1,58 @@
+---
+/**
+ * The site's wordmark: «Colles Taciti» set in Bodoni Moda, linking home.
+ * DS: Marchio (bundle.css › .ct-marchio). There is no drawn logo yet: the
+ * brand is the name itself, so it is always real text, never an image.
+ *
+ * DS rules: `size="large"` only in the homepage hero (and Instagram covers);
+ * the signature «racconti di Elia Giolli» only in the hero and the footer.
+ * Never uppercase, never carne or ferita, no effects.
+ *
+ * `font-variation-settings: 'opsz' 96` comes from the DS: it pins Bodoni's
+ * optical size to its display cut (finest hairlines), whatever the font
+ * size. Left to the browser, the 28px name would get the sturdier text cut.
+ *
+ * @example <Brand />
+ * @example <Brand size="large" signature />
+ */
+import Label from "@/shared/components/Label.astro";
+import { cn } from "@/shared/helpers/cn";
+import { layoutCopy as copy } from "../copy";
+import { isCurrentPath } from "../helpers/nav";
+import { ROUTES } from "../constants/nav";
+
+export interface Props {
+  /** `default` (Testata) or `large` (homepage hero). */
+  size?: "default" | "large";
+  /** Shows «racconti di Elia Giolli» under the name. */
+  signature?: boolean;
+  /** Extra classes for the link, merged with `cn()`. */
+  class?: string;
+}
+
+const { size = "default", signature = false, class: className } = Astro.props;
+const isHome = isCurrentPath(Astro.url.pathname, ROUTES.home);
+---
+
+<a
+  href={ROUTES.home}
+  aria-current={isHome ? "page" : undefined}
+  class={cn("inline-flex flex-col gap-2 text-osso no-underline", className)}
+>
+  <span
+    class={cn(
+      "font-display [font-variation-settings:'opsz'_96]",
+      size === "large"
+        ? // display-xl has a fixed 500 weight: read the theme's title weight
+          // instead, so Nebbia gets 600 like every other title.
+          // (`font-(--x)` is Tailwind v4 shorthand for `font-weight: var(--x)`.)
+          "text-display font-(--peso-titolo) md:text-display-xl"
+        : "text-titolo-2 leading-none tracking-[-0.015em]",
+    )}
+  >
+    {copy.siteName}
+  </span>
+  <!-- Explicit space: Astro drops the line break here, and the accessible
+       name would read «Colles Tacitiracconti…». Invisible in a flex column. -->{" "}
+  {signature && <Label tone="muted">{copy.brandSignature}</Label>}
+</a>

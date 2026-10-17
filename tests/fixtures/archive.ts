@@ -7,15 +7,16 @@
  * plain sources: the items, facets and index documents are therefore
  * exactly what the island and the endpoint would get.
  */
-import type { ArchiveItem, Facet } from "@/features/search/archive";
+
+import type { StoryFacet } from "@/features/search/constants/facets";
+import type { ArchiveItem, Facet } from "@/features/search/helpers/archive";
 import {
   type ArchiveSource,
   type ArchiveVocabulary,
   buildStoryArchive,
-  type StoryFacet,
   toSearchDocument,
-} from "@/features/search/archive-build";
-import type { SearchDocument } from "@/features/search/search-index";
+} from "@/features/search/helpers/archive-build";
+import type { SearchDocument } from "@/features/search/helpers/search-index";
 
 export const vocabulary: ArchiveVocabulary = {
   fears: [

@@ -18,8 +18,8 @@
  * or «Cosa mi ha insegnato —» (DS › Libro).
  */
 import { z } from "astro/zod";
-import { publicCopy } from "@/core/content/public-copy";
-import { BOOK_COVERS_PATH, BOOK_SECTIONS } from "./vocabulary";
+import { publicCopy } from "@/core/content/helpers/public-copy";
+import { BOOK_COVERS_PATH, BOOK_SECTIONS } from "./constants/vocabulary";
 
 /** An Open Library work id: `OL81613W` (works end in W, editions in M). */
 const OPEN_LIBRARY_WORK = /^OL\d+W$/;

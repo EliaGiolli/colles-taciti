@@ -1,6 +1,6 @@
 /**
  * drizzle-kit configuration: `bun run db:generate` turns the table in
- * src/features/feedback/table.ts into a SQL migration in drizzle/;
+ * src/features/feedback/server/table.ts into a SQL migration in drizzle/;
  * `bun run db:migrate` applies the pending ones to the database in
  * TURSO_DATABASE_URL (Turso, or a `file:` database locally and in e2e).
  *
@@ -24,7 +24,7 @@ const authToken = process.env["TURSO_AUTH_TOKEN"] || undefined;
 
 export default defineConfig({
   dialect: "turso",
-  schema: "./src/features/feedback/table.ts",
+  schema: "./src/features/feedback/server/table.ts",
   out: "./drizzle",
   dbCredentials: authToken === undefined ? { url } : { url, authToken },
 });

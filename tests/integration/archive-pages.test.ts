@@ -15,21 +15,21 @@ import { getByRole } from "@testing-library/dom";
 import { renderAstro } from "@tests/helpers/render-astro";
 import { describe, expect, it } from "vitest";
 import { fearSchema } from "@/features/categories/schema";
+import { searchCopy } from "@/features/search/copy";
 import {
   type ArchiveSource,
   type ArchiveVocabulary,
   buildStoryArchive,
   toSearchDocument,
-} from "@/features/search/archive-build";
-import { urlOrders } from "@/features/search/archive-kinds";
-import { archiveUrlSchema, selectionOf } from "@/features/search/archive-url";
-import { searchCopy } from "@/features/search/copy";
-import { buildIndex, loadIndex, searchScores } from "@/features/search/search-index";
-import { readParams } from "@/features/search/url-state";
-import { chaptersFromMarkdown } from "@/features/stories/chapters";
-import { tagFilterHref } from "@/features/stories/links";
+} from "@/features/search/helpers/archive-build";
+import { archiveUrlSchema, selectionOf } from "@/features/search/helpers/archive-url";
+import { urlOrders } from "@/features/search/helpers/orders";
+import { buildIndex, loadIndex, searchScores } from "@/features/search/helpers/search-index";
+import { readParams } from "@/features/search/helpers/url-state";
+import type { TagKind } from "@/features/stories/constants/vocabulary";
+import { chaptersFromMarkdown } from "@/features/stories/helpers/chapters";
+import { tagFilterHref } from "@/features/stories/helpers/links";
 import { storySchema, tagSchema } from "@/features/stories/schema";
-import type { TagKind } from "@/features/stories/vocabulary";
 import { readJsonEntries, readStoryFiles } from "../../scripts/lib/content-files";
 import CategoryPage from "../../src/pages/[categoria].astro";
 import StoriesPage from "../../src/pages/racconti/index.astro";

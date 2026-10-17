@@ -17,17 +17,17 @@
  * components rendered to HTML on the server. Its only scripts are the theme
  * switch, «Stai leggendo» and the feedback form.
  */
-import BaseLayout from "@/core/layout/BaseLayout.astro";
+import BaseLayout from "@/core/layout/components/BaseLayout.astro";
 import heroPhoto from "../assets/foto/abat-jour-notte.jpg";
-import { websiteJsonLd } from "@/core/seo/jsonld";
-import FearPicker from "@/features/categories/FearPicker.astro";
+import { websiteJsonLd } from "@/core/seo/helpers/jsonld";
+import FearPicker from "@/features/categories/components/FearPicker.astro";
 import { categoriesCopy } from "@/features/categories/copy";
 import { Picture } from "astro:assets";
-import FeedbackForm from "@/features/feedback/FeedbackForm.astro";
+import FeedbackForm from "@/features/feedback/components/FeedbackForm.astro";
 import { homeCopy as copy } from "@/features/home/copy";
-import HomeHero from "@/features/home/HomeHero.astro";
-import HomeSection from "@/features/home/HomeSection.astro";
-import WhyCollesTaciti from "@/features/home/WhyCollesTaciti.astro";
+import HomeHero from "@/features/home/components/HomeHero.astro";
+import HomeSection from "@/features/home/components/HomeSection.astro";
+import WhyCollesTaciti from "@/features/home/components/WhyCollesTaciti.astro";
 import {
   coverImageHref,
   getFearsWithCounts,
@@ -39,9 +39,9 @@ import {
   storiesCopy,
   storyCard,
 } from "@/features/stories";
-import OngoingBanner from "@/features/stories/OngoingBanner.astro";
-import ContinueReading from "@/features/stories/reading-progress/ContinueReading.astro";
-import StoryCard from "@/features/stories/StoryCard.vue";
+import OngoingBanner from "@/features/stories/components/OngoingBanner.astro";
+import ContinueReading from "@/features/stories/reading-progress/components/ContinueReading.astro";
+import StoryCard from "@/features/stories/components/StoryCard.vue";
 
 /** Three cards per row from 1024px (DS › Spazio: grids only from 1024px). */
 const LATEST_COUNT = 3;

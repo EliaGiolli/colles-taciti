@@ -8,8 +8,9 @@
  * Imports only browser-safe modules, so jsdom tests can use it too.
  */
 import { type BookCardData, type BookData, bookCard, byAuthor } from "@/features/books/client";
-import type { ArchiveItem, Facet } from "@/features/search/archive";
-import { type BookFacet, type BookSource, buildBookArchive } from "@/features/search/book-archive";
+import type { BookFacet } from "@/features/search/constants/facets";
+import type { ArchiveItem, Facet } from "@/features/search/helpers/archive";
+import { type BookSource, buildBookArchive } from "@/features/search/helpers/book-archive";
 
 function book(id: string, data: BookData) {
   return { id, data };

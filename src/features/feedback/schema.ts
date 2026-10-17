@@ -8,20 +8,9 @@
  * are treated alike (see `blankToUndefined` in submit.ts).
  */
 import { z } from "astro/zod";
+import { FIELDS } from "./constants/fields";
+import { MESSAGE_MAX, NAME_MAX } from "./constants/limits";
 import { feedbackCopy as copy } from "./copy";
-
-export const MESSAGE_MAX = 5000;
-export const NAME_MAX = 100;
-
-/** Field names of the form, shared by the markup, the schema and the tests. */
-export const FIELDS = {
-  message: "messaggio",
-  name: "nome",
-  email: "email",
-  story: "racconto",
-  /** The honeypot: a field people never see, so only bots fill it. */
-  honeypot: "sito",
-} as const;
 
 export const feedbackInput = z.object({
   [FIELDS.message]: z

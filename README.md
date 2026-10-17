@@ -86,10 +86,27 @@ src/
   pages/        thin route files
   core/         app-wide infrastructure: layout, theme, content (stories, vocabularies, brand-tone check), consent, analytics, SEO, db, controllers
   features/     stories, search, categories, covers, books, feedback, home
-  shared/       UI primitives, cva variants, utilities
+  shared/       UI primitives, cva variants, helpers, constants
 tests/          integration, e2e, fixtures
 docs/           PLAN.md (decisions)
 ```
+
+Inside every feature and `core` module, files are grouped by kind:
+
+```text
+features/feedback/
+  index.ts  copy.ts  schema.ts    the contracts, at the root
+  components/   FeedbackForm.astro
+  controllers/  feedback-form.controller.ts
+  constants/    fields.ts  limits.ts  paths.ts  email.ts
+  helpers/      notify.ts
+  server/       action.ts  table.ts  submit.ts  resend.ts
+```
+
+`composables/` holds Vue composables, and `server/` holds whatever must never reach the browser
+(content queries, the Action, the database table, external API clients). A test
+(`tests/integration/structure.test.ts`) keeps components, controllers, composables and server-only
+modules in their folders.
 
 Dependency rules, enforced by dependency-cruiser:
 
@@ -112,14 +129,14 @@ and *Nebbia*, switch with `data-theme` on `<html>`. The shared components are sh
 
 ### Layout and theme
 
-Every page renders inside [`BaseLayout`](src/core/layout/BaseLayout.astro): header (wordmark,
+Every page renders inside [`BaseLayout`](src/core/layout/components/BaseLayout.astro): header (wordmark,
 Racconti · Libri, theme switch), `<main>`, footer, and a skip link for keyboard users.
 
 - **Notte is the default for everyone**; the operating system's `prefers-color-scheme` is
   deliberately ignored. The reader picks *Nebbia* with the switch in the header, and the choice is
   saved in `localStorage` (`colles-taciti:tema`).
 - A tiny inline script in `<head>` applies the saved theme before the first paint, so there is no
-  flash of the wrong theme. Its constants come from [`theme.ts`](src/core/theme/theme.ts) through
+  flash of the wrong theme. Its constants come from [`theme.ts`](src/core/theme/constants/theme.ts) through
   `define:vars`. Without JavaScript the switch is hidden and the page stays in Notte.
 - Navigating between pages uses native cross-document **View Transitions** (a 200ms cross-fade,
   CSS only), disabled entirely for readers who prefer reduced motion.
@@ -142,7 +159,7 @@ Content Collections ([`src/content.config.ts`](src/content.config.ts)):
   other (tags in the right group, related stories that exist).
 - **Brand-tone check**: public copy (titles, labels, loglines, SEO fields, tag and fear names) must
   have no `!`, no emoji, no shouted capitals and no real names from the Monster of Florence case
-  ([`brand-tone.ts`](src/core/content/brand-tone.ts)).
+  ([`brand-tone.ts`](src/core/content/helpers/brand-tone.ts)).
 - **Chat and log blocks**: inside a story, a fenced block with the language `chat` or `log`
   becomes the design system's live chat or log lines. The Sätteri plugin that handles them is in
   [`src/features/stories/blocks`](src/features/stories/blocks).
@@ -258,7 +275,7 @@ the first 2% of a story), `story_finish` (the fear note reached), `feedback_subm
 
 ### SEO
 
-Every page's `<head>` comes from [`src/core/seo/Seo.astro`](src/core/seo/Seo.astro): title, meta
+Every page's `<head>` comes from [`src/core/seo/components/Seo.astro`](src/core/seo/components/Seo.astro): title, meta
 description, canonical URL (never with a query string, so filtered archive views point to
 `/racconti`), Open Graph with the story's 1200×630 cover, and JSON-LD: `WebSite` + `Person` on the
 homepage, `ShortStory` (with `CreativeWorkSeries` and `Incomplete` where they apply) on stories,
@@ -360,7 +377,7 @@ format on save with the right tool for each file type.
 | `bun run test:coverage` | Unit + integration tests with v8 coverage |
 | `bun run test:e2e` | Build, then end-to-end tests (Playwright + axe) |
 | `bun run check` | Everything except e2e |
-| `bun run db:generate` | Generate a SQL migration in `drizzle/` from `src/features/feedback/table.ts` |
+| `bun run db:generate` | Generate a SQL migration in `drizzle/` from `src/features/feedback/server/table.ts` |
 | `bun run db:migrate` | Apply pending migrations to `TURSO_DATABASE_URL` (reads `.env.local`) |
 | `bun run copertine` | Render every story cover to PNG in `public/copertine` (see [Covers](#covers)) |
 | `bun run libri:sync` | Complete `books.json` and download the covers from Open Library (see [Books](#books)) |

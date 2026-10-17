@@ -1,0 +1,61 @@
+---
+/**
+ * Reading controls of a story: «A−» and «A+», smaller and larger text.
+ * DS: no dedicated component; buttons styled like the chapter index squares
+ * (mockup › story page, «A− A+»).
+ *
+ * The mockup also puts the theme switch here. It is not repeated: the
+ * switch is already in the header of every page, and two controls for the
+ * same setting on one screen would only raise the question of which wins.
+ *
+ * Behaviour lives in `reading-controls.controller.ts` (text-size.ts for the
+ * rules). Each button has a full accessible name, «Testo più grande»,
+ * because «A+» read aloud means nothing; the visible «A−» uses a real minus
+ * sign (U+2212), as wide as the plus.
+ *
+ * Without JavaScript the buttons could do nothing, so they are hidden, with
+ * the same signal the theme switch uses: the anti-flash script always sets
+ * `data-theme` on <html>, so a missing attribute means scripts did not run.
+ * The browser's own zoom still works for those readers.
+ *
+ * @example <ReadingControls />
+ */
+import { cn } from "@/shared/helpers/cn";
+import { storiesCopy as copy } from "../copy";
+
+export interface Props {
+  /** Extra classes, merged with `cn()`. */
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const buttons = [
+  { step: -1, text: "A−", label: copy.controls.smaller },
+  { step: 1, text: "A+", label: copy.controls.larger },
+];
+---
+
+<div
+  data-controller="reading-controls"
+  role="group"
+  aria-label={copy.controls.label}
+  class={cn("reading-controls flex gap-1", className)}
+>
+  {buttons.map(({ step, text, label }) => (
+    <button
+      type="button"
+      data-step={step}
+      aria-label={label}
+      class="inline-flex size-tocco cursor-pointer items-center justify-center border border-linea-forte font-mono text-pulsante transition-colors hover:border-osso aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-disabled:hover:border-linea-forte"
+    >
+      {text}
+    </button>
+  ))}
+</div>
+
+<style>
+  /* No data-theme on <html>: scripts did not run, see the header comment. */
+  :global(:root:not([data-theme])) .reading-controls {
+    display: none;
+  }
+</style>

@@ -7,7 +7,7 @@
  * Strings that depend on a number are small functions, so the grammar
  * stays here and not in the components.
  */
-import { formatCount } from "@/shared/lib/plural";
+import { formatCount } from "@/shared/helpers/plural";
 
 const chapters = { one: "capitolo", other: "capitoli" };
 

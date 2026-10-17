@@ -1,0 +1,45 @@
+---
+/**
+ * The shelf at the top of /libri. DS: Hero › `ct-hero--libri`, Scaffale
+ * (`ct-scaffale`): a row of covers in black and white, at alternating
+ * widths (88, 72 and 96px) like the spines of real books, bottom-aligned,
+ * cut off at the edge of the page instead of wrapping.
+ *
+ * Decorative: the whole row is `aria-hidden` and its images have an empty
+ * `alt`, because the list right below names every book. The first covers
+ * are above the fold, so they load at once (no `loading="lazy"`); the row
+ * holds only books that have a cover.
+ *
+ * The widths follow the DS rule by position (`nth-child`), written as
+ * Tailwind variants: every third cover from the second is 72px, every
+ * fourth from the third 96px, the others 88px. Where both rules hit the
+ * same cover, the 96px one wins, as in the DS stylesheet, where it comes
+ * later.
+ *
+ * @example <BookShelf books={books} />
+ */
+import type { BookCardData } from "../helpers/card";
+
+export interface Props {
+  /** The books, in shelf order; those without a cover are skipped. */
+  books: readonly BookCardData[];
+}
+
+const { books } = Astro.props;
+const covers = books.flatMap((book) => (book.cover === undefined ? [] : [book.cover]));
+---
+
+<div aria-hidden="true" class="flex items-end gap-3 overflow-hidden">
+  {covers.map((cover) => (
+    <div class="w-[88px] shrink-0 border border-linea bg-terra-alta nth-[3n+2]:w-[72px] nth-[4n+3]:w-[96px]">
+      <img
+        src={cover}
+        alt=""
+        width="192"
+        height="288"
+        decoding="async"
+        class="block aspect-[2/3] w-full object-cover contrast-105 grayscale"
+      />
+    </div>
+  ))}
+</div>

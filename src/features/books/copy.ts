@@ -7,7 +7,7 @@
  * shares the link. They follow the pattern of the other pages: what the
  * page offers first, the site name last.
  */
-import type { BookSection } from "./vocabulary";
+import type { BookSection } from "./constants/vocabulary";
 
 export const booksCopy = {
   page: {

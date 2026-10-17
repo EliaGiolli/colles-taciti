@@ -14,9 +14,9 @@
  * `CollectionPage` listing the stories, the preview image the newest one's cover.
  */
 import type { GetStaticPaths } from "astro";
-import BaseLayout from "@/core/layout/BaseLayout.astro";
-import { collectionPageJsonLd } from "@/core/seo/jsonld";
-import CategoryPage from "@/features/categories/CategoryPage.astro";
+import BaseLayout from "@/core/layout/components/BaseLayout.astro";
+import { collectionPageJsonLd } from "@/core/seo/helpers/jsonld";
+import CategoryPage from "@/features/categories/components/CategoryPage.astro";
 import {
   coverImageHref,
   type FearWithCount,

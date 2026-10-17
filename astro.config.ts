@@ -17,8 +17,8 @@ import vue from "@astrojs/vue";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
 import { envSchema } from "./src/core/config/env";
-import { ctBlocks } from "./src/features/stories/blocks/plugin";
-import { ctChapters } from "./src/features/stories/chapters-plugin";
+import { ctBlocks } from "./src/features/stories/markdown/blocks-plugin";
+import { ctChapters } from "./src/features/stories/markdown/chapters-plugin";
 
 export default defineConfig({
   /**
@@ -124,9 +124,9 @@ export default defineConfig({
    * Markdown (the stories). Sätteri is Astro 7's default processor; it is
    * configured explicitly only to add two plugins:
    * - `ctBlocks` turns ```chat and ```log fenced blocks into the DS
-   *   ChatDiretta and RigheDiLog markup (src/features/stories/blocks/plugin.ts);
+   *   ChatDiretta and RigheDiLog markup (src/features/stories/markdown/blocks-plugin.ts);
    * - `ctChapters` gives every `## …` heading its `#capitolo-N` anchor and
-   *   «Capitolo N» label (src/features/stories/chapters-plugin.ts).
+   *   «Capitolo N» label (src/features/stories/markdown/chapters-plugin.ts).
    * GitHub-flavoured Markdown and
    * smart punctuation («...» → «…», straight quotes → curly) stay on, as by
    * default.

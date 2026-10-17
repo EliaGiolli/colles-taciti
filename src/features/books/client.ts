@@ -8,8 +8,9 @@
  * a value, not even a constant: see vocabulary.ts for why.
  */
 
-export { default as BookItem } from "./BookItem.vue";
-export { type BookCardData, bookCard, byAuthor, byTitle, byYear, surname } from "./card";
+export { default as BookItem } from "./components/BookItem.vue";
+export { BOOK_SECTIONS, type BookSection } from "./constants/vocabulary";
 export { booksCopy } from "./copy";
+export { type BookCardData, bookCard, surname } from "./helpers/card";
+export { byAuthor, byTitle, byYear } from "./helpers/order";
 export type { BookData } from "./schema";
-export { BOOK_SECTIONS, type BookSection } from "./vocabulary";

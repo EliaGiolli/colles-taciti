@@ -12,7 +12,7 @@
  * keeps `core` from importing `features` directly, which the architecture
  * rules forbid.
  */
-import { connectControllers, createLoaderMap } from "./registry";
+import { connectControllers, createLoaderMap } from "./helpers/registry";
 
 const modules = import.meta.glob("/src/**/*.controller.ts");
 

@@ -17,14 +17,12 @@
  */
 import { reference } from "astro:content";
 import { z } from "astro/zod";
-import { publicCopy } from "@/core/content/public-copy";
-import { seoFields } from "@/core/content/seo";
+import { publicCopy } from "@/core/content/helpers/public-copy";
+import { seoFields } from "@/core/content/helpers/seo-fields";
 import { MAX_LINES, MOTIFS } from "@/features/covers";
-import { countWords } from "@/shared/lib/count-words";
-import { STORY_STATUSES, TAG_KINDS } from "./vocabulary";
-
-/** DS › NotaPaura: «80–150 parole». */
-export const FEAR_NOTE_WORDS = { min: 80, max: 150 } as const;
+import { countWords } from "@/shared/helpers/count-words";
+import { FEAR_NOTE_WORDS } from "./constants/reading";
+import { STORY_STATUSES, TAG_KINDS } from "./constants/vocabulary";
 
 /** Content warnings are lowercase nouns, no icons (DS › SchedaTecnica). */
 const warning = z

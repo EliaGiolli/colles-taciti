@@ -1,0 +1,49 @@
+---
+/**
+ * The chapter index of a story: «Capitolo 1 2 3 4 5», each number a link to
+ * its anchor (`#capitolo-N`). DS: no dedicated component; drawn as in the
+ * mockup (squares with a linea-forte border, the current one filled carne).
+ *
+ * Plain links, so the index works without JavaScript: the browser jumps to
+ * the chapter. With JavaScript, `reading-progress.controller.ts` marks the
+ * chapter being read with `aria-current="location"` (the ARIA value for
+ * «the current spot in a set of in-page links»), which also gives it the
+ * carne fill. Each link is named in full for screen readers («Capitolo 2:
+ * La rampa»), while the eye sees just «2» next to the «Capitolo» label.
+ *
+ * Nothing is rendered for a story in one piece: an index of one is noise.
+ * Squares are 48px, the DS minimum for touch targets.
+ *
+ * @example <ChapterIndex chapters={story.chapters} />
+ */
+import type { Chapter } from "../helpers/chapters";
+import { storiesCopy as copy } from "../copy";
+
+export interface Props {
+  chapters: readonly Chapter[];
+}
+
+const { chapters } = Astro.props;
+---
+
+{chapters.length > 1 && (
+  <nav aria-label={copy.index.label} class="flex items-center gap-3">
+    <span class="font-mono text-meta text-osso-muto" aria-hidden="true">
+      {copy.index.prefix}
+    </span>
+    <ol class="flex flex-wrap gap-1">
+      {chapters.map(({ number, id, title }) => (
+        <li>
+          <a
+            href={`#${id}`}
+            data-chapter-link
+            class="inline-flex size-tocco items-center justify-center border border-linea-forte font-mono text-pulsante no-underline transition-colors hover:border-osso aria-[current=location]:border-carne aria-[current=location]:bg-carne aria-[current=location]:text-su-carne"
+          >
+            <span class="sr-only">{`${copy.chapter.label(number)}${title ? `: ${title}` : ""}`}</span>
+            <span aria-hidden="true">{number}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}

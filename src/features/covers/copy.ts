@@ -7,7 +7,7 @@
  * style, never typed.
  */
 import { layoutCopy } from "@/core/layout/copy";
-import type { Motif } from "./motifs";
+import type { Motif } from "./constants/motifs";
 
 export const coversCopy = {
   /** Top left of the portrait covers. */

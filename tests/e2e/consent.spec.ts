@@ -8,7 +8,7 @@
  */
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
-import { THEME_STORAGE_KEY } from "@/core/theme/theme";
+import { THEME_STORAGE_KEY } from "@/core/theme/constants/theme";
 
 // Start with no choice saved (the other specs start with «Rifiuta»).
 test.use({ storageState: { cookies: [], origins: [] }, reducedMotion: "reduce" });

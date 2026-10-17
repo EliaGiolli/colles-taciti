@@ -34,7 +34,7 @@
 
 /*
  * `no-js:` applies when JavaScript did not run. The anti-flash theme script
- * (core/theme/ThemeScript.astro) is the first script of every page and
+ * (core/theme/components/ThemeScript.astro) is the first script of every page and
  * always sets `data-theme` on <html>; if the attribute is missing, no
  * script ran, so neither will any control. `no-js:hidden` hides a control
  * that would do nothing, such as the archive's search box. The theme
@@ -50,7 +50,7 @@
    * Notte: the default theme (stories are read in the evening, on a phone).
    * It also applies when <html> has no data-theme at all, so the page is
    * never unstyled (for instance with JavaScript off). The attribute is set
-   * from the reader's saved choice by core/theme/ThemeScript.astro; the
+   * from the reader's saved choice by core/theme/components/ThemeScript.astro; the
    * system's prefers-color-scheme is deliberately ignored (see theme.ts).
    */
   :root,

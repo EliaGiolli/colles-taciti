@@ -50,42 +50,47 @@ Elia vuole anche imparare dal codice: architettura manutenibile, test fin da sub
 
 **Regole di dipendenza** (dependency-cruiser in `bun run lint`): `shared` non importa da nessuno; `core` solo da `shared`; `features/*` da `core` e `shared`, e da un'altra feature solo tramite il suo `index.ts`. `src/pages` collega soltanto.
 
+**Dentro ogni feature e ogni modulo di `core`**, i file stanno nella cartella del loro tipo (PR 11): `components/` (`.astro`, `.vue`), `controllers/` (`*.controller.ts`), `composables/` (composable Vue), `constants/` (costanti esportate), `helpers/` (funzioni esportate), `server/` (ciò che non deve mai arrivare nel browser: query, Action, tabella, client di servizi esterni). Alla radice restano i contratti: `index.ts`, `client.ts`, `copy.ts`, `schema.ts`. Un test (`tests/integration/structure.test.ts`) fa rispettare la regola.
+
 ```
 src/
   content.config.ts              collections: stories (glob su src/core/content/stories), tags, fears, books (file JSON)
   actions/index.ts               registra le Astro Actions (riesporta quella di features/feedback)
   pages/                         index.astro, racconti/index.astro, racconti/[slug].astro, [categoria].astro,
-                                 libri.astro, search-index.json.ts (endpoint prerenderizzato), 404.astro
+                                 libri.astro, feedback.astro, search-index.json.ts (endpoint prerenderizzato), robots.txt.ts
   core/
-    config/env.ts                schema env (astro:env): SITE_URL, TURSO_DATABASE_URL, TURSO_AUTH_TOKEN, RESEND_API_KEY, FEEDBACK_TO, PUBLIC_GA_ID
+    config/env.ts                schema env (astro:env)
     db/client.ts                 client libSQL + istanza Drizzle (solo lato server)
-    controllers/registry.ts      mini-registro: per ogni [data-controller] chiama il controller giusto (un solo punto d'ingresso, nessuna libreria)
-    layout/                      BaseLayout.astro (head, tema, banner), Header, Footer, Brand
-    theme/                       script anti-flash (is:inline), ThemeToggle.astro + theme-toggle.controller.ts
-    content/                     contenuti e regole sui testi: stories/*.md (un racconto per file),
-                                 tags.json, fears.json (vocabolari), books.json (generato da libri:sync),
-                                 brand-tone.ts + public-copy.ts (controllo sul tono del brand)
-    consent/                     Consent Mode v2, loader di gtag, ConsentBanner.astro + consent.controller.ts
-    analytics/track.ts           track(event, params): eventi tipizzati, inviati solo con il consenso
-    seo/                         Seo.astro (title, meta, canonical, og, JSON-LD) + builder JSON-LD
+    analytics/                   gtag.ts (caricamento dopo il consenso), track.ts (eventi tipizzati)
+    controllers/                 start.ts (punto d'ingresso), helpers/registry.ts, constants/controllers.ts
+    layout/                      components/ (BaseLayout, Header, Footer, Brand, GlobalHead), constants/nav.ts, helpers/nav.ts
+    theme/                       components/ (ThemeScript, ThemeToggle), controllers/, constants/theme.ts, helpers/theme.ts
+    content/                     stories/*.md, tags.json, fears.json, books.json (i contenuti);
+                                 helpers/ (brand-tone, public-copy, seo-fields), constants/ (nomi vietati, limiti SEO)
+    consent/                     components/ConsentBanner.astro, controllers/, constants/, helpers/
+    seo/                         components/Seo.astro, helpers/jsonld.ts
   features/
-    stories/                     query (getCollection), blocks/ (plugin chat e log), StoryCard.vue (statica o nell'isola), StoryFacts,
-                                 Prose, ChapterIndex, FearNote, LiveChat, LogLines, OngoingBanner,
-                                 ReadingControls + reading-controls.controller.ts,
-                                 reading-progress/ (reading-progress.controller.ts, storage, ResumeLine, ContinueReading)
-    search/                      buildIndex (usato dall'endpoint), isola Vue SearchBrowser.vue (MiniSearch, faccette,
-                                 TransitionGroup), useUrlState.ts (composable: zod ↔ URLSearchParams), ResultsCount (aria-live)
-    categories/                  FearPicker.astro, CategoryPage.astro
-    covers/                      cover.ts (SVG puro), Cover.astro, renderPng (usato dallo script)
-    books/                       BookItem.vue (statica o nell'isola), Shelf.astro, client Open Library / Google Books, sync
-    feedback/                    action (defineAction), FeedbackForm.astro + feedback-form.controller.ts, schema zod, tabella Drizzle, honeypot, client Resend
-    home/                        HeroHome, Starters, WhyCollesTaciti
+    stories/                     components/ (Hero, Prose, StoryCard.vue…), controllers/, constants/ (routes, vocabulary,
+                                 reading, text-size), helpers/ (card, chapters, links, story-list, text-size),
+                                 server/queries.ts, markdown/ (plugin Sätteri: blocchi chat e log, capitoli),
+                                 reading-progress/ (stessa regola al suo interno)
+    search/                      components/ (SearchBrowser.vue, ResultsCount.vue), composables/ (useUrlState,
+                                 useSearchIndex), constants/ (tipi di archivio, faccette, parole vuote), helpers/
+                                 (archivio, URL, indice MiniSearch), server/archive-data.ts
+    categories/                  components/ (FearPicker, CategoryPage), constants/intro.ts
+    covers/                      components/Cover.astro, constants/ (formati, motivi, colori, titolo), helpers/ (SVG puro)
+    books/                       components/ (BookItem.vue, BookShelf.astro), constants/, helpers/ (scheda, ordinamenti),
+                                 server/ (query, client Open Library, regole del sync)
+    feedback/                    components/FeedbackForm.astro, controllers/, constants/ (campi, limiti, percorso, mittente),
+                                 helpers/notify.ts, server/ (Action, tabella Drizzle, salvataggio, invio con Resend)
+    home/                        components/ (HomeHero, HomeSection, WhyCollesTaciti)
     (ogni feature ha copy.ts con i propri testi UI)
   shared/
-    components/                  Button.astro (cva: primary, secondary, link, onFlesh), Field, Label, MetaRow, Section, Container
-    vue/                         equivalenti Vue minimi per l'isola (Button, Input, FacetChip), con le stesse varianti cva
+    components/                  Button.astro, Field, Label (cva)
+    vue/                         equivalenti Vue per l'isola (BaseButton, BaseInput, BaseFacetChip), con le stesse varianti cva
     variants/                    varianti cva in .ts, condivise da .astro e .vue
-    lib/                         cn(), formatDate (Europe/Rome), plurali, normalizzazione del testo
+    helpers/                     cn(), formatDate (Europe/Rome), plurali, normalizzazione del testo, conteggio delle parole
+    constants/                   token del design system, lingua e fuso orario
   styles/app.css
 drizzle/  drizzle.config.ts      migrazioni versionate
 scripts/                         copertine.ts, libri-sync.ts
@@ -244,7 +249,7 @@ Ogni modifica a una decisione si annota qui, nella stessa PR che la introduce (d
   - **Test dei `.astro`**: devono girare nell'ambiente Node di Vitest. Con jsdom, Vite compila il componente per il browser e Astro si rifiuta di renderizzarlo. L'helper `tests/helpers/render-astro.ts` renderizza lato server e usa JSDOM solo per leggere l'HTML.
   - **Registro dei controller**: i file `*.controller.ts` sono scoperti con `import.meta.glob` invece che con un elenco scritto a mano, così `core` non importa da `features` (regola rispettata) e un controller nuovo non va registrato.
   - **dependency-cruiser** non legge il frontmatter dei `.astro`: le regole valgono per `.ts` e `.vue`. Motivo in più per tenere sottili i `.astro`.
-  - **Script incorporati**: Astro mette nell'HTML gli script sotto i 4 KB. Con una CSP rigida servono gli hash (supporto CSP di Astro) oppure `vite.build.assetsInlineLimit: 0`. Da decidere nella PR 11.
+  - **Script incorporati**: Astro mette nell'HTML gli script sotto i 4 KB. Con una CSP rigida servono gli hash (supporto CSP di Astro) oppure `vite.build.assetsInlineLimit: 0`. Da decidere nella PR 12 (lancio).
   - **URL senza slash finale** (`trailingSlash: "never"`), scelto subito per non cambiare i canonical dopo il lancio.
   - **Playwright** usa file `*.spec.ts`, Vitest `*.test.ts`: i due runner non si pestano i piedi. `astro preview` funziona anche con l'adapter Vercel.
 - 2026-10-14 · PR 0 · Vercel collegato con la CLI (conferma di Elia): progetto `colles-taciti`, integrazione Git attiva, anteprima per ogni PR. `vercel link` aggiunge `.vercel` e `.env*` al `.gitignore`: vanno tolte, perché `.env*` scavalcherebbe `!.env.example`, e le regole esistenti coprono già `.vercel/` e `.env.local`. Il primo deployment di un progetto Vercel nuovo diventa sempre Production, anche se viene da un branch: è successo con `chore/bootstrap` (solo la pagina segnaposto). Il ramo di produzione è `main`; il preset del framework è stato impostato su Astro (la CLI lo aveva lasciato su «Other»).
@@ -340,3 +345,5 @@ Ogni modifica a una decisione si annota qui, nella stessa PR che la introduce (d
   - **Pagine delle paure**: un paragrafo d'introduzione fra la definizione e i racconti (60–120 parole), più il link al video del sottogenere su **The Horror Scriptorium**, il canale di Viktoria: un tributo e un backlink vero, quindi senza `nofollow`, nella stessa scheda. Il titolo del video è marcato `lang="en"` e la riga prima dice che è in inglese. Le introduzioni sono bozze di Claude in prima persona, segnate «[Segnaposto]»: Elia le riscrive in `fears.json` e toglie il segnaposto (punto aperto). Esperimenti non ha né introduzione né video, perché non è un sottogenere; il liminale non ha ancora il video. Gli indirizzi sono salvati senza il parametro di tracciamento `si` che aggiunge la condivisione di YouTube.
   - **`countWords` spostato in `shared/lib`**: lo usano gli schemi dei racconti e delle paure, e uno schema non può importare quello di un'altra feature (`content.config.ts` caricherebbe le query, e con loro `astro:content`, dentro la propria configurazione).
   - **Film horror**: dopo il lancio (ROADMAP › After launch).
+- 2026-10-17 · PR 10 · **Una PR in più prima del lancio** (richiesta di Elia): la PR 11 diventa `refactor/src-structure`, che dentro ogni feature e modulo di `core` raggruppa i file per tipo (`components/`, `controllers/`, `composables/`, `constants/`, `helpers/`, `server/`; alla radice restano `index.ts`, `client.ts`, `copy.ts`, `schema.ts`). Solo spostamenti, nessun cambio di comportamento. Il lancio diventa la PR 12, che aggiunge le **pagine d'errore**: `404.astro` statica (senza JavaScript, titolo nella voce del sito) e `500.astro` per ciò che gira a richiesta, con l'illustrazione del marchio del design system come immagine.
+- 2026-10-17 · PR 11 · **Struttura per tipo dentro le feature** (richiesta di Elia): ogni feature e ogni modulo di `core` divide i file in `components/`, `controllers/`, `composables/`, `constants/`, `helpers/` e `server/`; alla radice restano `index.ts`, `client.ts`, `copy.ts` e `schema.ts`. I file che mescolavano costanti e funzioni sono stati divisi in due (per esempio `core/theme/constants/theme.ts` e `helpers/theme.ts`). `shared/lib` diventa `shared/helpers`, con un nuovo `shared/constants` (token, lingua). Eccezioni, per non creare cartelle con un solo file: `core/analytics`, `core/config` e `core/db` hanno già un solo tipo di file; in `shared` restano `components/`, `variants/` e `vue/`. I plugin Markdown dei racconti stanno in `features/stories/markdown/`. Tutti gli spostamenti sono `git mv` (la storia dei file resta) e gli import sono stati riscritti da uno script usa e getta basato sul parser di TypeScript. Nessun cambio di comportamento: stessi test, stessi e2e. Un nuovo test d'integrazione (`structure.test.ts`) controlla componenti, controller, composable e moduli solo-server; costanti e helper non si distinguono dal nome, quindi restano affidati alla revisione.

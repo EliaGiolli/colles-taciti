@@ -3,8 +3,8 @@
  * apply to it as they do to the content files, and the counts read well.
  */
 import { describe, expect, it } from "vitest";
-import { findBrandToneIssues } from "@/core/content/brand-tone";
-import { SEO_DESCRIPTION_MAX, SEO_TITLE_MAX } from "@/core/content/seo";
+import { SEO_DESCRIPTION_MAX, SEO_TITLE_MAX } from "@/core/content/constants/seo";
+import { findBrandToneIssues } from "@/core/content/helpers/brand-tone";
 import { searchCopy } from "./copy";
 
 describe("searchCopy", () => {

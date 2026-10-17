@@ -19,8 +19,8 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { downloadCover, findWork } from "../src/features/books/open-library";
 import { bookSchema } from "../src/features/books/schema";
+import { downloadCover, findWork } from "../src/features/books/server/open-library";
 import {
   applyMatch,
   type BookEntry,
@@ -28,7 +28,7 @@ import {
   serializeBooks,
   withCover,
   workQuery,
-} from "../src/features/books/sync";
+} from "../src/features/books/server/sync";
 
 const ROOT = join(import.meta.dirname, "..");
 const BOOKS_FILE = join(ROOT, "src", "core", "content", "books.json");

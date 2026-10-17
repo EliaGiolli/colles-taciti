@@ -48,6 +48,22 @@ Hooks (lefthook): pre-commit runs typecheck + lint + unit; pre-push runs `check`
 - `src/shared` imports from nobody; `src/core` only from `shared`; `src/features/*` from `core` and
   `shared`, and from another feature only through its `index.ts`. Enforced by dependency-cruiser.
 - `src/pages` files stay thin: they only wire features together.
+- Inside every feature and `core` module, files go in the folder of their kind (checked by
+  `tests/integration/structure.test.ts`):
+
+  | Folder | What goes there |
+  |---|---|
+  | `components/` | `.astro` and `.vue` components |
+  | `controllers/` | `*.controller.ts` |
+  | `composables/` | Vue composables (`use*.ts`) |
+  | `constants/` | exported constants (values, keys, limits, vocabularies) and their types |
+  | `helpers/` | exported functions, with the types they take and return |
+  | `server/` | never in the browser: content queries, the Action, the db table, external API clients |
+  | root | the contracts: `index.ts`, `client.ts`, `copy.ts`, `schema.ts` |
+
+  A module that would mix constants and functions is two files, `constants/x.ts` and
+  `helpers/x.ts`. Folders with a single kind of file stay flat (`core/analytics`, `core/config`,
+  `core/db`); `shared` has `components/`, `vue/`, `variants/`, `helpers/`, `constants/`.
 - File names: `*.controller.ts` (exports `connect(el): () => void`), `*.test.ts` next to the file
   under test, `copy.ts` per feature for UI strings.
 - Integration tests in `tests/integration`, e2e in `tests/e2e` (`*.spec.ts`, Playwright only),
@@ -73,7 +89,7 @@ Hooks (lefthook): pre-commit runs typecheck + lint + unit; pre-push runs `check`
 - TypeScript strictest. No `any`, no `@ts-ignore` without a comment explaining why.
 - Styling: only DS tokens from `src/styles/app.css` (Tailwind defaults are reset: `text-xl`,
   `p-10`, `rounded-lg`, `shadow-*` do not exist). Merge classes with `cn()` from
-  `@/shared/lib/cn`; when adding a token to app.css, add its name to `shared/lib/design-tokens.ts`
+  `@/shared/helpers/cn`; when adding a token to app.css, add its name to `shared/constants/design-tokens.ts`
   (a test enforces it). Variants live in `shared/variants/*.ts`, shared by `.astro` and `.vue`.
 - Vue components shared with the island are named `Base*` (`BaseButton.vue`), never one word.
 - Astro drops the line break between two `{expressions}` or between `<slot />` and an element:

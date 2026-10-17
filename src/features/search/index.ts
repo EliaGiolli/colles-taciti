@@ -7,7 +7,13 @@
  * `astro:content`, and the island imports its own modules directly.
  */
 
-export { type Archive, getArchive, getBookArchive, getSearchDocuments } from "./archive-data";
-export { ARCHIVE_KINDS, type ArchiveKind } from "./archive-kinds";
+export { ARCHIVE_KINDS, type ArchiveKind } from "./constants/archive-kinds";
+export { SEARCH_INDEX_PATH } from "./constants/search-index";
 export { searchCopy } from "./copy";
-export { buildIndex, SEARCH_INDEX_PATH, type SearchDocument } from "./search-index";
+export { buildIndex, type SearchDocument } from "./helpers/search-index";
+export {
+  type Archive,
+  getArchive,
+  getBookArchive,
+  getSearchDocuments,
+} from "./server/archive-data";

@@ -7,9 +7,9 @@
  */
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
-import { THEME_STORAGE_KEY } from "@/core/theme/theme";
-import { PROGRESS_STORAGE_KEY } from "@/features/stories/reading-progress/storage";
-import { TEXT_SIZE_STORAGE_KEY } from "@/features/stories/text-size";
+import { THEME_STORAGE_KEY } from "@/core/theme/constants/theme";
+import { TEXT_SIZE_STORAGE_KEY } from "@/features/stories/constants/text-size";
+import { PROGRESS_STORAGE_KEY } from "@/features/stories/reading-progress/constants/progress";
 
 const STORY = "/racconti/senza-rimorso";
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
