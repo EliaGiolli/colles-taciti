@@ -215,11 +215,11 @@ PR: – · Merged: – · Notes: –
 
 - [x] Error pages: static `404.astro` (no JS, heading in the site's voice, «Scegli la tua paura») and `500.astro` for what runs on demand (`/feedback`, the Action; the error is never shown), with the DS brand illustration (`brandArtSvg`) as image
 - [x] Environment variables on Vercel (added by Elia on 2026-10-17: Turso, Resend, GA4, Production only)
-- [ ] Lighthouse mobile (home + one story): SEO, a11y, performance
+- [ ] Lighthouse mobile (home + one story): SEO, a11y, performance. Done locally on the production build: accessibility, best practices and SEO at 100 (one label-in-name fix). Performance still to measure on production after the merge: Vercel previews are behind Vercel Authentication, and the local Node preview does not compress text
 - [x] CSP: Astro's `security.csp` (hashes of every inline script and style, no `'unsafe-inline'`), GA4 hosts only; `frame-ancestors` and other headers in `vercel.json`; e2e on CSP violations
 - [x] `/design-system` out of production (Elia's decision, 2026-10-17): route injected only with `astro dev` and in the e2e build
 - [ ] Final touches
-- [ ] README updated
+- [x] README updated (error pages, security headers, `/design-system` in dev and e2e only)
 
 ---
 
