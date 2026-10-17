@@ -1,5 +1,5 @@
 /**
- * Tests for the chat and log blocks: the pure parsers, then the Sätteri
+ * Tests for the chat, log and signal blocks: the pure parsers, then the Sätteri
  * plugin end to end (Markdown in, HTML out), the way Astro runs it.
  */
 import { pathToFileURL } from "node:url";
@@ -108,11 +108,44 @@ describe("ctBlocks plugin", () => {
     expect(lines[1]?.className).toBe("ct-log__err ct-glitch ct-glitch--vivo");
   });
 
-  it("leaves other code blocks alone", () => {
-    const body = render(fence("js", "let a"));
+  it("turns any other code block into a signal, with or without a language", () => {
+    for (const lang of ["python", ""]) {
+      const body = render(fence(lang, 'print("<b>Peccato</b>")'));
+      const signal = body.querySelector(".ct-segnale");
 
-    expect(body.querySelector("pre > code")?.textContent).toContain("let a");
-    expect(getAllByRole(body, "paragraph")).toHaveLength(1);
+      expect(signal?.tagName).toBe("P");
+      // Escaped like every block, and no <pre>/<code>: no copy button, no numbers.
+      expect(signal?.textContent).toBe('print("<b>Peccato</b>")');
+      expect(body.querySelector("pre, code, b")).toBeNull();
+    }
+  });
+
+  it("keeps the line breaks of a multi-line signal", () => {
+    const body = render(fence("", "\nuno\ndue\n"));
+
+    expect(body.querySelector(".ct-segnale")?.textContent).toBe("uno\ndue");
+  });
+
+  it("makes a lone code span a signal, punctuation included", () => {
+    const body = render("Prosa.\n\n`Peccato`.\n\n`Error 404: friendship not found.`\n");
+    const signals = [...body.querySelectorAll(".ct-segnale")].map((p) => p.textContent);
+
+    expect(signals).toEqual(["Peccato.", "Error 404: friendship not found."]);
+    expect(getAllByRole(body, "paragraph")).toHaveLength(3);
+  });
+
+  it("leaves inline code inside a sentence inline", () => {
+    const body = render("`git merge SaraGiacomo?` chiese Sara.\n\nUn errore: `500`, poi niente.\n");
+
+    expect(body.querySelector(".ct-segnale")).toBeNull();
+    expect([...body.querySelectorAll("p > code")].map((code) => code.textContent)).toEqual([
+      "git merge SaraGiacomo?",
+      "500",
+    ]);
+  });
+
+  it("rejects an empty signal", () => {
+    expect(() => render(fence("", "  "))).toThrow(/blocco di codice: il segnale è vuoto/);
   });
 
   it("stops the build naming the file and quoting the broken line", () => {
