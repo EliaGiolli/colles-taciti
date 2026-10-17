@@ -189,10 +189,25 @@ The Horror Scriptorium videos on the fear pages folded in here.
 - [x] Tests: MSW for Open Library, e2e /libri (axe, facets, URL, back button)
 - [x] README updated
 
-## PR 11 · `chore/launch`
+## PR 11 · `refactor/src-structure`
 
 PR: – · Merged: – · Notes: –
 
+Added with Elia on 2026-10-17: every feature and `core` module groups its files by kind, so
+constants and helpers no longer sit scattered next to components. Moves only, no behaviour change.
+
+- [ ] Subfolders by kind: `components/`, `controllers/`, `composables/`, `constants/`, `helpers/`, `server/`; `index.ts`, `client.ts`, `copy.ts`, `schema.ts` stay at the root
+- [ ] Split the files that mix constants and functions (`theme.ts`, `nav.ts`, `brand-tone.ts`, `registry.ts`, `feedback/schema.ts` and `notify.ts`…)
+- [ ] `shared/lib` → `shared/helpers`, new `shared/constants` (design tokens, locale)
+- [ ] `git mv` for every move; imports rewritten in `src`, `tests`, `scripts` and the configs
+- [ ] Structure test (`tests/integration/structure.test.ts`): components, controllers, composables and server-only modules in their folders
+- [ ] CLAUDE.md › Architecture, README and PLAN trees updated
+
+## PR 12 · `chore/launch`
+
+PR: – · Merged: – · Notes: –
+
+- [ ] Error pages: static `404.astro` (no JS, heading in the site's voice, «Scegli la tua paura») and `500.astro` for what runs on demand (`/feedback`, the Action; the error is never shown), with the DS brand illustration (`brandArtSvg`) as image
 - [x] Environment variables on Vercel (added by Elia on 2026-10-17: Turso, Resend, GA4, Production only)
 - [ ] Lighthouse mobile (home + one story): SEO, a11y, performance
 - [ ] CSP: hashes for Astro's inlined scripts, or `assetsInlineLimit: 0` (see PLAN change log)
